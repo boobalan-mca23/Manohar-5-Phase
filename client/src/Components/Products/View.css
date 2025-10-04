@@ -1,0 +1,146 @@
+
+.formmm-containerrr {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+
+}
+
+
+.formmm-group {
+  margin-bottom: 20px;
+  display: flex; 
+  flex-direction: column; 
+  align-items: flex-start; 
+}
+
+
+.formmm-group label {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+
+.formmm-group input {
+  padding: 10px;
+  width: 100%; 
+  max-width: 400px; 
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; 
+ 
+}
+
+
+.savee-buttonn {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+
+.savee-buttonn button {
+  background-color: #25274D;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  color: white;
+  border: none; 
+  transition: background-color 0.3s ease; 
+}
+
+.savee-buttonn button:hover {
+  cursor: pointer;
+  background-color: #3D3D6B;
+  color: white;
+}
+
+
+.popup-2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-contentt {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 5px;
+  text-align: left; 
+  height: auto; 
+  width: 90%; 
+  max-width: 900px; 
+}
+
+
+.closee {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+.closee-button {
+  cursor: pointer;
+  font-weight: bold;
+  color: #25274D;
+}
+
+
+.centered-webcam {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) ; 
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ 
+}
+.centered-webcam video {
+  transform: rotate(0deg);  
+   
+  width: 100vw;              
+  height: 150vh;             
+}
+
+
+
+.name button {
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 5px;
+  height: 2.5rem;
+  background-color: #25274D;
+  color: white;
+}
+
+.name button:hover {
+  cursor: pointer;
+  background-color: #3D3D6B;
+  color: white;
+}
+
+
+.log {
+  height: 70px;
+  color: black;
+  margin-right: 2rem;
+}
+.popup-contentt{
+  max-height: 80vh; 
+  overflow-y: auto;
+  padding: 20px;
+}

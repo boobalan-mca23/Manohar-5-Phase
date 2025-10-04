@@ -1,0 +1,724 @@
+/* .nav-color{
+    background-color: rgb(36, 36, 66);
+    height: 4rem;
+    position: fixed;
+    width: 100%;
+    top: 0; 
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0; 
+}
+
+
+.position{
+    display: flex;
+    gap: 3rem;
+    color: white;
+    padding-top: 1.3rem;
+    font-size: 1.1rem;
+    justify-content: right;
+    padding-right: 3rem;
+    
+}
+
+.add {
+    display: flex;               
+    gap: 4rem;                 
+    align-items: center;  
+    margin-top: 8rem; 
+    justify-content: center; 
+      
+}
+
+.close{
+    display: flex;
+    gap: 10rem;
+    margin-left: 2rem;
+    font-size: 1.1rem;
+    width: 20rem;  
+}
+.move-items{
+    display: flex;
+    gap: 3rem;
+    height: 2rem;
+    width: 40rem;
+    margin-left: 2rem;
+    margin-top: 1.5rem; 
+    
+}
+
+.move-items button{
+    font-weight: bold;
+    font-size: 1rem;  
+}
+
+  .close-btnn {   
+    margin-right: 3rem;
+  }
+
+  .closee {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 2rem;
+    font-size: 1.1rem;
+    width: 100%; 
+}
+  .popup-1 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+  }
+
+.popup-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 5px;
+    text-align: center;
+    height: 37rem;
+    width: 30rem;
+    margin-top: 2rem;
+    
+  }
+  .close-button {
+    margin-left: 27rem;
+  }
+ .in-position{
+    display: grid;
+    gap: 1rem;
+ }
+
+.close-btn {
+    margin-right: 4rem;    
+  }
+
+.popup-content-new {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 5px;
+    text-align: center;
+    height: 18rem;
+    width: 60rem;
+  }
+
+
+  .icon{
+    display: flex; 
+    justify-content: center;
+    gap: 2rem;
+    width: 9rem;
+  }
+ 
+  input{
+        height: 1.5rem;
+        width: 8rem; 
+        
+  }
+  
+  table th{
+    height: 2rem; 
+    background-color: rgb(36, 36, 66);
+    color: white;
+  }
+
+ .add-items{
+  padding-top: 7rem;
+   
+    margin-left: 4rem;
+    
+ }
+
+ .add-items button{
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    height: 2.2rem;
+    width: 7rem;
+    background-color: rgb(36, 36, 66);
+    color: white;
+ }
+
+ .add-items button:hover{
+    cursor: pointer;
+    background-color: rgb(61, 61, 107);
+    color: white;    
+ }
+.save-button {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    border-radius: 45px;
+    text-align: center;
+    justify-content: center;
+    
+}
+
+.save-button button{
+    
+    background-color: rgb(36, 36, 66);
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 0.3rem;
+    border-radius: 5px;
+    color: white;
+    width: 6rem;
+ }
+
+.save-button button:hover{
+    cursor: pointer;
+    background-color: rgb(61, 61, 107);
+    color: white;
+}
+
+.close {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 2rem;
+    font-size: 1.1rem;
+    width: 100%; 
+}
+
+.close-button {
+    cursor: pointer; 
+}
+
+.in-position {
+    display: grid;
+    gap: 1rem;
+    width: 100%; 
+  }
+  
+  .in-position input {
+    width: 100%; 
+    padding: 0.5rem; 
+    box-sizing: border-box; 
+  }
+  
+  
+  .in-position label{
+    font-weight: bold;
+  }
+
+  .list{
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.4rem;
+  }
+  
+  .table-container {
+    background-color: whitesmoke; 
+    border-radius: 8px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    width: 87rem;
+    margin-left: 4rem;
+    padding: 1rem;   
+  }
+  
+  .tab {
+    width: 100%; 
+    margin-top: 1rem;
+  }
+  
+  .tab th, .tab td {
+    border: 1px solid black; 
+    padding: 5px;   
+  }
+  
+  .tab td {
+    text-align: center; 
+    vertical-align: middle; 
+  }
+  
+  .tab input {
+    width: 90%; 
+    margin: auto; 
+    display: block; 
+    text-align: center;
+  }
+  
+  .pdf-button{
+    background-color: rgb(36, 36, 66);
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 0.3rem;
+    border-radius: 5px;
+    color: white;
+  }
+  
+  .cont{
+    background-color: white; 
+    padding: 10px;
+    border-radius: 8px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-Right: 3rem;
+}
+
+.cont:hover{
+  cursor: pointer;
+}
+
+.cont label{
+  font-size: 1.07rem;
+  font-weight: bold;
+}
+
+.cont input{
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.weight{ 
+  display: flex;
+  gap: 1rem;
+  justify-content: right;
+  font-weight: bold;
+  padding-right: 3rem;
+ 
+  
+}
+
+.update{
+  margin-top: 2rem;
+  display: flex;
+  justify-content: right;
+  padding-right: 3rem;
+  height: 2.2rem;
+  
+  
+}
+
+.update button{
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 5px;
+  height: 2.2rem;
+  width: 7rem;
+  background-color: rgb(36, 36, 66);
+  color: white;
+}
+
+.update button:hover{
+  cursor: pointer;
+  background-color: rgb(61, 61, 107);
+  color: white;    
+  
+}
+
+  
+
+.background{
+
+  background-image: url(../Logo/pic.jpg);
+  background-size: cover;
+  background-repeat: repeat; 
+  width: 100%;
+
+}
+
+
+.up{
+  cursor: pointer; 
+}
+
+ */
+
+
+
+
+ .nav-color{
+  background-color: rgb(36, 36, 66);
+  height: 4rem;
+  position: fixed;
+  width: 100%;
+  top: 0; 
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0; 
+}
+
+
+.position{
+  display: flex;
+  gap: 3rem;
+  color: white;
+  padding-top: 1.3rem;
+  font-size: 1.1rem;
+  justify-content: right;
+  padding-right: 3rem;
+  
+}
+
+.add {
+  display: flex;               
+  gap: 4rem;                 
+  align-items: center;  
+  margin-top: 8rem; 
+  justify-content: center; 
+    
+}
+
+.close{
+  display: flex;
+  gap: 10rem;
+  margin-left: 2rem;
+  font-size: 1.1rem;
+  width: 20rem;  
+}
+.move-items{
+  display: flex;
+  gap: 3rem;
+  height: 2rem;
+  width: 40rem;
+  margin-left: 2rem;
+  margin-top: 1.5rem; 
+  
+}
+
+.move-items button{
+  font-weight: bold;
+  font-size: 1rem;  
+}
+
+.close-btnn {   
+  margin-right: 3rem;
+}
+
+.closee {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 2rem;
+  font-size: 1.1rem;
+  width: 100%; 
+}
+.popup-1 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; 
+}
+
+.popup-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 5px;
+  text-align: center;
+  height: 37rem;
+  width: 30rem;
+  margin-top: 2rem;
+  
+}
+.close-button {
+  margin-left: 27rem;
+}
+.in-position{
+  display: grid;
+  gap: 1rem;
+}
+
+.close-btn {
+  margin-right: 4rem;    
+}
+
+.popup-content-new {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 5px;
+  text-align: center;
+  height: 18rem;
+  width: 60rem;
+}
+
+
+.icon{
+  display: flex; 
+  justify-content: center;
+  gap: 2rem;
+  width: 9rem;
+}
+
+input{
+      height: 1.5rem;
+      width: 8rem; 
+   
+}
+
+table th{
+  height: 2rem; 
+  background-color: rgb(36, 36, 66);
+  color: white;
+}
+
+.add-items{
+padding-top: 7rem;
+  /* margin-top: 7rem; */
+  margin-left: 4rem;
+  
+}
+
+.add-items button{
+  font-weight: bold;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  height: 2.2rem;
+  width: 7rem;
+  background-color: rgb(36, 36, 66);
+  color: white;
+}
+
+.add-items button:hover{
+  cursor: pointer;
+  background-color: rgb(61, 61, 107);
+  color: white;    
+}
+.save-button {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  border-radius: 45px;
+  text-align: center;
+  justify-content: center;
+  
+}
+
+.save-button button{
+  
+  background-color: rgb(36, 36, 66);
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 0.3rem;
+  border-radius: 5px;
+  color: white;
+  width: 6rem;
+}
+.bulkWeightbtn{
+  background-color: rgb(36, 36, 66);
+  font-weight: bold;
+  font-size: 10px;
+  padding: 0.1rem;
+  margin-left: 0.4rem;
+  border-radius: 5px;
+  color: white;
+  width: 5rem;
+  
+}
+.bulkWeightbtn{
+  cursor: pointer;
+  background-color: rgb(36, 36, 66);
+  color: white;
+  font-size: large;
+}
+.save-button button:hover{
+  cursor: pointer;
+  background-color: rgb(61, 61, 107);
+  color: white;
+}
+
+.close {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 2rem;
+  font-size: 1.1rem;
+  width: 100%; 
+}
+
+.close-button {
+  cursor: pointer; 
+}
+
+.in-position {
+  display: grid;
+  gap: 1rem;
+  width: 100%; 
+}
+
+.in-position input {
+  width: 100%; 
+  padding: 0.5rem; 
+  box-sizing: border-box; 
+}
+
+
+.in-position label{
+  font-weight: bold;
+}
+
+.list{
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+
+.table-container {
+  background-color: whitesmoke; 
+  border-radius: 8px; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+  width: 87rem;
+  margin-left: 4rem;
+  padding: 1rem;   
+}
+
+.tab {
+  width: 100%; 
+  margin-top: 1rem;
+}
+
+.tab th, .tab td {
+  border: 1px solid black; 
+  padding: 5px;   
+}
+
+.tab td {
+  text-align: center; 
+  vertical-align: middle; 
+}
+
+.tab input {
+  width: 90%; 
+  margin: auto; 
+  display: block; 
+  text-align: center;
+}
+
+.pdf-button{
+  background-color: rgb(36, 36, 66);
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 0.3rem;
+  border-radius: 5px;
+  color: white;
+}
+.row-container {
+  display: flex; /* Flexbox layout */
+  gap: 1rem; /* Add spacing between containers */
+  justify-content: space-between; /* Adjust spacing/alignment */
+  align-items: flex-start; /* Align items vertically (adjust if needed) */
+}
+
+.diffCont {
+  display: flex;
+  flex-direction: column; /* Stack label and input vertically */
+  gap: 0.5rem;
+  background-color: white; 
+  padding: 5px;
+  border-radius: 8px; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  font-size: 15px; 
+  font-weight: bolder;/* Add spacing between label and input */
+}
+.weight-verify {
+  background-color: rgb(36, 36, 66); /* Blue background */
+  color: #ffffff;           /* White text */
+  padding: 8px 15px;       /* Padding for size */
+  font-size: 13px;          /* Font size */
+  font-weight: bold;        /* Bold text */
+  border: none;             /* No border */
+  border-radius: 8px;       /* Rounded corners */
+  cursor: pointer;          /* Pointer on hover */
+  transition: background-color 0.3s ease-in-out;
+}
+
+
+
+
+.cont{
+  background-color: white; 
+  padding: 10px;
+  border-radius: 8px; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-Right: 3rem;
+  
+}
+
+.cont:hover{
+cursor: pointer;
+}
+
+.cont label{
+font-size: 1.07rem;
+font-weight: bold;
+}
+
+.cont input{
+font-weight: bold;
+font-size: 0.95rem;
+}
+
+.weight{ 
+display: flex;
+gap: 1rem;
+justify-content: right;
+font-weight: bold;
+padding-right: 3rem;
+
+
+}
+
+.update{
+margin-top: 2rem;
+display: flex;
+justify-content: right;
+padding-right: 3rem;
+height: 2.2rem;
+
+
+}
+
+.update button{
+font-weight: bold;
+font-size: 1rem;
+border-radius: 5px;
+height: 2.2rem;
+width: 7rem;
+background-color: rgb(36, 36, 66);
+color: white;
+}
+
+.update button:hover{
+cursor: pointer;
+background-color: rgb(61, 61, 107);
+color: white;    
+
+}
+
+
+
+.background{
+
+background-image: url(../Logo/pic.jpg);
+/* background-color: #f0efed; */
+background-size: cover;
+background-repeat: repeat; 
+width: 100%;
+
+}
+
+
+.up{
+cursor: pointer; 
+}
+
+
+

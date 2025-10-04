@@ -1,0 +1,109 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+ 
+ 
+ 
+.img{
+    position: fixed;
+    height:37px;
+    /* height: 2.3rem; */
+    margin-left: 41.4rem;
+    top: 17.5rem;   
+    color: white;
+    display: flex;
+    justify-content: end;
+    padding-right: 4rem;
+    padding-top: 3rem;
+}
+
+
+
+.sty:hover{
+    outline: none;  
+  box-shadow: 0 0 30px rgba(240, 242, 240, 0.6);
+  border-radius: 8px;
+}
+ 
+
+ 
+.sty{
+           
+    border-radius: 10px;    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 22rem;
+    padding-bottom: 1rem;
+    margin-top: 15rem;
+    height: 8.5rem;
+    padding-top: 1rem;
+    display: grid;
+    text-align: center; 
+    margin-left: 35rem;
+    background-color: #a7abb2;
+    background-color: rgb(218, 223, 226);
+    background-color: rgb(36, 36, 66);
+    color: white;
+ 
+}
+
+.sty:hover{
+    cursor: pointer;
+    
+}
+ 
+.ggg{
+   
+ height: 100vh; 
+ width: 100%;
+  background-image: url(../Logo/background.png);
+  background-size: cover;
+  height: 46rem;
+  width: 96rem;
+  background-repeat: no-repeat;
+  position: fixed;
+ 
+
+}
+ 
+
+.use{
+    color: rgb(87, 83, 83);
+    color: #000000;
+}
+ 
+.genie{
+    font-weight: bold;
+    font-size: 1.4rem;
+    margin-top: 1rem;
+    
+}
+
+.logi{
+    margin-right: 4rem;
+    background-color: rgb(213, 213, 213);
+    width: 6rem;
+    height: 2rem;
+    padding-top: 3.5px;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    margin-left: 10.3rem;
+    text-align: center;
+    border-radius: 3px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: rgb(30, 30, 46);
+    background-color: #d8dbdf;
+    color: #000000;
+    
+    
+    
+}
+
+.log:hover{
+    cursor: pointer;
+}
+
+.pic{
+    height: 160px;
+}

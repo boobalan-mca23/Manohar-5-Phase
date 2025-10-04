@@ -1,0 +1,49 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.restoreBtnContainer{
+    display: flex;
+    gap: 1rem;
+    padding-left: 6.5rem;
+    padding-top: 8rem;
+}
+/* fontSize:'1rem', fontWeight:'bold', borderRadius:'2px', width:'4rem', height:'1.6rem' */
+.restoreActions{
+   font-size: 1rem;
+   font-weight: bold;
+   border-radius: 2px;
+   background-color: rgb(36, 36, 66);
+   color: white;
+   padding: 5px;
+   cursor: pointer;
+   margin-left: 10px;
+
+}
+.restoreBtn{
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    height: 2.2rem;
+    width: fit-content;
+    background-color: rgb(36, 36, 66);
+    color: white;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    cursor: pointer;
+}
+.restoreBtn :hover{
+    background-color: rgb(61, 61, 107);
+    color: white;  
+}
+ .background{
+
+    background-image: url(../Logo/pic.jpg);
+     /* background-color: #f0efed; */
+    background-size: cover;
+    height: 100vh;
+    width: 100%;
+    min-height: 100%;
+  
+  }
+

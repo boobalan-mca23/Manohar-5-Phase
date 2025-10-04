@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model bills {
+  id          Int          @id @default(autoincrement())
+  bill_number String       @unique
+  bill_name   String?
+  created_at  DateTime     @default(now())
+  billItems   bill_items[] @relation()  // Cascade delete on related bill_items
+}
+
+model bill_items {
+  id          Int          @id @default(autoincrement())
+  bill_number String
+  product_id  Int
+  created_at  DateTime     @default(now())
+  bill        bills        @relation(fields: [bill_number], references: [bill_number], onDelete: Cascade)  // Cascade delete on bills
+  productInfo product_info @relation(fields: [product_id], references: [id], onDelete: Cascade)  // Cascade delete on product_info
+}
+
+model restors{
+  id                  Int          @id @default(autoincrement())
+  restore_number      String       @unique
+  description         String?
+  created_at          DateTime     @default(now())
+  restore_Items       restoreItems[] @relation()  // Cascade delete on related bill_items
+}
+
+model restoreItems {
+  id                 Int          @id @default(autoincrement())
+  restore_number     String
+  product_id         Int
+  created_at         DateTime     @default(now())
+  restore            restors      @relation(fields:[restore_number], references: [restore_number], onDelete: Cascade)  // Cascade delete on bills
+  productInfo        product_info @relation(fields:[product_id], references: [id], onDelete: Cascade)  // Cascade delete on product_info
+}
+
+model product_info {
+  id             Int          @id @default(autoincrement())
+  tag_number     String
+  before_weight  Float?
+  after_weight   Float?
+  difference     Float?
+  adjustment     Float?
+  final_weight   Float?
+  product_number String?      @unique
+  created_at     DateTime?    @default(now())
+  updated_at     DateTime?    @default(now())
+  productBills   bill_items[] @relation()  // Cascade delete on bill_items
+  restoreInfo    restoreItems[]
+  product_type   PRODUCT_TYPE @default(active)
+  barcode_weight String?      
+  lot_id         Int
+  lot_info       lot_info     @relation(fields: [lot_id], references: [id], onDelete: Cascade)  // Cascade delete on lot_info
+
+  product_images product_images[]
+}
+
+model product_images{
+  id Int @id @default(autoincrement())
+  before_weight_img String?
+  after_weight_img String?
+  final_weight_img String? 
+  product_id Int
+  product_info product_info @relation(fields: [product_id],references: [id], onDelete: Cascade)
+}
+
+model lot_info {
+  id                 Int            @id @default(autoincrement())
+  lot_name           String         @unique
+  bulk_weight_before Float?
+  bulk_after_weight  Float?
+  adjustment_percent Int?
+  created_at         DateTime       @default(now())
+  lot_process        LOT_PROCESS    @default(not_completed)
+  products           product_info[] @relation()  // Cascade delete on product_info
+}
+
+enum LOT_PROCESS {
+  completed
+  not_completed
+}
+
+enum PRODUCT_TYPE {
+  hold
+  active
+  sold
+}

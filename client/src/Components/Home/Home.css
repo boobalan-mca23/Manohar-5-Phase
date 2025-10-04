@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+
+}
+
+.textField {
+  max-width: 500px;
+  background-color: #f9f9f9;
+}
+
+.roundedInput .MuiOutlinedInput-root {
+  border-radius: 20px; 
+  padding-left: 16px;
+}
+
+.roundedInput .MuiOutlinedInput-root fieldset {
+  border-color:#25274D;
+}
+
+.roundedInput .MuiOutlinedInput-root:hover fieldset {
+  border-color: burlywood;
+}
+
+.roundedInput .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #25274D;
+}
+
+
+.background{
+
+  background-image: url(../Logo/pic.jpg);
+  /* background-color: #f0efed; */
+  background-size: cover;
+  background-repeat: repeat;  
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
+
+}
+
+ 

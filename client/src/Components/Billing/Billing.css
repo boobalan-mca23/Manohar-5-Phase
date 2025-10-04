@@ -1,0 +1,148 @@
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+.bill-position{
+    margin-top: 5rem;
+    margin-left:5rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    height: 2.2rem;
+    width: 8rem;
+    background-color: rgb(36, 36, 66);
+    color: white;
+}
+
+.bill-position:hover{
+    cursor: pointer;
+    background-color: rgb(61, 61, 107);
+    color: white;  
+}
+
+input{
+    text-align: center;
+}
+
+.tab-container{
+    background-color: white; 
+    border-radius: 8px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 3rem;
+    width: 80rem;
+    margin-left: 6rem;
+    margin-right: 6rem;
+    padding: 1rem;    
+}
+
+.tabb input{
+    width: 19.3rem; 
+}
+
+.tabb th{
+    height: 2.5rem;
+}
+
+.savee-buttonn {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  border-radius: 45px;
+  text-align: center;
+  justify-content: center;
+  
+}
+
+.savee-buttonn button{
+  
+  background-color: rgb(36, 36, 66);
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 0.3rem;
+  border-radius: 5px;
+  color: white;
+}
+
+.savee-buttonn button:hover{
+  cursor: pointer;
+  background-color: rgb(61, 61, 107);
+  color: white;
+}
+
+
+.bill{
+    display: flex;
+    gap: 1rem;
+    padding-left: 6.5rem;
+    padding-top: 8rem;
+   /* margin-top: 8rem; */
+
+}
+
+ .bill button{
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    height: 2.2rem;
+    width: fit-content;
+    background-color: rgb(36, 36, 66);
+    color: white;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    
+ }
+
+ .bill button:hover{
+    cursor: pointer;
+    background-color: rgb(61, 61, 107);
+    color: white;    
+ }
+
+
+ .tabb {
+    width: 100%; 
+    margin-top: 1rem;
+  }
+  
+  .tabb th, .tab td {
+    border: 1px solid black; 
+    padding: 5px;  
+    width: 10rem;
+    
+  }
+  
+  .tabb td {
+    text-align: center;   
+  }
+  
+  .tabb input {
+    width: 90%; 
+    margin: auto; 
+    display: block; 
+    text-align: center;
+  }
+
+  .gap{
+    display: flex;
+    display: inline;  
+  }
+
+  .background{
+
+    background-image: url(../Logo/pic.jpg);
+     /* background-color: #f0efed; */
+    background-size: cover;
+    height: 100vh;
+    width: 100%;
+    min-height: 100%;
+  
+  }
+
+  .vieww:hover{
+    cursor: pointer;
+    background-color: rgb(36, 36, 66);
+    color: white; 
+
+  }

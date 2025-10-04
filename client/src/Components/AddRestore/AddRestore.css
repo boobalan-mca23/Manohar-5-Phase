@@ -1,0 +1,13 @@
+.restoreback-tab {
+    background-color: white; 
+    border-radius: 8px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80rem;
+    margin-left: 6rem;
+    padding: 2rem;
+    padding-top: 2rem;
+    overflow-x: auto; 
+    height: auto; 
+    margin-top: 7rem;
+    
+}
