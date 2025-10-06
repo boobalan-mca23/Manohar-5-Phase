@@ -1,7 +1,7 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const {productCheckAtBill,productCheckAtRestore}=require('../utils/checkProducts')
+const {productCheckAtBill}=require('../utils/checkProducts')
 
 const createNewProduct = async (req, res) => {
   try {
@@ -182,14 +182,9 @@ const restoreProductByNumber = async (req, res) => {
      
     console.log('is Already in bill',ifExistAtBill)
     if(!ifExistAtBill){
-      return res.status(400).json({message:"This product does not exist in the bill"})
+      return res.status(400).json({message:"This product does not Include to Restore"})
     }
 
-    const ifExistAtRestore= await productCheckAtRestore(product_number)
-
-     if(ifExistAtRestore){
-      return res.status(400).json({message:`This Product is Already Exist in Restore ${ifExistAtRestore.restore_number}`})
-    }
 
     const billing_type = "active";
     const product = await prisma.product_info.updateMany({
