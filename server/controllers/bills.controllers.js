@@ -193,7 +193,7 @@ const getBillsByBillNumber = async (req, res) => {
 
 const postBillDetails = async (req, res) => {
   try {
-    const { button, bill_name, selected_products } = req.body;
+    const { button, bill_name,selected_products } = req.body;
  
     console.log(selected_products, "rrrrrrrrrrrrrr");
  
@@ -224,6 +224,13 @@ const postBillDetails = async (req, res) => {
         data: mappedData,
       });
  
+     const productsId=mappedData.map((item,_)=>item.product_id)
+     
+     await prisma.restoreItems.deleteMany({
+      where:{
+        product_id:{in:productsId}
+      }
+     })
       console.log("iiii", postBillitems);
  
       const productIdsToUpdate = selected_products.map((e) => e.productId);

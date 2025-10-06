@@ -47,7 +47,13 @@ exports.createRestore = async (req, res) => {
       });
  
       console.log("iiii", newRestoreItems );
- 
+     const productsId=mappedData.map((item,_)=>item.product_id)
+     
+     await prisma.bill_items.deleteMany({
+      where:{
+        product_id:{in:productsId}
+      }
+     })
     
       res.status(200).json({ "newRestoreItems":newRestoreItems});
     } else {
