@@ -18,21 +18,3 @@ exports.productCheckAtBill=async(product_number)=>{
     })
     return ifExistAtBill
 }
-
-exports.productCheckAtRestore=async(product_number)=>{
- const productId=await prisma.product_info.findFirst({
-      where:{
-        product_number:product_number
-      },
-      select:{
-        id:true
-      }
-    })
-    
-    const ifExistAtRestore=await prisma.restoreItems.findFirst({
-      where:{
-        product_id:productId.id
-      }
-    })
-    return ifExistAtRestore
-}
