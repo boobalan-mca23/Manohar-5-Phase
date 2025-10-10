@@ -47,32 +47,43 @@ const AddNewRestore = () => {
 
   //  Export as PDF
   const exportPDF = () => {
-    const input = document.getElementById("page-to-pdf");
-    html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
+  const input = document.getElementById("page-to-pdf");
 
-      const imgWidth = 210; // A4 width
-      const pageHeight = 297; // A4 height
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  html2canvas(input, { scale: 2 }).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
 
-      let heightLeft = imgHeight;
-      let position = 0;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+    const margin = 5; // 10mm margin on all sides
+    const imgWidth = pageWidth - margin * 2;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      // Add extra pages if content is longer than 1 page
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
+    let heightLeft = imgHeight;
+    let position = margin + 20; // leave space for heading
 
-      pdf.save(`${restoreName || "Restore_Details"}.pdf`);
-    });
-  };
+    // Add heading
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(18);
+    
+
+    // Add first page content
+    pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight - position;
+
+    // Add extra pages if content exceeds one page
+    while (heightLeft > 0) {
+      pdf.addPage();
+      position = margin;
+      pdf.addImage(imgData, "PNG", margin, position - (imgHeight - heightLeft), imgWidth, imgHeight);
+      heightLeft -= pageHeight - margin;
+    }
+
+    pdf.save(`${restoreName || "Restore_Details"}.pdf`);
+  });
+};
+
 
   
   // Totals
