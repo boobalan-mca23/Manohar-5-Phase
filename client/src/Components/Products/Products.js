@@ -562,7 +562,10 @@ const handleKeyDown = (e, nextField) => {
       alert("Please enter both Bulk Weight Before and Bulk Weight After.");
       return;
     }
-    try {
+    let isTrue= weightVerifyBoth(bulkWeightBefore,totalBeforeWeight,bulkWeightAfter,totalAfterWeight)//Verify Weight
+    
+    if(isTrue){
+       try {
       const response = await axios.get(
         `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/calculate/${lot_id}`
       );
@@ -578,7 +581,6 @@ const handleKeyDown = (e, nextField) => {
         setProductNumber(firstProduct.product_number || "");
         setStatus(firstProduct.product_type || "");
         setProductWeight(firstProduct.barcode_weight || "");
-        weightVerifyBoth(bulkWeightBefore,totalBeforeWeight,bulkWeightAfter,totalAfterWeight)//Verify Weight
         toast.success("Calculated values updated successfully!");
         window.location.reload()
       }
@@ -586,6 +588,9 @@ const handleKeyDown = (e, nextField) => {
       console.error("Error calculating adjustments:", error);
       toast.error("There was an error calculating the adjustments.");
     }
+
+    }
+    
   };
  
   // const handleSave = async () => {

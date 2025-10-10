@@ -50,7 +50,7 @@ export const handleWeight = async () => {
 
 
   export const weightVerifyBoth=(bulkWeightBefore,totalBeforeWeight,bulkWeightAfter,totalAfterWeight)=>{
-
+  let isTrue=""
   const before= (bulkWeightBefore - totalBeforeWeight).toFixed(3); // Fix to 3 decimals
   const after= (bulkWeightAfter - totalAfterWeight).toFixed(3);
   // Convert `before` back to a number for comparison
@@ -63,8 +63,8 @@ export const handleWeight = async () => {
       (diffValue1>= -0.100 && diffValue1 <= -0.000)
     )
   ) {
-    window.confirm(`Difference ${diffValue1} Verify failed on Before weight difference. Do you want to continue?`)
-    return
+    isTrue=window.confirm(`Difference ${diffValue1} Verify failed on Before weight difference. Do you want to continue?`)
+    return isTrue
   }
 
   if (
@@ -73,8 +73,8 @@ export const handleWeight = async () => {
       (diffValue2>= -0.100 && diffValue2<= -0.000)
     )
   ) {
-    window.confirm(`Difference ${diffValue2} Verify failed on After weight difference. Do you want to continue?`)
-    return
+     isTrue=window.confirm(`Difference ${diffValue2} Verify failed on After weight difference. Do you want to continue?`)
+     return isTrue
   }
 
   else{
@@ -83,3 +83,4 @@ export const handleWeight = async () => {
    }
 }
 
+// Difference -2 Verify failed on Before weight difference. Do you want to continue?
