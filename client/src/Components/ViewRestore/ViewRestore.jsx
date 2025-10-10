@@ -47,7 +47,7 @@ const ViewRestore=()=>{
     // Add heading
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(18);
-    const title = `Restore Items for ${id}`;
+    const title = `Restore Items for # ${id}`;
     const titleWidth = pdf.getTextWidth(title);
     pdf.text(title, (pageWidth - titleWidth) / 2, margin + 10); // Centered title
 
