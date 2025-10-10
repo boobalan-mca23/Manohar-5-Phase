@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-
+const {productCheckAtBill}=require('../utils/checkProducts')
 exports.getAllRestore= async (req, res) => {
   try {
     const allRestore = await prisma.restors.findMany({
@@ -48,7 +48,16 @@ exports.createRestore = async (req, res) => {
  
       console.log("iiii", newRestoreItems );
      const productsId=mappedData.map((item,_)=>item.product_id)
-     
+     console.log('productsId',productsId)
+       await prisma.product_info.updateMany({
+         where:{
+          id:{in:productsId}
+         },
+       data:{
+         product_type:"active"
+        }
+     })
+
      await prisma.bill_items.deleteMany({
       where:{
         product_id:{in:productsId}
@@ -100,6 +109,54 @@ exports.getRestoreById = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "No Restore" });
+  }
+
+};
+
+
+exports.getProductByNumber = async (req, res) => {
+  try {
+    const {product_number} = req.params;
+    const ifExistAtBill=await productCheckAtBill(product_number)
+        console.log('is Already in bill',ifExistAtBill)
+        if(!ifExistAtBill){
+          return res.status(400).json({message:"This product does not Include to Restore"})
+        }
+    const product = await prisma.product_info.findMany({
+      where: {
+        product_number,
+        product_type: "sold",
+        // lot_info: { lot_process: "completed" },
+      },
+      select: {
+        id: true,
+        product_number: true,
+        before_weight: true,
+        after_weight: true,
+        difference: true,
+        adjustment: true,
+        final_weight: true,
+        barcode_weight:true,
+        tag_number: true,
+        created_at: true,
+        updated_at: true,
+      },
+    });
+    if (product.length === 0) {
+      return res.status(500).json({ msg: "Product not found" });
+    }
+    
+    console.log('product',product)
+
+    res.status(200).json({
+      message: "Product found",
+      product_info:product,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the product" });
   }
 };
 

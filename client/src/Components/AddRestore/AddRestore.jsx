@@ -24,12 +24,12 @@ const AddNewRestore = () => {
     }
 
     try {
-      const response = await axios.get(
-        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/restore/${product_number}`
+      const response = await axios.get( 
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/restore/productNo/${product_number}`
       );
 
       if (response.status === 200) {
-        alert("Product changed to active successfully");
+        
         setScannedProducts((prevScanned) => [
           ...prevScanned,
           ...response.data.product_info,
@@ -101,6 +101,7 @@ const AddNewRestore = () => {
         "restore_products":scannedProducts
 
       }
+      
       try{
          const response=await axios.post(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/restore`,payload)
          if(response.status===200){
@@ -195,7 +196,7 @@ const AddNewRestore = () => {
         </div>
 
         <div className="button-save">
-          <button className="pdf" onClick={()=>{handleSave()}}>Save</button>
+          <button className="pdf" onClick={()=>{handleSave()}} disabled={scannedProducts.length===0?true:false}>Save</button>
           <button className="pdf" onClick={exportPDF}>
             Export as PDF
           </button>

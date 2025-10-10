@@ -1,8 +1,15 @@
+/* .in-position{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  
+} */
 
 .formmm-containerrr {
   padding: 20px;
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0 20px;
 
 }
 
