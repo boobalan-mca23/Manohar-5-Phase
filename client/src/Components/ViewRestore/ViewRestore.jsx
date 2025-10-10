@@ -27,7 +27,7 @@ const ViewRestore=()=>{
       fetchRestoreItem()
     },[id])
 
- const exportPDF = () => {
+ const exportPDF = (id) => {
   const input = document.getElementById("page-to-pdf");
 
   html2canvas(input, { scale: 2 }).then((canvas) => {
@@ -37,33 +37,43 @@ const ViewRestore=()=>{
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const margin = 2; // 10mm margin on all sides
+    const margin = 10; // margin on all sides
     const imgWidth = pageWidth - margin * 2;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
     let heightLeft = imgHeight;
-    let position = margin + 5; // leave space for heading
+    let position = margin + 20; // space for heading
 
-    // Add heading
+    // === 🏷️ Add Heading ===
+    const heading = `Restore Items for #${id}`;
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(18);
-    
+    pdf.setFontSize(16);
+    const textWidth = pdf.getTextWidth(heading);
+    pdf.text(heading, (pageWidth - textWidth) / 2, margin + 10); // centered title
 
-    // Add first page content
+    // === 🖼️ Add First Page Content ===
     pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
     heightLeft -= pageHeight - position;
 
-    // Add extra pages if content exceeds one page
+    // === 📄 Handle Extra Pages ===
     while (heightLeft > 0) {
       pdf.addPage();
       position = margin;
-      pdf.addImage(imgData, "PNG", margin, position - (imgHeight - heightLeft), imgWidth, imgHeight);
+      pdf.addImage(
+        imgData,
+        "PNG",
+        margin,
+        position - (imgHeight - heightLeft),
+        imgWidth,
+        imgHeight
+      );
       heightLeft -= pageHeight - margin;
     }
 
-    pdf.save("Restore_Details");
+    pdf.save(`Restore_Items_${id}.pdf`);
   });
 };
+
 
 
     const totalBeforeWeight = restoreItem
