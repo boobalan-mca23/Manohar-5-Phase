@@ -82,6 +82,25 @@ model lot_info {
   products           product_info[] @relation()  // Cascade delete on product_info
 }
 
+model MasterGoldSmith{
+  id                 Int @id @default(autoincrement())
+  name               String?
+  phone              String?
+  address            String?
+  goldSmithCode      String?
+  created_at         DateTime   @default(now())
+  updated_at         DateTime   @default(now())
+}
+
+model MasterItems{
+  id          Int @id @default(autoincrement())
+  itemName    String? 
+  itemCode    String? 
+  created_at  DateTime    @default(now())
+  updated_at  DateTime   @default(now())
+}
+
+
 enum LOT_PROCESS {
   completed
   not_completed
