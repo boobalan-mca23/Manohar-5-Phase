@@ -36,7 +36,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(buildPath, "index.html"));
 });
 
-
 app.listen(port, () => {
   console.log("Server is Running on " + port);
 });
