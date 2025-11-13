@@ -11,6 +11,8 @@ const lotRoutes = require("./routes/lot.routes");
 const productRoutes_v1 = require("./routes/productinfo_v1.routes");
 const weightRoute=require('./routes/weight.routes')
 const restoreRoutes=require('./routes/restore.routes')
+const goldSmithRoutes=require('./routes/masterGoldSmith.routes')
+const masterItem=require('./routes/masterItem.routes')
 const uploadDir = path.join(__dirname, "../uploads");
 console.log("xxxxxxxxxxxxxx", uploadDir);
   
@@ -24,6 +26,9 @@ app.use("/api/v1/lot", lotRoutes);
 app.use("/api/v1/products", productRoutes_v1);
 app.use("/api/v1/weight",weightRoute)
 app.use("/api/v1/restore",restoreRoutes)
+app.use("/api/v1/goldSmith",goldSmithRoutes)
+app.use("/api/v1/masterItem",masterItem)
+
 app.use(express.static(uploadDir));
 app.get("/uploads/:image_name", (req, res) => {
   return res.sendFile(path.resolve(uploadDir, req.params.image_name));
