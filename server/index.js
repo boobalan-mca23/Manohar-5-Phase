@@ -13,6 +13,8 @@ const weightRoute=require('./routes/weight.routes')
 const restoreRoutes=require('./routes/restore.routes')
 const goldSmithRoutes=require('./routes/masterGoldSmith.routes')
 const masterItem=require('./routes/masterItem.routes')
+const authRoutes=require('./routes/auth.routes')
+const userRoutes=require('./routes/user.routes')
 const uploadDir = path.join(__dirname, "../uploads");
 console.log("xxxxxxxxxxxxxx", uploadDir);
   
@@ -28,6 +30,8 @@ app.use("/api/v1/weight",weightRoute)
 app.use("/api/v1/restore",restoreRoutes)
 app.use("/api/v1/goldSmith",goldSmithRoutes)
 app.use("/api/v1/masterItem",masterItem)
+app.use("/api/v1/auth",authRoutes)
+app.use("/api/v1/user",userRoutes)
 
 app.use(express.static(uploadDir));
 app.get("/uploads/:image_name", (req, res) => {

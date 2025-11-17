@@ -99,7 +99,31 @@ model MasterItems{
   created_at  DateTime    @default(now())
   updated_at  DateTime   @default(now())
 }
+model User{
+  id           Int @id @default(autoincrement())
+  userName     String? @unique
+  password     String?
+  phone        String?
+  role         String?
+  hashPassword String?
+  access       Access[]
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @default(now())
+}
 
+model Access{
+  id               Int @id  @default(autoincrement())
+  userId           Int
+  user             User @relation(fields: [userId],references: [id])
+  userCreateAccess Boolean  @default(false)
+  goldSmithAccess  Boolean  @default(false)
+  itemAccess       Boolean  @default(false)
+  productAccess    Boolean  @default(false)
+  billingAccess    Boolean  @default(false)
+  restoreAccess    Boolean  @default(false)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now())
+}
 
 enum LOT_PROCESS {
   completed
