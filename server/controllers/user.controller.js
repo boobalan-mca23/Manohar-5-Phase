@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const bcrypt=require('bcryptjs')
 
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
@@ -31,7 +32,7 @@ exports.updateUser = async (req, res) => {
       data: {
         phone: phone ?? existingUser.phone,
         password: password ?? existingUser.password,
-        hashedPassword,
+        hashPassword:hashedPassword,
         role: role ?? existingUser.role,
         access: {
           update: {
@@ -99,6 +100,9 @@ exports.getAllUser=async(req,res)=>{
          const allCustomers=await prisma.user.findMany({
           orderBy:{
             id:"desc"
+          },
+          include:{
+            access:true
           }
          })
          return res.status(200).json({success:true,allCustomers})
