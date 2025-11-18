@@ -17,6 +17,7 @@ const masterItem=require('./routes/masterItem.routes')
 const authRoutes=require('./routes/auth.routes')
 const userRoutes=require('./routes/user.routes')
 const plainLotRoutes=require('./routes/plainLot.routes')
+const plainProducts=require('./routes/plainProducts.routes')
 const uploadDir = path.join(__dirname, "../uploads");
 console.log("xxxxxxxxxxxxxx", uploadDir);
   
@@ -35,6 +36,8 @@ app.use("/api/v1/masterItem",masterItem)
 app.use("/api/v1/auth",authRoutes)
 app.use("/api/v1/user",userRoutes)
 app.use("/api/v1/plainLot",plainLotRoutes)
+app.use("/api/v1/plainProducts",plainProducts)
+
 
 app.use(express.static(uploadDir));
 app.get("/uploads/:image_name", (req, res) => {

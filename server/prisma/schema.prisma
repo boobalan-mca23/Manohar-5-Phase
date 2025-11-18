@@ -135,16 +135,19 @@ model plainLot{
 }
 
 model plainProducts{
-  id             Int @id @default(autoincrement())
-  plainLotId     Int
-  plainLot       plainLot @relation(fields:[plainLotId],references:[id],onDelete:Cascade)
-  product_id     String?
-  productName    String?
-  workerName     String?
-  stoneWeight    String?
-  netWeight      String?
-  created_at     DateTime @default(now())
-  updated_at     DateTime @default(now())
+  id                Int @id @default(autoincrement())
+  plainLotId        Int
+  plainLot          plainLot @relation(fields:[plainLotId],references:[id],onDelete:Cascade)
+  product_id        String?
+  productName       String?
+  workerName        String?
+  grossWeight       String?
+  stoneWeight       String?
+  netWeight         String?
+  grossWtImgUrl     String?
+  isAvailable       Boolean @default(true)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @default(now())
 }
 
 enum LOT_PROCESS {
