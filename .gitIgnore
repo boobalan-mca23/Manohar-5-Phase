@@ -29,5 +29,8 @@ Thumbs.db
 server/prisma/.env
 server/prisma/migrations/*
 
+# uploads folder
+server/uploads
+
 # Others
 *.log
