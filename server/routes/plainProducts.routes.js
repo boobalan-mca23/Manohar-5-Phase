@@ -1,6 +1,6 @@
 const express=require('express')
 const router=express.Router()
-const upload=require('../middleware/fileUpload')
+const upload=require('../middleware/plainImgUpload')
 const plainProduct=require('../controllers/plainProducts.controller')
 
 router.post('/',upload.single('file'),plainProduct.createPlainProducts)

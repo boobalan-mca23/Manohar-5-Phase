@@ -1,7 +1,6 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const {productCheckAtBill}=require('../utils/checkProducts')
 
 const createNewProduct = async (req, res) => {
   try {
@@ -17,6 +16,7 @@ const createNewProduct = async (req, res) => {
       final_weight
        
     } = req.body;
+  
 
     const weight1 = parseFloat(before_weight) || 0;
     const weight2 = parseFloat(after_weight) || 0;
@@ -31,6 +31,8 @@ const createNewProduct = async (req, res) => {
     //     lot_id,
     //   },
     // });
+    console.log('req file',req.files[0].filename)
+
     const newProduct = await prisma.product_info.create({
       data: {
         tag_number,
@@ -42,15 +44,31 @@ const createNewProduct = async (req, res) => {
         final_weight: parseFloat(final_weight) || null,
         product_number: product_number+"__"+ Math.random(4) * 1000 || null,
         updated_at: new Date(),
-        lot_id
+        lot_id:parseInt(lot_id),
+        product_images:{
+          create:{
+             before_weight_img:req.files[0].filename? req.files[0].filename : null,
+             after_weight_img: null,
+             final_weight_img: null,
+          }
+        },
+        
       },
+      include:{
+        product_images:true
+      }
     });
-  
+
+    
+     console.log('newProduct',newProduct)
+     console.log('product img',newProduct.product_images)
     
     res.status(200).json({
       message: "Product Successfully Created",
       newProduct,
+      productImage:newProduct.product_images
     });
+
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "Error Creating Product" });
@@ -178,12 +196,7 @@ const restoreProductByNumber = async (req, res) => {
   try {
     const { product_number } = req.params;
     console.log('productNo',product_number)
-    const ifExistAtBill=await productCheckAtBill(product_number)
-     
-    console.log('is Already in bill',ifExistAtBill)
-    if(!ifExistAtBill){
-      return res.status(400).json({message:"This product does not Include to Restore"})
-    }
+   
 
 
     const billing_type = "active";

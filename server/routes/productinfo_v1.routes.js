@@ -1,4 +1,5 @@
 const express = require("express");
+const upload=require('../middleware/stoneImgUpload')
 const {
   getAllProducts,
   deleteProduct,
@@ -18,12 +19,12 @@ const router = express.Router();
 //     "barcode_weight":1.58,
 //     "lot_id":1
 // }
-router.post("/create", createNewProduct);
+router.post("/create",upload.any(),createNewProduct);
 
 //  To UPDATE A PRODUCT AFTER SOME DAYS
 // Body - {  "before_weight":1.723, "after_weight":6.5,"barcode_weight":5897 }
 // Params - {id - product_id}
-router.put("/update/:id", UpdatingProduct);
+router.put("/update/:id",UpdatingProduct);
 
 // TO GET ALL PRODUCT UNDER A LOT
 // PARAMS - lot_id - a lot id

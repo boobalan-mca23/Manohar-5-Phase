@@ -40,6 +40,7 @@ app.use("/api/v1/plainProducts",plainProducts)
 
 
 app.use(express.static(uploadDir));
+
 app.get("/uploads/:image_name", (req, res) => {
   return res.sendFile(path.resolve(uploadDir, req.params.image_name));
 });

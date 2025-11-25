@@ -52,6 +52,7 @@ const getAllLots = async (req, res, next) => {
   try {
     const lots = await prisma.lot_info.findMany({where:{isAvailable:true}});
     if (lots) {
+     
       return res
         .status(200)
         .json({ msg: "successfully fetched", result: lots });

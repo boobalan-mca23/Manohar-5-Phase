@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 exports.createPlainLot = async (req, res) => {
   const { lotId } = req.body;
   try {
+ 
     if (!lotId) return res.status(400).json({ message: "LotId is Required" });
 
     const existLot = await prisma.plainLot.findUnique({
@@ -32,6 +33,8 @@ exports.createPlainLot = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
+
+
 
 // get particular lot info by Lot Id
 exports.getPlainLotById = async (req, res) => {
