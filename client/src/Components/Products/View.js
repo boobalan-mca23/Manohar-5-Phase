@@ -1522,7 +1522,7 @@ const handleSave = async () => {
 
       if (uploadedImage && uploadedImage[fieldName]) {
 
-        const imageUrl = `${REACT_APP_BACKEND_SERVER_URL}/uploads/${uploadedImage[fieldName]}`;
+        const imageUrl = `${REACT_APP_BACKEND_SERVER_URL}/uploads/${uploadedImage[0].before_weight_img}`;
 
         console.log(`Image URL: ${imageUrl}`);
         setCapturedImages((prev) => ({

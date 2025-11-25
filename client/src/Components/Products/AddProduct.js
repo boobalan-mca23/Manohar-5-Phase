@@ -32,7 +32,6 @@ const AddProduct=({
     products,
     setProducts
 })=>{
-  const [newId,setNewId]=useState("")
   const [beforeWeight, setBeforeWeight] = useState("");
   const [afterWeight, setAfterWeight] = useState("");
   const [barcodeWeight, setBarcodeWeight] = useState("");
@@ -63,6 +62,13 @@ const AddProduct=({
     final_weight_img: null,
 
   });
+  const [imgField,setImgField]=useState(
+    {
+      image:"",
+      fieldName:""
+    }
+  )
+
   const toggleWebcam = (field) => {
     setWebcamVisible((prev) => !prev);
     setCurrentField(field);
@@ -81,29 +87,51 @@ const AddProduct=({
   };
   const createNewProduct=async()=>{
     try {
-      const payload = {
-        tag_number:lotNumber,
-        before_weight:beforeWeight||null,
-        after_weight:  null,
-        barcode_weight: null,
-        difference:null,  
-        adjustment: null, 
-        final_weight: null,  
-         
-        product_number:productNumber||null,  
-        lot_id: Number(lot_id),
-      };
-
+      const formData=new FormData()
+      formData.append("tag_number",lotNumber)
+      formData.append("before_weight",beforeWeight||null)
+      formData.append("after_weight",afterWeight||null)
+      formData.append("barcode_weight",null)
+      formData.append("final_weight",finalWeight||null)
+      formData.append("product_number",productNumber||null)
+      formData.append("lot_id",Number(lot_id))
+      formData.append("image",imgField.image);
+      formData.append("fieldName",imgField.fieldName);
+    
       const response = await axios.post(
         `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/create`,
-        payload
+        formData,
+        {
+          headers: {
+              "Content-Type": "multipart/form-data",
+           },
+        }
       );
+    
+
+        const uploadedImage = response.data.productImage;
+          console.log("Uploaded image data:", uploadedImage);
+    
+          if (uploadedImage && uploadedImage[imgField.fieldName]) {
+    
+            const imageUrl = `${REACT_APP_BACKEND_SERVER_URL}/uploads/${uploadedImage[0].before_weight_img}`;
+    
+            console.log(`Image URL: ${imageUrl}`);
+            setCapturedImages((prev) => ({
+              ...prev,
+              [imgField.fieldName]: imageUrl,
+            }));
+         
+          } else {
+            console.error("Image URL is not found for the given field.");
+          }
       setProducts((prevProducts) => [
           ...prevProducts,
           response.data.newProduct,
         ]);
-
-     return response.data.newProduct.id;
+       closeAddItemsPopup()
+       toast.success(response.data.message,{autoClose:2000})
+  
     } catch (error) {
       console.error("Error creating product:", error);
       alert("There was an error create product.");
@@ -112,30 +140,29 @@ const AddProduct=({
   
   const uploadImage = async (image, fieldName) => {
     try {
-      const weight = await handleWeight(); 
-      console.log(weight.weightdata);
-       if(weight.weightdata!==null && weight.weightdata!==undefined){
-        let id= await createNewProduct();
-        setNewId(id)
-        closeAddItemsPopup()
-        switch (fieldName) {
-          case "before_weight_img":
-              setBeforeWeight(weight.weightdata);
-              break;
-          case "after_weight_img":
-              setAfterWeight(weight.weightdata);
-              break;
-          case "final_weight_img":
-              setFinalWeight(weight.weightdata);
-              break;
-          default:
-              console.warn("Invalid field:", fieldName);
-      }
+      // const weight = await handleWeight(); 
+      // console.log(weight.weightdata);
+      //  if(weight.weightdata!==null && weight.weightdata!==undefined){
+      
+    
+      //   switch (fieldName) {
+      //     case "before_weight_img":
+      //         setBeforeWeight(weight.weightdata);
+      //         break;
+      //     case "after_weight_img":
+      //         setAfterWeight(weight.weightdata);
+      //         break;
+      //     case "final_weight_img":
+      //         setFinalWeight(weight.weightdata);
+      //         break;
+      //     default:
+      //         console.warn("Invalid field:", fieldName);
+      // }
         try {
           const formData = new FormData();
           formData.append("image", image);
           formData.append("fieldName", fieldName);
-          formData.append("productId", id);
+          // formData.append("productId", id);
           console.log("FormData contains image:", formData.get("image"));
     
           const response = await axios.post(
@@ -152,9 +179,6 @@ const AddProduct=({
          const uploadedImage = response.data.productImage;
           console.log("Uploaded image data:", uploadedImage);
     
-    
-    
-         
           if (uploadedImage && uploadedImage[fieldName]) {
     
             const imageUrl = `${REACT_APP_BACKEND_SERVER_URL}/uploads/${uploadedImage[fieldName]}`;
@@ -170,7 +194,9 @@ const AddProduct=({
           }
         } catch (error) {
           console.error("Error uploading image:", error);
-        }}
+        }
+          closeAddItemsPopup()
+      // }
      } catch (err) {
       console.error("Error fetching weight:", err);
     }
@@ -190,54 +216,56 @@ const AddProduct=({
   
       const image = canvas.toDataURL("image/jpeg", 1.0); 
       const file = base64ToFile(image, "captured-image.jpg", "image/jpeg");
-  
-      uploadImage(file, currentField);
+      setImgField({image:image,fieldName:file})
+ 
+      
+      // uploadImage(file, currentField);
         // extractDigitalNumber(image);
     }
   };
   
   const handleSave=async()=>{
-     if(newId===" "){
-        alert("Don't Enter ManualData Directly And Capture image first")
-        return;
-     }
-    try {
-        const updatedData = {
-          before_weight: parseFloat(beforeWeight),
-          after_weight: parseFloat(afterWeight),
-          barcode_weight: barcodeWeight,
-          product_number: productNumber||null,
-          difference: parseFloat(difference),
-          adjustment: parseFloat(adjustment),
-          final_weight: parseFloat(finalWeight),
-        };
+    //  if(newId===" "){
+    //     alert("Don't Enter ManualData Directly And Capture image first")
+    //     return;
+    //  }
+    // try {
+    //     const updatedData = {
+    //       before_weight: parseFloat(beforeWeight),
+    //       after_weight: parseFloat(afterWeight),
+    //       barcode_weight: barcodeWeight,
+    //       product_number: productNumber||null,
+    //       difference: parseFloat(difference),
+    //       adjustment: parseFloat(adjustment),
+    //       final_weight: parseFloat(finalWeight),
+    //     };
     
-        console.log("Data to send:", updatedData);
+    //     console.log("Data to send:", updatedData);
         
-        const response=await axios.put(
-          `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/update/${newId}`,
-          updatedData
-        );
-             if (response.status === 200) {
-        setProducts((prevProducts) => [
-          ...prevProducts,
-          response.data.updateProduct,
-        ]);
+    //     const response=await axios.put(
+    //       `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/update/${newId}`,
+    //       updatedData
+    //     );
+    //          if (response.status === 200) {
+    //     setProducts((prevProducts) => [
+    //       ...prevProducts,
+    //       response.data.updateProduct,
+    //     ]);
        
-        closeAddItemsPopup();
-         toast.success("Products saved successfully!");
+    //     closeAddItemsPopup();
+    //      toast.success("Products saved successfully!");
        
        
            
-      }
-    setNewId(0)
+    //   }
+    // setNewId(0)
    
     
   
     
-      } catch (error) {
-        console.error("Error updating product:", error);
-      }
+    //   } catch (error) {
+    //     console.error("Error updating product:", error);
+    //   }
   }
 
   return(
@@ -322,7 +350,7 @@ const AddProduct=({
   {/* Save Button */}
   {/* <div className="button-container">
     <button className="save-button">Save</button>
-  </div> */}
+  </div>  */}
 
 
   
@@ -575,9 +603,9 @@ const AddProduct=({
                 gap: "10px",
               }}
             >
-              {/* <Button
+              <Button
                 className="exclude-from-pdf"
-                onClick={handleSave}
+                onClick={createNewProduct}
                 variant="contained"
                 size="small"
                 style={{
@@ -588,7 +616,7 @@ const AddProduct=({
                 }}
               >
                 Save
-              </Button> */}
+              </Button>
   
             
             </div>

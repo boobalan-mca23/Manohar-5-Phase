@@ -223,14 +223,7 @@ const postBillDetails = async (req, res) => {
       const postBillitems = await prisma.bill_items.createMany({
         data: mappedData,
       });
- 
-     const productsId=mappedData.map((item,_)=>item.product_id)
-     
-     await prisma.restoreItems.deleteMany({
-      where:{
-        product_id:{in:productsId}
-      }
-     })
+
       console.log("iiii", postBillitems);
  
       const productIdsToUpdate = selected_products.map((e) => e.productId);
