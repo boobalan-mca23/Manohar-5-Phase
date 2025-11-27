@@ -37,7 +37,7 @@ router.delete("/lot_info/:lot_id", deleteLot);
 
 // }
 // route - url/api/lot/lot_data
-router.post("/lot_data",getLotById)
+router.get("/:id",getLotById)
 
 
 // update lot info
@@ -49,11 +49,5 @@ router.post("/lot_data",getLotById)
 // }
 // route - url/api/lot/modify_lot
 router.post("/modify_lot", updateLotData);
-
-router.route('/changeToActivate/:id').put(changeToActivateLot)
-
-router.route('/changeToDiActivate/:id').put(changeToDiactivateLot)
-
-router.route('/diactivateLots').get(getDiactivateLots)
 
 module.exports = router;

@@ -4,16 +4,16 @@ const {makeProductId}=require('../helperFunction/makeProductId')
 
 exports.createPlainProducts=async(req,res)=>{
 
-     const {plainLotId,productName,workerName,goldSmithCode,itemCode,grossWeight,stoneWeight,netWeight}=req.body
+     const {lotId,productName,workerName,goldSmithCode,itemCode,grossWeight,stoneWeight,netWeight}=req.body
      
     try{
       let imgUrl="" 
       
-      if(!plainLotId||!productName||!workerName||!grossWeight||!stoneWeight||!netWeight||!goldSmithCode||!itemCode){
+      if(!lotId||!productName||!workerName||!grossWeight||!stoneWeight||!netWeight||!goldSmithCode||!itemCode){
              return res.status(400).json({message:"Missing Fields"})    
           }
-        const existLot=await prisma.plainLot.findUnique({where:{
-            lotId:parseInt(plainLotId)
+        const existLot=await prisma.lot_info.findUnique({where:{
+            lotId:parseInt(lotId)
         }})
         if(!existLot) return res.status(400).json({message:"Lot Id is Not Found"})
        
@@ -22,7 +22,7 @@ exports.createPlainProducts=async(req,res)=>{
        }
        const newProduct=await prisma.plainProducts.create({
         data:{
-            plainLotId:parseInt(plainLotId)||0,
+            lotId:parseInt(lotId)||0,
             product_id:"",
             productName:productName||"",
             workerName:workerName||"",

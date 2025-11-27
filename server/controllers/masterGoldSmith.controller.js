@@ -116,8 +116,6 @@ exports.getAllGoldSmith=async(req,res)=>{
       const limit=req.query.limit
       const skip=(page-1) * limit
 
-
-
       try{
        const allGoldSmith=await prisma.masterGoldSmith.findMany({
           
