@@ -1,8 +1,9 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-
+const {LOT_TYPE}=require("@prisma/client")
 // create new lot
+
 const postLotInfo = async (req, res, error) => {
 
   try {
@@ -12,8 +13,23 @@ const postLotInfo = async (req, res, error) => {
       bulk_after_weight,
       adjustment_percent,
       lot_process,
+      type
     } = req.body;
 
+
+
+    if (!lot_name) return res.status(400).json({ message: "LotName is Required" });
+
+    // Traditional Prisma enum validation
+    
+    const validTypes = Object.values(LOT_TYPE); // ["STONE", "PLAIN"]
+   
+    if (!type || !validTypes.includes(type.toUpperCase())) {
+      return res.status(400).json({
+        message: `Invalid Type. Allowed values: ${validTypes.join(", ")}`,
+      });
+    }
+   
     if (lot_name) {
       const existingLot = await prisma.lot_info.findUnique({
         where: {
@@ -29,6 +45,7 @@ const postLotInfo = async (req, res, error) => {
             bulk_after_weight,
             bulk_weight_before,
             lot_process,
+            type:type.toUpperCase()
           },
         });
         res.status(201).json({ msg: "successfully created", newLot });
@@ -49,15 +66,26 @@ const postLotInfo = async (req, res, error) => {
 // fetch all lots
 
 const getAllLots = async (req, res, next) => {
+
   try {
      const page=req.query.page||1
      const limit=req.query.limit||10
+     const type=req.query.type
 
      const skip=(page-1) * limit
 
+    const validTypes = Object.values(LOT_TYPE); // ["STONE", "PLAIN"]
+   
+    if (!type || !validTypes.includes(type.toUpperCase())) {
+      return res.status(400).json({
+        message: `Invalid Type. Allowed values: ${validTypes.join(", ")}`,
+      });
+    }
+
     const lots = await prisma.lot_info.findMany({
       where:{
-        isAvailable:true
+        isAvailable:true,
+        type:type.toUpperCase()
       },
       skip:parseInt(skip),
       take:parseInt(limit),
@@ -114,113 +142,56 @@ const getAllLots = async (req, res, next) => {
 // };
 const getLotById = async (req, res, next) => {
   try {
-    const { lot_id } = req.body;
+    const { id } = req.params;
+   
+    if(isNaN(id) || !id) return res.status(400).json({message:"Lot Id is Required"})
 
     // Check if lot_id is provided
-    if (!lot_id) {
-      return res.status(400).json({ msg: "Lot ID is required." });
+    const existlot= await prisma.lot_info.findUnique({
+      where:{
+        id:parseInt(id)
+      }
+    })
+    if (!existlot) {
+      return res.status(400).json({ msg: "Lot Not Found." });
     }
-
+   
     // Fetch the lot by its ID
-    const lot = await prisma.lot_info.findUnique({
-      where: { id: Number(lot_id) },
-      include: { products: true },
-    });
+     let products;
+     if(existlot.type==="STONE"){
 
-    // Check if the lot exists
-    if (!lot) {
-      return res.status(404).json({ msg: "Lot not found." });
-    }
-
+        products=await prisma.lot_info.findMany({
+           where:{
+             id:parseInt(id),
+             isAvailable:true
+           },
+           include:{
+            products:true
+           }
+        })
+     }
+     else if(existlot.type==="PLAIN"){
+          products=await prisma.lot_info.findMany({
+            where:{
+             id:parseInt(id),
+             isAvailable:true
+           },
+          include:{
+            plainProduct:true
+          }
+        })
+     }
+     else{
+        return res.status(400).json({message:"InVaild Type"})
+     }
     // Return the fetched lot
-    return res.status(200).json({ msg: "Successfully fetched", result: lot });
+    return res.status(200).json({ msg: "Successfully fetched",products,success:true});
   } catch (error) {
     console.error("Error fetching lot:", error);
     return next(error);
   }
 };
  
-// getDiactivateLots
-
-const getDiactivateLots = async (req, res, next) => {
-  try {
-    const lots = await prisma.lot_info.findMany({where:{isAvailable:false}});
-    if (lots) {
-      return res
-        .status(200)
-        .json({ msg: "successfully fetched Diactivated lots", result: lots });
-    } else {
-      return res.status(400).json({ msg: "failed to fetch lots" });
-    }
-  } catch (error) {
-    console.log(error);
-    return next(error);
-  }
-};
-
-// changeToActivateLot
-const changeToActivateLot=async(req,res)=>{
-     const {id}=req.params
-
-     try{
-        if(isNaN(id)) return res.status(400).json({message:"Invalid Id"})
-         
-        const existingLot=await prisma.lot_info.findUnique({where:{id:parseInt(id)}})
-        if(existingLot){
-           
-          const lotInfo=await prisma.lot_info.update({
-            where:{
-              id:parseInt(id)
-            },
-            data:{
-              isAvailable:true
-            }
-          })
-          return res.status(200).json({success:true,message:"change to Activate",lotInfo})
-        }else{
-          return res.status(400).json({message:"Lot Not Found In Db"})
-        }
-        
-     }
-      catch(err){
-       console.log('err',err.message)
-       return res.status(500).json({err:err.message})
-     }
-}
-
-
-
-// changeToDiactivateLot
-
-const changeToDiactivateLot=async(req,res)=>{
-     const {id}=req.params
-
-     try{
-        if(isNaN(id)) return res.status(400).json({message:"Invalid Id"})
-         
-        const existingLot=await prisma.lot_info.findUnique({where:{id:parseInt(id)}})
-        if(existingLot){
-           
-          const lotInfo=await prisma.lot_info.update({
-            where:{
-              id:parseInt(id)
-            },
-            data:{
-              isAvailable:false
-            }
-          })
-          return res.status(200).json({success:true,message:"change to Diactivate",lotInfo})
-        }else{
-          return res.status(400).json({message:"Lot Not Found In Db"})
-        }
-        
-     }
-      catch(err){
-       console.log('err',err.message)
-       return res.status(500).json({err:err.message})
-     }
-}
-
 // delete a lot by id
 
 const deleteLot = async (req, res, next) => {
@@ -300,7 +271,4 @@ module.exports = {
   getLotById,
   deleteLot,
   updateLotData,
-  changeToDiactivateLot,
-  changeToActivateLot,
-  getDiactivateLots
 };

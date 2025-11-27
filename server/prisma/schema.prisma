@@ -78,9 +78,11 @@ model lot_info {
   bulk_after_weight  Float?
   isAvailable        Boolean @default(true)
   adjustment_percent Int?
+  type               LOT_TYPE
   created_at         DateTime       @default(now())
   lot_process        LOT_PROCESS    @default(not_completed)
   products           product_info[] @relation()  // Cascade delete on product_info
+  plainProduct       plainProducts[]
 }
 
 
@@ -127,19 +129,10 @@ model Access{
   updated_at       DateTime @default(now())
 }
 
-model plainLot{
-  id               Int @id  @default(autoincrement())
-  lotId            Int @unique 
-  plainProduct     plainProducts[]
-  isAvailable      Boolean @default(true)
-  created_at       DateTime @default(now())
-  updated_at       DateTime @default(now())
-}
-
 model plainProducts{
   id                Int @id @default(autoincrement())
-  plainLotId        Int
-  plainLot          plainLot @relation(fields:[plainLotId],references:[id],onDelete:Cascade)
+  lot_id            Int
+  lot_info          lot_info     @relation(fields: [lot_id], references: [id], onDelete: Cascade)  // Cascade delete on lot_info
   product_id        String?
   productName       String?
   workerName        String?
@@ -151,7 +144,10 @@ model plainProducts{
   created_at        DateTime @default(now())
   updated_at        DateTime @default(now())
 }
-
+enum LOT_TYPE{
+  STONE
+  PLAIN
+}
 enum LOT_PROCESS {
   completed
   not_completed
