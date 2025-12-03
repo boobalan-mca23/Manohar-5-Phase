@@ -31,7 +31,7 @@ const createNewProduct = async (req, res) => {
     //     lot_id,
     //   },
     // });
-   
+    console.log('req file',req.files[0]?.filename)
 
     const newProduct = await prisma.product_info.create({
       data: {

@@ -431,18 +431,28 @@ const handleKeyDown = (e, nextField) => {
   }
 };
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchLotDetails = async () => {
+      console.log("Fetching lot details...");
       try {
         const response = await axios.get(
-          `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/getAll/${lot_id}`
+          `${REACT_APP_BACKEND_SERVER_URL}/api/v1/lot/${lot_id}`
         );
-        setProducts(response.data);
+
+        const lot = response.data.products?.[0];
+        console.log("Fetched Lot Data:", lot);
+
+        if (lot) {
+          setBulkWeightBefore(lot.bulk_weight_before || "");
+          setBulkWeightAfter(lot.bulk_after_weight || "");
+        }
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        console.error("Failed to fetch lot details:", error);
       }
     };
-    fetchProducts();
+
+    fetchLotDetails();
   }, [lot_id]);
+
 
   const handleAddItems = () => {
     setShowAddItemsPopup(true);
@@ -463,30 +473,6 @@ const handleKeyDown = (e, nextField) => {
     setShowAddItemsPopup(false);
   };
 
-  useEffect(() => {
-    const fetchLotDetails = async () => {
-      console.log("Fetching lot details...");
-      try {
-        const response = await axios.post(
-          `${REACT_APP_BACKEND_SERVER_URL}/api/v1/lot/lot_data`,
-          {
-            lot_id,
-          }
-        );
-        const lotData = response.data;
-        console.log("Fetched Lot Data:", lotData);
-        if (lotData) {
-          setBulkWeightBefore(lotData.result.bulk_weight_before || "");
-          setBulkWeightAfter(lotData.result.bulk_after_weight || "");
-        }
-      } catch (error) {
-        console.error("Failed to fetch lot details:", error);
-
-      }
-    };
- 
-    fetchLotDetails();
-  }, [lot_id]);
 
   const handleDelete = async (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
@@ -746,7 +732,7 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
           <div className="cont">
             {" "}
             <label>Bulk Weight Difference: </label>
-            <input value={(bulkWeightAfter - bulkWeightBefore ).toFixed(3)|| "-"} />
+            <input value={(bulkWeightAfter - bulkWeightBefore ).toFixed(3)|| "-" } readOnly/>
           </div>
           <button
             className="up"
@@ -893,8 +879,9 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
                   <td></td>
                   <td></td>
                 </tr>
-                <br></br>
-                <div className="grid row-container">
+                <br/>
+              </tfoot>
+              <div className="grid row-container">
                    <div className="diffCont" >
                       <label>Bulk Weight Difference:</label>
                       <input value={(bulkWeightAfter - bulkWeightBefore).toFixed(3) || "-"} />
@@ -903,15 +890,14 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
                       </div>
                          <div className="diffCont" >
                          <label>Before Bulk Weight Difference:</label>
-                         <input value={(bulkWeightBefore-totalBeforeWeight).toFixed(3) || "-"} />
+                         <input value={(bulkWeightBefore-totalBeforeWeight).toFixed(3) || "-"} readOnly/>
                         
                         </div>
                          <div className="diffCont" >
                          <label>After Bulk Weight Difference:</label>
-                         <input value={(bulkWeightAfter-totalAfterWeight).toFixed(3)|| "-"} />
+                         <input value={(bulkWeightAfter-totalAfterWeight).toFixed(3)|| "-"} readOnly/>
                           </div>
                         </div>
-              </tfoot>
             </Table>
           </div>
         </div>

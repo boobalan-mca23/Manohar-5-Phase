@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+
+}
+
+.textField {
+  max-width: 500px;
+  background-color: #f9f9f9;
+}
+
+.roundedInput .MuiOutlinedInput-root {
+  border-radius: 20px; 
+  padding-left: 16px;
+}
+
+.roundedInput .MuiOutlinedInput-root fieldset {
+  border-color:#25274D;
+}
+
+.roundedInput .MuiOutlinedInput-root:hover fieldset {
+  border-color: burlywood;
+}
+
+.roundedInput .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #25274D;
+}
+ .background {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  /* background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); */
+  position: relative;
+  overflow: hidden;
+}
+
+.background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(55deg, transparent, transparent 20px, rgba(255, 255, 255, 0.02) 20px, rgba(255, 255, 255, 0.02) 40px);
+  pointer-events: none;
+}

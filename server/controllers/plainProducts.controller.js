@@ -2,48 +2,53 @@ const {PrismaClient}=require('@prisma/client')
 const prisma=new PrismaClient()
 const {makeProductId}=require('../helperFunction/makeProductId')
 
-exports.createPlainProducts=async(req,res)=>{
+exports.createPlainProducts = async (req, res) => {
+    const { lotId, productName, workerName, goldSmithCode, itemCode, grossWeight, stoneWeight, netWeight } = req.body;
 
-     const {lotId,productName,workerName,goldSmithCode,itemCode,grossWeight,stoneWeight,netWeight}=req.body
-     
-    try{
-      let imgUrl="" 
-      
-      if(!lotId||!productName||!workerName||!grossWeight||!stoneWeight||!netWeight||!goldSmithCode||!itemCode){
-             return res.status(400).json({message:"Missing Fields"})    
-          }
-        const existLot=await prisma.lot_info.findUnique({where:{
-            lotId:parseInt(lotId)
-        }})
-        if(!existLot) return res.status(400).json({message:"Lot Id is Not Found"})
-       
-       if(req.file){
-         imgUrl=`/uploads/${req.file.filename}`
-       }
-       const newProduct=await prisma.plainProducts.create({
-        data:{
-            lotId:parseInt(lotId)||0,
-            product_id:"",
-            productName:productName||"",
-            workerName:workerName||"",
-            grossWeight:grossWeight||"",
-            stoneWeight:stoneWeight||"",
-            netWeight:netWeight||"",
-            grossWtImgUrl:imgUrl||""
-       }})
+    try {
+        let imgUrl = "";
 
-       // generate productID
+        if (!lotId || !productName || !workerName || !grossWeight || !stoneWeight || !netWeight || !goldSmithCode || !itemCode) {
+            return res.status(400).json({ message: "Missing Fields" });
+        }
 
-       const productInfo= await makeProductId(goldSmithCode,itemCode,newProduct)
+        const existLot = await prisma.lot_info.findUnique({
+            where: { id: parseInt(lotId) }
+        });
 
-       return res.status(201).json({success:true,message:"New Product Created",productInfo})
+        if (!existLot) return res.status(400).json({ message: "Lot Id is Not Found" });
 
-      } 
-      catch(err){
-         console.log('err',err.message)
-         return res.status(500).json({err:err.message})
-      }  
-}
+        if (req.file) {
+            imgUrl = `/uploads/${req.file.filename}`;
+        }
+
+        const newProduct = await prisma.plainProducts.create({
+            data: {
+                lot_id: parseInt(lotId),
+                product_id: "",
+                productName: productName || "",
+                workerName: workerName || "",
+                grossWeight: grossWeight || "",
+                stoneWeight: stoneWeight || "",
+                netWeight: netWeight || "",
+                grossWtImgUrl: imgUrl || ""
+            }
+        });
+
+        // generate productID
+        const productInfo = await makeProductId(goldSmithCode, itemCode, newProduct);
+
+        return res.status(201).json({
+            success: true,
+            message: "New Product Created",
+            productInfo
+        });
+
+    } catch (err) {
+        console.log("err", err.message);
+        return res.status(500).json({ err: err.message });
+    }
+};
 
 exports.updatePlainProduct=async(req,res)=>{
     const {id}=req.params
@@ -138,6 +143,5 @@ exports.delete_Plain_Products=async(req,res)=>{
          return res.status(500).json({err:err.message})
      }
 }
-
 
 

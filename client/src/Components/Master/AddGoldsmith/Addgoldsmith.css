@@ -1,0 +1,533 @@
+/* AddGoldsmith.css - Professional & Elegant Jewelry Theme */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.goldsmith-container {
+  margin-top: 4rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #c9a962 0%, #d4af37 50%, #b8944d 100%);
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.2), transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(218, 165, 32, 0.2), transparent 50%),
+    linear-gradient(135deg, #c9a962 0%, #d4af37 50%, #b8944d 100%);
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+}
+
+.goldsmith-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.03) 10px, rgba(255, 255, 255, 0.03) 20px);
+  pointer-events: none;
+}
+
+/* Header */
+.goldsmith-header {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.goldsmith-header h1 {
+  font-size: 32px;
+  color: #2d3748;
+  margin-bottom: 8px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.goldsmith-header p {
+  color: #718096;
+  font-size: 14px;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 25px;
+}
+
+/* Add Goldsmith Card */
+.add-goldsmith-card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  width: 30rem;
+  
+}
+
+.add-goldsmith-card h2 {
+  font-size: 24px;
+  color: #2d3748;
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 10px;
+  color: #2d3748;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background: #f7fafc;
+  color: #2d3748;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #a0aec0;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Add Button */
+.btn-add {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-add:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.btn-add:active {
+  transform: translateY(0);
+}
+
+.btn-add:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Goldsmith List Card */
+.goldsmith-list-card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 60rem;
+}
+
+.goldsmith-list-card h2 {
+  font-size: 24px;
+  color: #2d3748;
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* Table Wrapper */
+.goldsmith-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Table */
+.goldsmith-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+}
+
+.goldsmith-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.goldsmith-table thead th {
+  padding: 18px 15px;
+  text-align: left;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: none;
+  white-space: nowrap;
+}
+
+.goldsmith-table thead th:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.goldsmith-table thead th:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.goldsmith-table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.goldsmith-table tbody tr:hover {
+  background: #f7fafc;
+  transform: scale(1.005);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.goldsmith-table tbody td {
+  padding: 18px 15px;
+  color: #2d3748;
+  font-size: 14px;
+  border: none;
+}
+
+.goldsmith-table tbody tr td:first-child {
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Edit Input */
+.edit-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: #f7fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  color: #2d3748;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Edit Textarea */
+.edit-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background: #f7fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  color: #2d3748;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  resize: vertical;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.edit-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  transform: scale(1.1);
+}
+
+.btn-edit {
+  background: #e6fffa;
+  color: #319795;
+}
+
+.btn-edit:hover {
+  background: #319795;
+  color: white;
+}
+
+.btn-delete {
+  background: #fff5f5;
+  color: #e53e3e;
+}
+
+.btn-delete:hover {
+  background: #e53e3e;
+  color: white;
+}
+
+.btn-save {
+  padding: 8px 16px;
+  background: #e6fffa;
+  color: #319795;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: #319795;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  padding: 8px 16px;
+  background: #fff5f5;
+  color: #e53e3e;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-cancel:hover {
+  background: #e53e3e;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* No Items State */
+.no-items {
+  text-align: center;
+  color: #718096;
+  padding: 60px 20px;
+  font-size: 15px;
+}
+
+/* Toast Container Customization
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+}
+
+.Toastify__toast--warning {
+  background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+} */
+ .pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 15px;
+  align-items: center;
+}
+
+.pagination button {
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: none;
+  background: #667eea;
+  color: white;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+
+
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .content-wrapper {
+    grid-template-columns: 350px 1fr;
+  }
+}
+
+@media (max-width: 968px) {
+  .content-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .add-goldsmith-card {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .goldsmith-container {
+    padding: 20px;
+  }
+
+  .goldsmith-header h1 {
+    font-size: 24px;
+  }
+
+  .add-goldsmith-card,
+  .goldsmith-list-card {
+    padding: 20px;
+  }
+
+  .goldsmith-table {
+    font-size: 13px;
+  }
+
+  .goldsmith-table thead th,
+  .goldsmith-table tbody td {
+    padding: 12px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .goldsmith-header h1 {
+    font-size: 20px;
+  }
+
+  .add-goldsmith-card h2,
+  .goldsmith-list-card h2 {
+    font-size: 20px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 14px;
+  }
+
+  .btn-add {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .goldsmith-table-wrapper {
+    overflow-x: scroll;
+  }
+
+  .goldsmith-table {
+    min-width: 800px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Custom Scrollbar */
+.goldsmith-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.goldsmith-table-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.goldsmith-table-wrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+}
+
+.goldsmith-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #764ba2;
+}

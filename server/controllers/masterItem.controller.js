@@ -100,12 +100,9 @@ exports.deleteMasterItem=async(req,res)=>{
 }
 
 exports.getAllMasterItem=async(req,res)=>{
-    
-      const page=req.query.page
-      const limit=req.query.limit
-
-      const skip=(page-1) * limit
-
+     const page=req.query.page
+     const limit=req.query.limit
+     const skip=(page-1) * limit
      try{
        const allMasterItem=await prisma.masterItems.findMany({
           skip:parseInt(skip),
@@ -114,13 +111,13 @@ exports.getAllMasterItem=async(req,res)=>{
             id:"desc"
           }
        })
-       const totalCount = await prisma.masterItems.count();
+        const totalCount = await prisma.masterItems.count();
 
        return res.status(200).json({
+        success:true,
+        allMasterItem,
         totalCount,
         totalPage:Math.ceil(totalCount/limit),
-        success:true,
-        allMasterItem
       })
 
       }catch(err){
@@ -128,3 +125,15 @@ exports.getAllMasterItem=async(req,res)=>{
          return res.status(500).json({err:err.message})
       }
 }
+
+exports.getAllItems = async (req,res)=>{
+    try {
+    const all = await prisma.masterItems.findMany({
+      orderBy: { id: 'desc' }
+    });
+    res.status(200).json({ success: true, allItems: all });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+

@@ -121,6 +121,7 @@ const handleWeightData=async()=>{
            },
         }
       );
+
     
 
         // const uploadedImage = response.data.productImage;

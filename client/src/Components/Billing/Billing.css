@@ -129,16 +129,39 @@ input{
     display: inline;  
   }
 
-  .background{
+  /* .background{
 
-    background-image: url(../Logo/pic.jpg);
+    background-image: url(../Logo/pic.jpg); */
      /* background-color: #f0efed; */
-    background-size: cover;
+    /* background-size: cover;
     height: 100vh;
     width: 100%;
     min-height: 100%;
   
-  }
+  } */
+
+  .background {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(55deg, transparent, transparent 20px, rgba(255, 255, 255, 0.02) 20px, rgba(255, 255, 255, 0.02) 40px);
+  pointer-events: none;
+}
 
   .vieww:hover{
     cursor: pointer;

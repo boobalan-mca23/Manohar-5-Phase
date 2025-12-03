@@ -267,11 +267,11 @@ doc.text("Bill Details", 85, 22);
   const totalFinalWeight = scannedProducts
     .reduce((acc, product) => acc + parseFloat(product.final_weight || 0), 0)
     .toFixed(3);
- 
 
   return (
     <>
       <Navbarr />
+      <div className="background">
       <div className="back-tab">
         <div id="page-to-pdf">
           <h2> Bill Details</h2>
@@ -446,6 +446,7 @@ doc.text("Bill Details", 85, 22);
           
           </div>
       </div>
+       </div>
     </>
   );
 };
