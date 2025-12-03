@@ -1,15 +1,20 @@
 import axios from "axios"
+import {REACT_APP_BACKEND_SERVER_URL} from "../config/index"
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const transform_text = (num)=>{
-    return num.split("__")[0]
-}
-
+export const transform_text = (num) => {
+  if (num === undefined || num === null) return "";
+  // Force convert to string always
+  const str = String(num);
+  // If "__" not found, return whole string
+  if (!str.includes("__")) return str;
+  return str.split("__")[0];
+};
 
 export const handleWeight = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/v1/weight/getWeight');
+      const res = await axios.get(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/weight/getWeight`);
       return res.data;  // Ensure the function returns the weight data
     } catch (err) {
       toast.warn("weight mechine not Connected",{autoClose:2000})
@@ -86,5 +91,3 @@ export const handleWeight = async () => {
     alert(`Verify Success on Both weight difference`)
    }
 }
-
-// Difference -2 Verify failed on Before weight difference. Do you want to continue?
