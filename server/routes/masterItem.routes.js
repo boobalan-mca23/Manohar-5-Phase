@@ -6,6 +6,7 @@ router.post('/',masterItem.createMasterItem)
 router.put('/:id',masterItem.updateMasterItem)
 router.delete('/:id',masterItem.deleteMasterItem)
 router.get('/',masterItem.getAllMasterItem)
+router.get('/allItems',masterItem.getAllItems)
 
 module.exports=router
 
