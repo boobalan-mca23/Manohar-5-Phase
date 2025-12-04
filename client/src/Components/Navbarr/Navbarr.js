@@ -22,6 +22,7 @@ const Navbarr = () => {
   const canAccessProduct = access.productAccess;
   const canAccessRestore = access.restoreAccess;
   const canAccessBilling = access.billingAccess;
+  const deleteLotAccess=access.deleteLotAccess;
 
   const isMasterActive = [
     "/admin",
@@ -56,7 +57,11 @@ const Navbarr = () => {
         {canAccessRestore && (
           <NavLink to="/restore">Restore</NavLink>
         )}
-
+      {
+       deleteLotAccess &&(
+        <NavLink to="/removedLots">Deleted Lots</NavLink>
+      )
+      }
         {/* Master dropdown */}
         {(canCreateUsers || canAccessItems || canAccessGoldSmith) && (
           <div className="master-link">

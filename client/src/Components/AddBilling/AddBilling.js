@@ -164,7 +164,7 @@ doc.text("Bill Details", 85, 22);
 
     try {
       const response = await axios.get(
-        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/getSerial/${bill_number}/${product_number}/${bill_type}`
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/${product_number}`
       );
 
       if (response.status === 200) {

@@ -33,7 +33,8 @@ exports.userRegister=async(req,res)=>{
                       itemAccess       :access?.itemAccess||true,
                       productAccess    :access?.productAccess||true,
                       billingAccess    :access?.billingAccess||true,
-                      restoreAccess    :access?.restoreAccess||false    
+                      restoreAccess    :access?.restoreAccess||false,   
+                      deleteLotAccess  :access?.deleteLotAccess||false
                 }
             }
           }
@@ -82,7 +83,8 @@ exports.loginUser=async(req,res)=>{
                restoreAccess:true,
                productAccess:true,
                goldSmithAccess:true,
-               itemAccess:true   
+               itemAccess:true,
+               deleteLotAccess:true 
             }
           }
         }

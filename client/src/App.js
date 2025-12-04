@@ -17,6 +17,7 @@ import AdminUsers from "./Components/Master/Admin/AdminUsers";
 import AddGoldsmith from "./Components/Master/AddGoldsmith/AddGoldsmith";
 import AddItem from "./Components/Master/AddItem/AddItem";
 import Home from "./Components/Home/Home";
+import RemoveLot from "./Components/RemovedLots/RemovedLots";
 import { ToastContainer } from "react-toastify";
 
 function App() {
@@ -94,6 +95,16 @@ function App() {
               />
             }
           />
+           <Route
+           path="/removedLots"
+            element={
+              <>
+                <Navbarr />
+             
+             <RemoveLot/>
+              </>
+             }
+           />
         
         </Routes>
       </BrowserRouter>

@@ -1,6 +1,8 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const { LOT_TYPE } = require("@prisma/client");
+const { makeProductId } = require("../helperFunction/makeProductId");
 
 const createNewProduct = async (req, res) => {
   try {
@@ -10,65 +12,127 @@ const createNewProduct = async (req, res) => {
       after_weight = 0,
       product_number,
       lot_id = "",
-      barcode_weight ,
+      barcode_weight,
       difference,
       adjustment,
-      final_weight
-       
+      final_weight,
+      productName,
+      workerName,
+      grossWeight,
+      stoneWeight,
+      netWeight,
+      goldSmithCode,
+      itemCode,
+      itemType,
     } = req.body;
-  
 
-    const weight1 = parseFloat(before_weight) || 0;
-    const weight2 = parseFloat(after_weight) || 0;
-
-    // const newProduct = await prisma.product_info.create({
-    //   data: {
-    //     tag_number,
-    //     before_weight: weight1,
-    //     after_weight: weight2,
-    //     barcode_weight: String(barcode_weight) || null,
-    //     product_number: tag_number + Math.random(4) * 1000,
-    //     lot_id,
-    //   },
-    // });
-    console.log('req file',req.files[0]?.filename)
-
-    const newProduct = await prisma.product_info.create({
-      data: {
-        tag_number,
-        before_weight: parseFloat(before_weight),
-        after_weight: parseFloat(after_weight),
-        barcode_weight: barcode_weight ? String(barcode_weight) : null,
-        difference: parseFloat(difference) || null,
-        adjustment: parseFloat(adjustment) || null,
-        final_weight: parseFloat(final_weight) || null,
-        product_number: product_number+"__"+ Math.random(4) * 1000 || null,
-        updated_at: new Date(),
-        lot_id:parseInt(lot_id),
-        product_images:{
-          create:{
-             before_weight_img:req.files[0]?.filename? req.files[0]?.filename : null,
-             after_weight_img: null,
-             final_weight_img: null,
-          }
-        },
-        
+    const existLot = await prisma.lot_info.findUnique({
+      where: {
+        id: Number(lot_id),
       },
-      include:{
-        product_images:true
-      }
     });
 
-    
-     console.log('newProduct',newProduct)
-     console.log('product img',newProduct.product_images)
-    
+    if (!existLot) {
+      return res.status(400).json({ message: "Invalid Lot Id" });
+    }
+
+    const validTypes = Object.values(LOT_TYPE); // ["STONE", "PLAIN"]
+
+    if (!itemType || !validTypes.includes(itemType.toUpperCase())) {
+      return res.status(400).json({
+        message: `Invalid Type. Allowed values: ${validTypes.join(", ")}`,
+      });
+    }
+
+    const type = itemType.toUpperCase();
+    const isStone = type === "STONE";
+    const isPlain = type === "PLAIN";
+
+    // Stone fields
+    const stoneFields = isStone
+      ? {
+          tag_number,
+          before_weight: Number(before_weight),
+          after_weight: Number(after_weight),
+          barcode_weight: barcode_weight ? String(barcode_weight) : null,
+          difference: Number(difference),
+          adjustment: Number(adjustment),
+          final_weight: Number(final_weight),
+          product_number:
+            product_number + "__" + Math.floor(Math.random() * 1000),
+          itemType: itemType.toUpperCase(),
+        }
+      : {
+          tag_number: "",
+          before_weight: 0,
+          after_weight: 0,
+          barcode_weight: "",
+          difference: 0,
+          adjustment: 0,
+          final_weight: 0,
+          product_number: "",
+        };
+
+    // Plain fields
+    const plainFields = isPlain
+      ? {
+          productName,
+          workerName,
+          grossWeight,
+          stoneWeight,
+          netWeight,
+          goldSmithCode,
+          itemCode,
+          itemType: itemType.toUpperCase(),
+        }
+      : {
+          productName: "",
+          workerName: "",
+          grossWeight: "",
+          stoneWeight: "",
+          netWeight: "",
+          goldSmithCode: "",
+          itemCode: "",
+        };
+
+    const productInfo = {
+      ...stoneFields,
+      ...plainFields,
+      updated_at: new Date(),
+      lot_id: Number(lot_id),
+    };
+
+    // product Images
+    const img = {
+      before_weight_img: isStone ? req.files[0]?.filename? req.files[0]?.filename: null: null,
+      after_weight_img: null,
+      final_weight_img: null,
+      gross_weight_img: isPlain ? req.files[0]?.filename ? req.files[0]?.filename : null : null,
+    };
+
+    let newProduct = await prisma.product_info.create({
+      data: {
+        ...productInfo,
+        product_images: {
+          create: img,
+        },
+      },
+      include: {
+        product_images: true,
+      },
+    });
+
+    if (itemType.toUpperCase() === LOT_TYPE.PLAIN) {
+      // this create product number for plain products
+      newProduct = await makeProductId(goldSmithCode, itemCode, newProduct);
+    }
+
     res.status(200).json({
+      success: true,
       message: "Product Successfully Created",
       newProduct,
-      productImage:newProduct.product_images
+      productImage: newProduct.product_images,
     });
-
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "Error Creating Product" });
@@ -140,49 +204,22 @@ const getAllProducts = async (req, res) => {
 const getProductByNumber = async (req, res) => {
   try {
     const { bill_number, product_number, bill_type } = req.params;
-    const billing_type = bill_type === "party" ? "hold" : "sold";
+
+    // const billing_type = bill_type === "party" ? "hold" : "sold";
+
     const product = await prisma.product_info.findMany({
       where: {
-        product_number,
+        product_number: product_number,
         product_type: "active",
         // lot_info: { lot_process: "completed" },
-      },
-      select: {
-        id: true,
-        product_number: true,
-        before_weight: true,
-        after_weight: true,
-        difference: true,
-        adjustment: true,
-        final_weight: true,
-        barcode_weight:true,
-        tag_number: true,
-        created_at: true,
-        updated_at: true,
       },
     });
     if (product.length === 0) {
       return res.status(500).json({ msg: "Product not found" });
     }
-    // const updateProduct = await prisma.product_info.updateMany({
-    //   where: {
-    //     id: product[0].id,
-    //   },
-    //   data: {
-    //     product_type: billing_type,
-    //   },
-    // });
-    // const billItem = await prisma.bill_items.create({
-    //   data: {
-    //     bill_number,
-    //     product_id: product[0].id,
-    //     created_at: new Date(),
-    //   },
-    // });
-
     res.status(200).json({
       message: "Product found",
-      product:product[0],
+      product: product[0],
     });
   } catch (error) {
     console.log(error);
@@ -307,18 +344,10 @@ const restoreProductByNumber = async (req, res) => {
 //     }
 // };
 
-
-
-
-
-
-
-
-
 const UpdatingProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id)
+
     // Destructure all the expected fields from the request body
     const {
       before_weight,
@@ -327,40 +356,143 @@ const UpdatingProduct = async (req, res) => {
       difference,
       adjustment,
       final_weight,
-      product_number,
+      productName,
+      workerName,
+      grossWeight,
+      stoneWeight,
+      netWeight,
+      goldSmithCode,
+      itemCode,
+      itemType,
     } = req.body;
 
-    // Update the product in the database
-    const updateProduct = await prisma.product_info.update({
-      where: { id: parseInt(id) },
-      data: {
-        before_weight: parseFloat(before_weight),
-        after_weight: parseFloat(after_weight),
-        barcode_weight: barcode_weight ? String(barcode_weight) : null,
-        difference: parseFloat(difference) || null,
-        adjustment: parseFloat(adjustment) || null,
-        final_weight: parseFloat(final_weight) || null,
-        product_number: product_number +"__"+ Math.random(4) * 1000  || null,
-        updated_at: new Date(),
+    const existProduct = await prisma.product_info.findUnique({
+      where: {
+        id: Number(id),
       },
     });
 
-// const UpdatingProduct = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { before_weight, after_weight, barcode_weight } = req.body;
+    if (!existProduct) {
+      return res.status(400).json({ message: "Invalid Product Id" });
+    }
 
-//     const updateProduct = await prisma.product_info.update({
-//       where: { id: parseInt(id) },
-//       data: {
-//         before_weight,
-//         after_weight,
-//         barcode_weight: String(barcode_weight) || null,
-//         updated_at: new Date(),
-//       },
-//     });
+    const validTypes = Object.values(LOT_TYPE); // ["STONE", "PLAIN"]
 
-    res.status(200).json({ message: "Updated Successfully", updateProduct });
+    if (!itemType || !validTypes.includes(itemType.toUpperCase())) {
+      return res.status(400).json({
+        message: `Invalid Type. Allowed values: ${validTypes.join(", ")}`,
+      });
+    }
+
+    const type = itemType.toUpperCase();
+    const isStone = type === "STONE";
+    const isPlain = type === "PLAIN";
+
+    // Stone fields
+    const stoneFields = isStone
+      ? {
+          before_weight: Number(before_weight),
+          after_weight: Number(after_weight),
+          barcode_weight: barcode_weight ? String(barcode_weight) : null,
+          difference: Number(difference),
+          adjustment: Number(adjustment),
+          final_weight: Number(final_weight),
+          itemType: itemType.toUpperCase(),
+        }
+      : {
+          before_weight: 0,
+          after_weight: 0,
+          barcode_weight: "",
+          difference: 0,
+          adjustment: 0,
+          final_weight: 0,
+        };
+
+    // Plain fields
+    const plainFields = isPlain
+      ? {
+          productName,
+          workerName,
+          grossWeight,
+          stoneWeight,
+          netWeight,
+          goldSmithCode,
+          itemCode,
+          itemType: itemType.toUpperCase(),
+        }
+      : {
+          productName: "",
+          workerName: "",
+          grossWeight: "",
+          stoneWeight: "",
+          netWeight: "",
+          goldSmithCode: "",
+          itemCode: "",
+        };
+
+    const productInfo = {
+      ...stoneFields,
+      ...plainFields,
+      updated_at: new Date(),
+    };
+
+    let fileMap = {};
+    if (req.files && req.files.length > 0) {
+      req.files.forEach((file) => {
+        fileMap[file.fieldname] = file.filename;
+      });
+    }
+
+    const img = {
+      before_weight_img: isStone ? fileMap["before_weight_img"] || null : null,
+      after_weight_img: isStone ? fileMap["after_weight_img"] || null : null,
+      final_weight_img: isStone ? fileMap["final_weight_img"] || null : null,
+      gross_weight_img: isPlain ? fileMap["gross_weight_img"] || null : null,
+    };
+
+    // Update the product in the database
+
+    let updateProduct = await prisma.product_info.update({
+      where: { id: Number(id) },
+      data: {
+        ...productInfo,
+      },
+    });
+
+    let productImage = await prisma.product_images.findFirst({
+      where: { product_id: Number(id) },
+    });
+
+    if (productImage) {
+      // Update existing image
+      await prisma.product_images.update({
+        where: { id: productImage.id },
+        data: img,
+      });
+    } else {
+      // Create new image set
+      await prisma.product_images.create({
+        data: {
+          product_id: Number(id),
+          ...img,
+        },
+      });
+    }
+
+    if (itemType.toUpperCase() === LOT_TYPE.PLAIN) {
+      // this update product number for plain products
+      updateProduct = await makeProductId(
+        goldSmithCode,
+        itemCode,
+        updateProduct
+      );
+    }
+
+    res.status(200).json({
+      message: " Product Updated Successfully",
+      success: true,
+      updateProduct,
+    });
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "Product not Updated" });

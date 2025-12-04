@@ -9,12 +9,12 @@ exports.makeProductId=async(goldSmithCode,itemCode,product)=>{
     // Final Product Id
 
     let id="PL"+product.id+""+goldSmithCode+""+itemCode+paddedWeight
-    const updateProduct=await prisma.plainProducts.update({
+    const updateProduct=await prisma.product_info.update({
         where:{
           id:product.id
         },
         data:{
-            product_id:id
+           product_number:id
         }
     })
     return updateProduct;

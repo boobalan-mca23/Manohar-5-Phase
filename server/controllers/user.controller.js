@@ -46,6 +46,7 @@ exports.updateUser = async (req, res) => {
               productAccess: access?.productAccess || false,
               billingAccess: access?.billingAccess || false,
               restoreAccess: access?.restoreAccess || false,
+              deleteLotAccess:access?.deleteLotAccess || false
             },
           },
         },
