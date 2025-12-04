@@ -1,5 +1,6 @@
 const express = require("express");
-const upload=require('../middleware/stoneImgUpload')
+const upload=require('../middleware/imgUpload')
+
 const {
   getAllProducts,
   deleteProduct,
@@ -24,7 +25,7 @@ router.post("/create",upload.any(),createNewProduct);
 //  To UPDATE A PRODUCT AFTER SOME DAYS
 // Body - {  "before_weight":1.723, "after_weight":6.5,"barcode_weight":5897 }
 // Params - {id - product_id}
-router.put("/update/:id",UpdatingProduct);
+router.put("/update/:id",upload.any(),UpdatingProduct);
 
 // TO GET ALL PRODUCT UNDER A LOT
 // PARAMS - lot_id - a lot id
@@ -32,9 +33,7 @@ router.get("/getAll/:lot_id", getAllProducts);
 
 // TO SEARCH A PRODUCT USING PRODUCT NUMBER
 // PARAMS - bill_number,product_number,bill_type-["customer","party"]
-router.get(
-  "/getSerial/:bill_number/:product_number/:bill_type",
-  getProductByNumber
+router.get( "/:product_number",getProductByNumber
 );
 
 // TO DELETE a Particular Product

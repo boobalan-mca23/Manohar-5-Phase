@@ -140,6 +140,8 @@ const getAllLots = async (req, res, next) => {
 //     return next(error);
 //   }
 // };
+
+// get Products by Lot Id
 const getLotById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -157,40 +159,23 @@ const getLotById = async (req, res, next) => {
     }
    
     // Fetch the lot by its ID
-     let products;
-     if(existlot.type==="STONE"){
-
-        products=await prisma.lot_info.findMany({
-           where:{
-             id:parseInt(id),
-             isAvailable:true
-           },
-           include:{
-            products:true
-           }
-        })
-     }
-     else if(existlot.type==="PLAIN"){
-          products=await prisma.lot_info.findMany({
-            where:{
-             id:parseInt(id),
-             isAvailable:true
-           },
-          include:{
-            plainProduct:true
-          }
-        })
-     }
-     else{
-        return res.status(400).json({message:"InVaild Type"})
-     }
+    let lotInfo=await prisma.lot_info.findMany({
+       where:{
+        id:Number(id)
+       },
+       include:{
+        products:true
+       } 
+    })
+    
     // Return the fetched lot
-    return res.status(200).json({ msg: "Successfully fetched",products,success:true});
+    return res.status(200).json({ msg: "Successfully fetched",lotInfo,success:true});
   } catch (error) {
     console.error("Error fetching lot:", error);
     return next(error);
   }
 };
+ 
  
 // delete a lot by id
 

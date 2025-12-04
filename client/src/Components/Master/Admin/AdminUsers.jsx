@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./AdminUsers.css";
 import { toast } from "react-toastify";
 import { REACT_APP_BACKEND_SERVER_URL } from "../../../config";
-import Navbarr from '../../Navbarr/Navbarr';
+import Navbarr from "../../Navbarr/Navbarr";
 import { ToastContainer } from "react-toastify";
 
 const PAGE_SIZE = 8;
@@ -20,7 +20,7 @@ export default function AdminUsers() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   const [newUser, setNewUser] = useState({
     userName: "",
     phone: "",
@@ -33,6 +33,7 @@ export default function AdminUsers() {
       productAccess: false,
       billingAccess: false,
       restoreAccess: false,
+      deleteLotAccess: false,
     },
   });
 
@@ -64,10 +65,11 @@ export default function AdminUsers() {
 
   function filteredUsers() {
     if (!searchTerm) return users;
-    return users.filter(u => 
-      u.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.role?.toLowerCase().includes(searchTerm.toLowerCase())
+    return users.filter(
+      (u) =>
+        u.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.role?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
 
@@ -83,15 +85,18 @@ export default function AdminUsers() {
 
   async function openManage(id) {
     try {
-      const res = await fetch(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/user/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/user/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.message || "Could not load user");
         return;
       }
-      setSelectedUser({...data.user || data, newPassword: ""});
+      setSelectedUser({ ...(data.user || data), newPassword: "" });
     } catch (err) {
       console.error(err);
       toast.error("Network error");
@@ -117,6 +122,7 @@ export default function AdminUsers() {
         productAccess: false,
         billingAccess: false,
         restoreAccess: false,
+        deleteLotAccess: false,
       },
     });
   }
@@ -124,19 +130,24 @@ export default function AdminUsers() {
   function toggleAccess(field) {
     setSelectedUser((u) => {
       if (!u) return u;
-      const accessObj = { ...(u.access && u.access[0] ? u.access[0] : u.access) };
+      const accessObj = {
+        ...(u.access && u.access[0] ? u.access[0] : u.access),
+      };
       accessObj[field] = !Boolean(accessObj[field]);
-      return { ...u, access: Array.isArray(u.access) ? [accessObj] : accessObj };
+      return {
+        ...u,
+        access: Array.isArray(u.access) ? [accessObj] : accessObj,
+      };
     });
   }
 
   function toggleNewUserAccess(field) {
-    setNewUser(prev => ({
+    setNewUser((prev) => ({
       ...prev,
       access: {
         ...prev.access,
-        [field]: !prev.access[field]
-      }
+        [field]: !prev.access[field],
+      },
     }));
   }
 
@@ -147,14 +158,17 @@ export default function AdminUsers() {
     }
 
     try {
-      const res = await fetch(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(newUser),
-      });
+      const res = await fetch(
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newUser),
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.message || "Failed to create user");
@@ -172,13 +186,15 @@ export default function AdminUsers() {
   async function saveAccess() {
     if (!selectedUser) return;
     const id = selectedUser.id;
-    const accessItem = Array.isArray(selectedUser.access) ? selectedUser.access[0] : selectedUser.access;
-    
+    const accessItem = Array.isArray(selectedUser.access)
+      ? selectedUser.access[0]
+      : selectedUser.access;
+
     if (!accessItem || !accessItem.id) {
       toast.error("Invalid access object from backend");
       return;
     }
-
+    console.log("accessItem", accessItem);
     const body = {
       phone: selectedUser.phone,
       role: selectedUser.role,
@@ -190,8 +206,10 @@ export default function AdminUsers() {
         productAccess: !!accessItem.productAccess,
         billingAccess: !!accessItem.billingAccess,
         restoreAccess: !!accessItem.restoreAccess,
+        deleteLotAccess: !!accessItem.deleteLotAccess,
       },
     };
+    console.log("update time ", body);
 
     // Add password to body if changed
     if (selectedUser.newPassword && selectedUser.newPassword.trim() !== "") {
@@ -199,19 +217,26 @@ export default function AdminUsers() {
     }
 
     try {
-      const res = await fetch(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/user/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-      });
+      const res = await fetch(
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/user/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(body),
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.message || "Update failed");
       } else {
-        toast.success(selectedUser.newPassword ? "User updated with new password" : "User access updated");
+        toast.success(
+          selectedUser.newPassword
+            ? "User updated with new password"
+            : "User access updated"
+        );
         closeModal();
         fetchUsers();
       }
@@ -223,18 +248,22 @@ export default function AdminUsers() {
 
   async function handleDelete(u) {
     const currentUserRole = localStorage.getItem("userRole") || "";
-    
+
     if (isSuperAdmin(u.role) && !isSuperAdmin(currentUserRole)) {
       toast.error("Only super admin can delete super admin accounts");
       return;
     }
-    if (!window.confirm(`Delete user "${u.userName}"? This is permanent.`)) return;
-    
+    if (!window.confirm(`Delete user "${u.userName}"? This is permanent.`))
+      return;
+
     try {
-      const res = await fetch(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/user/${u.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/user/${u.id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.message || "Delete failed");
@@ -257,15 +286,21 @@ export default function AdminUsers() {
           <div className="header-content">
             <div>
               <h2>
-                <img src='https://img.icons8.com/?size=100&id=z-JBA_KtSkxG&format=png&color=000000' 
-                  alt='user'
-                  style={{ width:"45px",
-                           height:'45px',
-                           marginRight:'10px'}}/>
-                          Users Management </h2>
-              <p className="muted">Manage user accounts, roles, and access permissions</p>
+                <img
+                  src="https://img.icons8.com/?size=100&id=z-JBA_KtSkxG&format=png&color=000000"
+                  alt="user"
+                  style={{ width: "45px", height: "45px", marginRight: "10px" }}
+                />
+                Users Management{" "}
+              </h2>
+              <p className="muted">
+                Manage user accounts, roles, and access permissions
+              </p>
             </div>
-            <button className="btn-primary" onClick={() => setShowAddModal(true)}>
+            <button
+              className="btn-primary"
+              onClick={() => setShowAddModal(true)}
+            >
               <span className="btn-icon">+</span> Add New User
             </button>
           </div>
@@ -319,15 +354,21 @@ export default function AdminUsers() {
                   {pagedUsers().map((u, idx) => (
                     <tr key={u.id}>
                       <td>
-                        <span className="row-number">{(page - 1) * PAGE_SIZE + idx + 1}</span>
+                        <span className="row-number">
+                          {(page - 1) * PAGE_SIZE + idx + 1}
+                        </span>
                       </td>
                       <td>
                         <div className="user-info">
-                          <span className="user-avatar">{u.userName?.charAt(0).toUpperCase()}</span>
+                          <span className="user-avatar">
+                            {u.userName?.charAt(0).toUpperCase()}
+                          </span>
                           <span className="user-name">{u.userName}</span>
                         </div>
                       </td>
-                      <td>{u.phone || <span className="text-muted">-</span>}</td>
+                      <td>
+                        {u.phone || <span className="text-muted">-</span>}
+                      </td>
                       <td>
                         <span className={`role-badge ${u.role?.toLowerCase()}`}>
                           {u.role}
@@ -337,21 +378,25 @@ export default function AdminUsers() {
                         <span className="password-display">••••••••</span>
                       </td>
                       <td className="actions">
-                        <button 
-                          className="btn-action btn-edit" 
+                        <button
+                          className="btn-action btn-edit"
                           onClick={() => openManage(u.id)}
                           title="Manage Access"
                         >
                           ✏️ Edit
                         </button>
-                        <button 
-                          className="btn-action btn-delete" 
-                          onClick={() =>{ 
-                                           console.log(u)
-                                          handleDelete(u)
-                                        }} 
+                        <button
+                          className="btn-action btn-delete"
+                          onClick={() => {
+                            console.log(u);
+                            handleDelete(u);
+                          }}
                           disabled={isSuperAdmin(u.role)}
-                          title={isSuperAdmin(u.role) ? "Cannot delete super admin" : "Delete user"}
+                          title={
+                            isSuperAdmin(u.role)
+                              ? "Cannot delete super admin"
+                              : "Delete user"
+                          }
                         >
                           🗑️ Delete
                         </button>
@@ -363,9 +408,9 @@ export default function AdminUsers() {
 
               {pageCount() > 1 && (
                 <div className="pagination">
-                  <button 
-                    className="page-btn" 
-                    onClick={() => setPage(p => Math.max(1, p - 1))} 
+                  <button
+                    className="page-btn"
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
                   >
                     ← Previous
@@ -375,9 +420,9 @@ export default function AdminUsers() {
                     <span className="page-separator">/</span>
                     <span className="page-total">{pageCount()}</span>
                   </div>
-                  <button 
-                    className="page-btn" 
-                    onClick={() => setPage(p => Math.min(pageCount(), p + 1))} 
+                  <button
+                    className="page-btn"
+                    onClick={() => setPage((p) => Math.min(pageCount(), p + 1))}
                     disabled={page === pageCount()}
                   >
                     Next →
@@ -394,7 +439,9 @@ export default function AdminUsers() {
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h3>➕ Add New User</h3>
-                <button className="modal-close" onClick={closeAddModal}>×</button>
+                <button className="modal-close" onClick={closeAddModal}>
+                  ×
+                </button>
               </div>
 
               <div className="modal-body">
@@ -403,7 +450,9 @@ export default function AdminUsers() {
                   <input
                     type="text"
                     value={newUser.userName}
-                    onChange={(e) => setNewUser({...newUser, userName: e.target.value})}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, userName: e.target.value })
+                    }
                     placeholder="Enter username"
                     className="form-input"
                   />
@@ -414,7 +463,9 @@ export default function AdminUsers() {
                   <input
                     type="text"
                     value={newUser.phone}
-                    onChange={(e) => setNewUser({...newUser, phone: e.target.value})}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, phone: e.target.value })
+                    }
                     placeholder="Enter phone number"
                     className="form-input"
                   />
@@ -426,7 +477,9 @@ export default function AdminUsers() {
                     <input
                       type={showPassword ? "text" : "password"}
                       value={newUser.password}
-                      onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                      onChange={(e) =>
+                        setNewUser({ ...newUser, password: e.target.value })
+                      }
                       placeholder="Enter password"
                       className="form-input"
                     />
@@ -444,7 +497,9 @@ export default function AdminUsers() {
                   <label>Role</label>
                   <select
                     value={newUser.role}
-                    onChange={(e) => setNewUser({...newUser, role: e.target.value})}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, role: e.target.value })
+                    }
                     className="form-select"
                   >
                     <option value="user">User</option>
@@ -509,6 +564,14 @@ export default function AdminUsers() {
                       />
                       <span>Items 📋</span>
                     </label>
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={newUser.access.deleteLotAccess}
+                        onChange={() => toggleNewUserAccess("deleteLotAccess")}
+                      />
+                      <span> Deleted Lots 🗑️ </span>
+                    </label>
                   </div>
                 </div>
               </div>
@@ -531,7 +594,9 @@ export default function AdminUsers() {
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h3>✏️ Manage User: {selectedUser.userName}</h3>
-                <button className="modal-close" onClick={closeModal}>×</button>
+                <button className="modal-close" onClick={closeModal}>
+                  ×
+                </button>
               </div>
 
               <div className="modal-body">
@@ -540,7 +605,12 @@ export default function AdminUsers() {
                   <input
                     type="text"
                     value={selectedUser.phone || ""}
-                    onChange={(e) => setSelectedUser({...selectedUser, phone: e.target.value})}
+                    onChange={(e) =>
+                      setSelectedUser({
+                        ...selectedUser,
+                        phone: e.target.value,
+                      })
+                    }
                     placeholder="Enter phone number"
                     className="form-input"
                   />
@@ -550,7 +620,9 @@ export default function AdminUsers() {
                   <label>Current Password</label>
                   <div className="password-display-box">
                     <span className="password-text">
-                      {showPassword ? selectedUser.password || "••••••••" : "••••••••"}
+                      {showPassword
+                        ? selectedUser.password || "••••••••"
+                        : "••••••••"}
                     </span>
                     <button
                       type="button"
@@ -567,12 +639,19 @@ export default function AdminUsers() {
                   <input
                     type="password"
                     value={selectedUser.newPassword || ""}
-                    onChange={(e) => setSelectedUser({...selectedUser, newPassword: e.target.value})}
+                    onChange={(e) =>
+                      setSelectedUser({
+                        ...selectedUser,
+                        newPassword: e.target.value,
+                      })
+                    }
                     placeholder="Enter new password"
                     className="form-input"
                   />
                   {selectedUser.newPassword && (
-                    <small className="form-hint">✓ Password will be updated</small>
+                    <small className="form-hint">
+                      ✓ Password will be updated
+                    </small>
                   )}
                 </div>
 
@@ -580,7 +659,9 @@ export default function AdminUsers() {
                   <label>Role</label>
                   <select
                     value={selectedUser.role}
-                    onChange={(e) => setSelectedUser({...selectedUser, role: e.target.value})}
+                    onChange={(e) =>
+                      setSelectedUser({ ...selectedUser, role: e.target.value })
+                    }
                     className="form-select"
                   >
                     <option value="user">User</option>
@@ -596,8 +677,11 @@ export default function AdminUsers() {
                       <input
                         type="checkbox"
                         checked={Boolean(
-                          (selectedUser.access && selectedUser.access[0] && selectedUser.access[0].userCreateAccess) ||
-                          (selectedUser.access && selectedUser.access.userCreateAccess)
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].userCreateAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.userCreateAccess)
                         )}
                         onChange={() => toggleAccess("userCreateAccess")}
                       />
@@ -608,8 +692,11 @@ export default function AdminUsers() {
                       <input
                         type="checkbox"
                         checked={Boolean(
-                          (selectedUser.access && selectedUser.access[0] && selectedUser.access[0].productAccess) ||
-                          (selectedUser.access && selectedUser.access.productAccess)
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].productAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.productAccess)
                         )}
                         onChange={() => toggleAccess("productAccess")}
                       />
@@ -620,8 +707,11 @@ export default function AdminUsers() {
                       <input
                         type="checkbox"
                         checked={Boolean(
-                          (selectedUser.access && selectedUser.access[0] && selectedUser.access[0].billingAccess) ||
-                          (selectedUser.access && selectedUser.access.billingAccess)
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].billingAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.billingAccess)
                         )}
                         onChange={() => toggleAccess("billingAccess")}
                       />
@@ -632,8 +722,11 @@ export default function AdminUsers() {
                       <input
                         type="checkbox"
                         checked={Boolean(
-                          (selectedUser.access && selectedUser.access[0] && selectedUser.access[0].restoreAccess) ||
-                          (selectedUser.access && selectedUser.access.restoreAccess)
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].restoreAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.restoreAccess)
                         )}
                         onChange={() => toggleAccess("restoreAccess")}
                       />
@@ -644,8 +737,11 @@ export default function AdminUsers() {
                       <input
                         type="checkbox"
                         checked={Boolean(
-                          (selectedUser.access && selectedUser.access[0] && selectedUser.access[0].goldSmithAccess) ||
-                          (selectedUser.access && selectedUser.access.goldSmithAccess)
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].goldSmithAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.goldSmithAccess)
                         )}
                         onChange={() => toggleAccess("goldSmithAccess")}
                       />
@@ -656,19 +752,39 @@ export default function AdminUsers() {
                       <input
                         type="checkbox"
                         checked={Boolean(
-                          (selectedUser.access && selectedUser.access[0] && selectedUser.access[0].itemAccess) ||
-                          (selectedUser.access && selectedUser.access.itemAccess)
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].itemAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.itemAccess)
                         )}
                         onChange={() => toggleAccess("itemAccess")}
                       />
                       <span>Items 📋</span>
+                    </label>
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].deleteLotAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.deleteLotAccess)
+                        )}
+                        onChange={() => toggleAccess("deleteLotAccess")}
+                      />
+                      <span> Deleted Lots 🗑️ </span>
                     </label>
                   </div>
                 </div>
 
                 <div className="info-box">
                   <span className="info-icon">ℹ️</span>
-                  <p>Username cannot be changed. Super admin accounts cannot be deleted.</p>
+                  <p>
+                    Username cannot be changed. Super admin accounts cannot be
+                    deleted.
+                  </p>
                 </div>
               </div>
 

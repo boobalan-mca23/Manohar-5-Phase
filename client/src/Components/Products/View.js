@@ -1083,7 +1083,7 @@ const WeightFormPopup = ({
 
   });
   console.log("kkkkkkkkkk",capturedImages)
-
+  
   
   const [beforeWeight, setBeforeWeight] = useState(productInfo.before_weight);
   const [afterWeight, setAfterWeight] = useState(productInfo.after_weight);
@@ -1110,7 +1110,13 @@ const WeightFormPopup = ({
  
   const webcamRef = useRef(null);
   const popupRef = useRef(null);
-  
+   const [updateImg,setUpdateImg]=useState([
+   {
+     before_weight_img:"",
+     after_weight_img:"",
+     final_weight_img:""
+   }
+  ])
 
   const barcodeRef = useRef(null);
    const tableData = products.map((product, index) => [
@@ -1409,24 +1415,34 @@ const handleExportdetailsPdf = async () => {
 
 const handleSave = async () => {
   try {
-    const updatedData = {
-      before_weight: parseFloat(beforeWeight),
-      after_weight: parseFloat(afterWeight),
-      barcode_weight: barcodeWeight,
-      product_number: product_number,
-      difference: parseFloat(difference),
-      adjustment: parseFloat(adjustment),
-      final_weight: parseFloat(finalWeight),
-    };
+    
+     const formData=new FormData()
+     formData.append('before_weight',parseFloat(beforeWeight))
+     formData.append('after_weight',parseFloat(afterWeight))
+     formData.append('barcode_weight',parseFloat(barcodeWeight))
+     formData.append('difference', parseFloat(difference))
+     formData.append('adjustment', parseFloat(adjustment))
+     formData.append('final_weight',parseFloat(finalWeight))
+     formData.append('before_weight_img',updateImg[0].before_weight_img)
+     formData.append('after_weight_img',updateImg[0].after_weight_img)
+     formData.append('final_weight_img',updateImg[0].final_weight_img)
 
-    console.log("Data to send:", updatedData);
+    // const formData=new formData()
+    // formData.appendC
 
-    await axios.put(
+    
+
+   const updatedData= await axios.put(
       `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/update/${productId}`,
-      updatedData
+      formData,
+       {
+          headers: {
+              "Content-Type": "multipart/form-data",
+           },
+        }
     );
 
-    console.log("Updated Product Data:", updatedData);
+    
 
     const updatedProduct = {
       ...product,
@@ -1436,12 +1452,13 @@ const handleSave = async () => {
     toast.success("Product saved successfully!");
     window.location.reload();
     updateProductList(updatedProduct);
-
+    
 
   } catch (error) {
     console.error("Error updating product:", error);
   }
 };
+
 
   useEffect(() => {
     const handleBarcodeScan = (e) => {
