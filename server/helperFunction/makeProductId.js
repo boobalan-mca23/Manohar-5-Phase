@@ -15,6 +15,9 @@ exports.makeProductId=async(goldSmithCode,itemCode,product)=>{
         },
         data:{
            product_number:id
+        },
+        include:{
+          product_images:true
         }
     })
     return updateProduct;

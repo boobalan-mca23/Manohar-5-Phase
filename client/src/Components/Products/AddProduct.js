@@ -111,7 +111,8 @@ const handleWeightData=async()=>{
       formData.append("lot_id",Number(lot_id))
       formData.append("image",imgField.image);
       formData.append("fieldName",imgField.fieldName);
-    
+      formData.append("itemType", "STONE");
+
       const response = await axios.post(
         `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/create`,
         formData,
