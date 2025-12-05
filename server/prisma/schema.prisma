@@ -158,4 +158,3 @@ enum PRODUCT_TYPE {
   active
   sold
 }
-
