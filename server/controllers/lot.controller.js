@@ -163,9 +163,13 @@ const getLotById = async (req, res, next) => {
        where:{
         id:Number(id)
        },
-       include:{
-        products:true
-       } 
+      include: {
+      products: {
+        include: {
+          product_images: true
+        }
+      }
+    }
     })
     
     // Return the fetched lot
