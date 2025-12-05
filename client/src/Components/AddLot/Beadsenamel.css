@@ -27,21 +27,16 @@
 .roundedInput .MuiOutlinedInput-root.Mui-focused fieldset {
   border-color: #25274D;
 }
-.background {
+ .background {
   min-height: 100vh;
-  background: 
-    repeating-linear-gradient(
-      135deg,
-      #eef3fa,
-      #eef3fa 40px,
-      #e7edf7 40px,
-      #e7edf7 80px
-    );
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  /* background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); */
   position: relative;
   overflow: hidden;
-  padding-top: 120px;
 }
-
 
 .background::before {
   content: '';
@@ -53,26 +48,4 @@
   background: 
     repeating-linear-gradient(55deg, transparent, transparent 20px, rgba(255, 255, 255, 0.02) 20px, rgba(255, 255, 255, 0.02) 40px);
   pointer-events: none;
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-25px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }

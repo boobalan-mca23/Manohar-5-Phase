@@ -1415,6 +1415,7 @@ const handleExportdetailsPdf = async () => {
 
 const handleSave = async () => {
   try {
+    
      const formData=new FormData()
      formData.append('before_weight',parseFloat(beforeWeight))
      formData.append('after_weight',parseFloat(afterWeight))
@@ -1425,11 +1426,13 @@ const handleSave = async () => {
      formData.append('before_weight_img',updateImg[0].before_weight_img)
      formData.append('after_weight_img',updateImg[0].after_weight_img)
      formData.append('final_weight_img',updateImg[0].final_weight_img)
-     formData.append('itemType',"STONE")
+
     // const formData=new formData()
     // formData.appendC
- 
-    const updatedData= await axios.put(
+
+    
+
+   const updatedData= await axios.put(
       `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/update/${productId}`,
       formData,
        {
@@ -1438,19 +1441,19 @@ const handleSave = async () => {
            },
         }
     );
- 
-    console.log("Updated Product Data:", updatedData);
- 
+
+    
+
     const updatedProduct = {
       ...product,
       ...updatedData,
     };
- 
+
     toast.success("Product saved successfully!");
     window.location.reload();
     updateProductList(updatedProduct);
- 
- 
+    
+
   } catch (error) {
     console.error("Error updating product:", error);
   }
@@ -1512,36 +1515,65 @@ const handleSave = async () => {
   }, [productId]);
 
   const uploadImage = async (image, fieldName) => {
-    
-      setUpdateImg(prev => [{
-          ...prev[0],
-          [fieldName]: image
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("fieldName", fieldName);
+      formData.append("productId", productId);
+      console.log("FormData contains image:", formData.get("image"));
+      const response = await axios.post(
+        `${REACT_APP_BACKEND_SERVER_URL}/api/images/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      ]);
-          try {
-            const weight = await handleWeight();  // Await the function call and Weight Api
-            console.log(weight.weightdata);
-  
-            switch (fieldName) {
-                case "before_weight_img":
-                    setBeforeWeight(weight.weightdata);
-                    break;
-                case "after_weight_img":
-                    setAfterWeight(weight.weightdata);
-                    break;
-                case "final_weight_img":
-                    setBarcodeWeight(weight.weightdata);
-                    break;
-                default:
-                    console.warn("Invalid field:", fieldName);
-            }
-        }
-        catch (err) {
-            console.error("Error fetching weight:", err);
-        }
+      );
       
-    
-    };
+
+      console.log("Backend response:", response.data);
+
+      const uploadedImage = response.data.productImage;
+      console.log("Uploaded image data:", uploadedImage);
+
+      if (uploadedImage && uploadedImage[fieldName]) {
+
+        // const imageUrl = `${REACT_APP_BACKEND_SERVER_URL}/uploads/${uploadedImage[0].before_weight_img}`;
+
+        // console.log(`Image URL: ${imageUrl}`);
+        // setCapturedImages((prev) => ({
+        //   ...prev,
+        //   [fieldName]: imageUrl,
+        // }));
+
+        try {
+          const weight = await handleWeight();  // Await the function call and Weight Api
+          console.log(weight.weightdata);
+  
+          switch (fieldName) {
+              case "before_weight_img":
+                  setBeforeWeight(weight.weightdata);
+                  break;
+              case "after_weight_img":
+                  setAfterWeight(weight.weightdata);
+                  break;
+              case "final_weight_img":
+                  setBarcodeWeight(weight.weightdata);
+                  break;
+              default:
+                  console.warn("Invalid field:", fieldName);
+          }
+      } catch (err) {
+          console.error("Error fetching weight:", err);
+      }
+      } else {
+        console.error("Image URL is not found for the given field.");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
   const toggleWebcam = (field) => {
     setWebcamVisible((prev) => !prev);

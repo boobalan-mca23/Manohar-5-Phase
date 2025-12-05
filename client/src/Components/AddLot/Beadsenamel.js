@@ -25,45 +25,33 @@ import { REACT_APP_BACKEND_SERVER_URL } from "../../config";
 
 const RoundedTextField = styled(TextField)({
   maxWidth: 300,
-  backgroundColor: "#f7fbff",
-  // marginTop: "9rem",
+  backgroundColor: "#f9f9f9",
+  marginTop: "9rem",
   "& .MuiOutlinedInput-root": {
     borderRadius: "20px",
     paddingLeft: "16px",
     "& fieldset": {
-      borderColor: "#cfd8e3",
+      borderColor: "#ccc",
     },
     "&:hover fieldset": {
-      borderColor: "#1A2A47",
+      borderColor: "#888",
     },
     "&.Mui-focused fieldset": {
-      borderColor: "#1A2A47",
+      borderColor: "#1976d2",
     },
   },
-  "& .MuiInputBase-input::placeholder": {
-    color: "#6b7280",
-    opacity: 1,
-  },
 });
-
 
 const StyledCard = styled(Card)({
-  backgroundColor: "#ffffff",
-  borderRadius: "18px",
-  boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.08)",
-  width: "200px",
-  margin: "15px",
-  border: "none",
-  transition: "all 0.35s ease, opacity 0.5s ease",
-  opacity: 0,
-  animation: "fadeInUp 0.8s ease forwards",
-
+  backgroundColor: "#e3f2fd",
+  borderRadius: "15px",
+  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+  width: "180px",
+  margin: "10px",
   "&:hover": {
-    transform: "translateY(-10px)",
-    boxShadow: "0px 12px 26px rgba(0, 0, 0, 0.15)",
-  }
+    boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
+  },
 });
-
 
 const StyledButton = styled(Button)({
   borderRadius: "20px",
@@ -187,9 +175,10 @@ function Beadsenamel() {
 
   const confirmDelete = async () => {
     try {
-      // Make a DELETE request to remove the lot from the database
-      const response = await axios.delete(
-        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/lot/lot_info/${deleteLotId}`
+      // Make a Put Request for Soft Delete Lot Information
+      
+      const response = await axios.put(
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/restoreLot/changetoDiactivate/${deleteLotId}`
       );
 
       if (response.status === 200) {
@@ -229,20 +218,6 @@ function Beadsenamel() {
     <>
       <Navbarr />
       <div className="background">
-        <Typography 
-          variant="h4" 
-          sx={{ 
-            textAlign: "center", 
-            marginBottom: "3rem",
-            fontWeight: "bold", 
-            color: "#1A2A47",
-            letterSpacing: "1px",
-            animation: "fadeInDown 0.8s ease"
-          }}
-        >
-          Stone & Enamel Lots
-        </Typography>
-
         <Box
           sx={{
             display: "flex",
@@ -251,7 +226,7 @@ function Beadsenamel() {
             mt: 4,
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 , animation: "fadeInUp 0.8s ease 0.1s both"}}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <RoundedTextField
               label="Search Lot Number"
               variant="outlined"
@@ -260,20 +235,12 @@ function Beadsenamel() {
               placeholder="Search Lot No"
               fullWidth
             />
-            <IconButton 
-              onClick={handleClickOpen}
-              sx={{
-                // mt: "9rem",
-                color: "#1A2A47",
-                border: "2px solid transparent",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  border: "2px solid #1A2A47",
-                  backgroundColor: "transparent",
-                }
-              }}
-            >
-              <RiAddCircleFill size={42} />
+            <IconButton sx={{ ml: 1 }} onClick={handleClickOpen}>
+              <RiAddCircleFill
+                style={{ marginTop: "9rem", marginLeft: "2rem" }}
+                size={32}
+                color="rgb(36, 36, 66)"
+              />
             </IconButton>
           </Box>
 
@@ -329,13 +296,12 @@ function Beadsenamel() {
               justifyContent: "center",
               mt: 2,
               maxWidth: "100%",
-              animation: "fadeInUp 0.8s ease 0.1s both"
             }}
           >
             {filteredLotNumbers.length > 0 ? (
               filteredLotNumbers.map((lot, index) => (
-                <StyledCard key={index} style={{ animationDelay: `${index * 0.06}s` }}>
-                  <CardContent sx={{ textAlign: "center", backgroundColor: "#1A2A47",borderRadius: "18px 18px 0 0" }}>
+                <StyledCard key={index}>
+                  <CardContent sx={{ textAlign: "center", backgroundColor: "rgb(36, 36, 66)" }}>
                     <Typography
                       variant="h6"
                       sx={{
@@ -366,7 +332,7 @@ function Beadsenamel() {
                 </StyledCard>
               ))
             ) : (
-              <Typography variant="body1" color="#1A2A47" fontWeight="bold" fontSize="1.5rem">
+              <Typography variant="body1" color="rgb(36, 36, 66)" fontWeight="bold" fontSize="1.5rem">
                 No Lot numbers available.
               </Typography>
             )}

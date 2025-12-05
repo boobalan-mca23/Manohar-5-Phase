@@ -25,7 +25,7 @@ const createNewProduct = async (req, res) => {
       itemCode,
       itemType,
     } = req.body;
-    console.log('body',req.body)
+
     const existLot = await prisma.lot_info.findUnique({
       where: {
         id: Number(lot_id),
@@ -101,7 +101,7 @@ const createNewProduct = async (req, res) => {
       updated_at: new Date(),
       lot_id: Number(lot_id),
     };
-    console.log(req.files)
+
     // product Images
     const img = {
       before_weight_img: isStone ? req.files[0]?.filename? req.files[0]?.filename: null: null,
@@ -126,7 +126,7 @@ const createNewProduct = async (req, res) => {
       // this create product number for plain products
       newProduct = await makeProductId(goldSmithCode, itemCode, newProduct);
     }
-    console.log("Created new product:", newProduct,newProduct.product_images);
+
     res.status(200).json({
       success: true,
       message: "Product Successfully Created",
