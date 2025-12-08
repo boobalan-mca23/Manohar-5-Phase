@@ -695,7 +695,7 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
 }
   return (
     <>
-      <div className="background">
+      <div className="products-page">
         <Navbarr />
         <div className="add-items">
           <button onClick={handleAddItems}>Add Items</button>
@@ -746,13 +746,17 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
           >
             Update
           </button>
+          <div className="update">
+            <button onClick={handleCalculate}>Calculate</button> <span> </span>
+          </div>
         </div>
-        <div className="update">
+        {/* <div className="update">
           <button onClick={handleCalculate}>Calculate</button> <span> </span>
-        </div>
+        </div> */}
         <div id="page-to-pdf">
           <div className="table-container">
-            <div className="list">List of Items</div>
+             <div className="list-2">Lot : {lotNumber}</div>
+            <div className="list">List of Stone & Enamel Items</div>
             <Table striped bordered hover className="tab">
               <thead>
                 <tr>
@@ -822,26 +826,12 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
                       />
                     </td>
                     <td>
-                      <div className="icon">
+                      <div className="stone-icon">
                         <FontAwesomeIcon
                           icon={faEye}
                           onClick={() => openPopup(product.id)}
                         />
-                        <WeightFormPopup
-                          showPopup={showPopup.id === product.id ? true : false}
-                          closePopup={closePopup}
-                          productId={product.id}
-                          product={product}
-                          productInfo={{
-                            before_weight: product.before_weight,
-                            after_weight: product.after_weight,
-                            barcode_weight: product.barcode_weight,
-                            difference: product.difference,
-                            adjustment: product.adjustment,
-                            final_weight: product.final_weight,
-                            product_number: product.product_number,
-                          }}
-                        />
+                      
                         <FontAwesomeIcon
                           icon={faTrash}
                           onClick={() => handleDelete(product.id)}
@@ -853,27 +843,27 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan="2">
+                  <td colSpan="2" style={{textAlign:"center"}}>
                     <b>Total Weight = </b>
                   </td>
-                  <td>
+                  <td style={{textAlign:"center"}}>
                     <b>{totalBeforeWeight}</b>
                     <button className="weight-verify" onClick={()=>handleVerify("Before")}>Verify</button>
                   </td>
-                  <td>
+                  <td style={{textAlign:"center"}}>
                     <b>{totalAfterWeight}</b>
                     <button className="weight-verify" onClick={()=>handleVerify("After")}>Verify</button>
                   </td>
-                  <td>
+                  <td style={{textAlign:"center"}}>
                     <b>{totalDifference}</b>
                   </td>
-                  <td>
+                  <td style={{textAlign:"center"}}>
                     <b>{totalAdjustment}</b>
                   </td>
-                  <td>
+                  <td style={{textAlign:"center"}}>
                     <b>{totalFinalWeight}</b>
                   </td>
-                  <td>
+                  <td style={{textAlign:"center"}}>
                     <b>{totalBarcodeWeight}</b>
                   </td>
                   <td></td>
@@ -881,29 +871,36 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
                 </tr>
                 <br/>
               </tfoot>
-              <div className="grid row-container">
-                   <div className="diffCont" >
-                      <label>Bulk Weight Difference:</label>
-                      <input value={(bulkWeightAfter - bulkWeightBefore).toFixed(3) || "-"} />
-                      
-                    
-                      </div>
-                         <div className="diffCont" >
-                         <label>Before Bulk Weight Difference:</label>
-                         <input value={(bulkWeightBefore-totalBeforeWeight).toFixed(3) || "-"} readOnly/>
-                        
-                        </div>
-                         <div className="diffCont" >
-                         <label>After Bulk Weight Difference:</label>
-                         <input value={(bulkWeightAfter-totalAfterWeight).toFixed(3)|| "-"} readOnly/>
-                          </div>
-                        </div>
             </Table>
-          </div>
-        </div>
-        <button
+            {showPopup.id &&(
+              <WeightFormPopup
+                showPopup={true}
+                closePopup={closePopup}
+                productId={showPopup.id}
+                product={products.find(p => p.id === showPopup.id)}
+                productInfo={products.find(p => p.id === showPopup.id)}
+                updateProductList={setProducts}
+              />
+            )}
+            <div className="products-page-diff-wrapper">
+              <div className="diffCont">
+                <label>Bulk Weight Difference:</label>
+                <input value={(bulkWeightAfter - bulkWeightBefore).toFixed(3) || "-"} readOnly />
+              </div>
+
+              <div className="diffCont">
+                <label>Before Bulk Weight Difference:</label>
+                <input value={(bulkWeightBefore-totalBeforeWeight).toFixed(3) || "-"} readOnly />
+              </div>
+
+              <div className="diffCont">
+                <label>After Bulk Weight Difference:</label>
+                <input value={(bulkWeightAfter-totalAfterWeight).toFixed(3)|| "-"} readOnly />
+              </div>
+              <button
           style={{
-            marginTop: "1rem",
+            marginTop: "2rem",
+            marginBottom: "2rem",
             marginLeft: "4rem",
             height: "2rem",
             width: "8rem",
@@ -920,7 +917,8 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
         <button
           onClick={() => handleBulkExportPdf(products)}
           style={{
-            marginTop: "1rem",
+            marginTop: "2rem",
+            marginBottom: "2rem",
             marginLeft: "4rem",
             height: "2rem",
             width: "8rem",
@@ -933,6 +931,10 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
         >
           Print All
         </button>
+            </div>
+          </div>
+        </div>
+        
         {showAddItemsPopup && (
               <AddProduct
               showAddItemsPopup={showAddItemsPopup}
