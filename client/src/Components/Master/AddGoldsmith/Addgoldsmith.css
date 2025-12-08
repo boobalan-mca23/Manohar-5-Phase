@@ -47,8 +47,8 @@
   margin-bottom: 8px;
   font-weight: 700;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
   background-clip: text;
 }
 
@@ -199,6 +199,7 @@
   padding: 18px 15px;
   text-align: left;
   color: white;
+  background-color: #392c2c;
   font-weight: 600;
   font-size: 14px;
   letter-spacing: 0.5px;
@@ -207,15 +208,15 @@
   white-space: nowrap;
 }
 
-.goldsmith-table thead th:first-child {
+/* .goldsmith-table thead th:first-child {
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
-}
+} */
 
-.goldsmith-table thead th:last-child {
+/* .goldsmith-table thead th:last-child {
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
-}
+} */
 
 .goldsmith-table tbody tr {
   border-bottom: 1px solid #e2e8f0;
