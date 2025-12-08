@@ -1,153 +1,369 @@
-/* .in-position{
+/* ============================================
+   VIEW POPUP (WEIGHT FORM) — CLEAN REVAMP
+   Prefix: vw-
+   ============================================ */
+
+/* OVERLAY */
+.vw-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 4000;
+}
+
+/* MODAL */
+.vw-modal {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  max-height: 92vh;
+  background: #ffffff;
+  border-radius: 18px;
+  padding-bottom: 1rem;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  
-} */
-
-.formmm-containerrr {
-  padding: 20px;
-  max-width: 900px;
-  margin: 0 20px;
-
+  box-shadow: 0px 8px 30px rgba(0,0,0,0.15);
+  animation: vw-popup 0.28s ease;
 }
 
-
-.formmm-group {
-  margin-bottom: 20px;
-  display: flex; 
-  flex-direction: column; 
-  align-items: flex-start; 
+@keyframes vw-popup {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
 }
 
-
-.formmm-group label {
-  margin-bottom: 8px;
-  font-weight: bold;
-}
-
-
-.formmm-group input {
-  padding: 10px;
-  width: 100%; 
-  max-width: 400px; 
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box; 
- 
-}
-
-
-.savee-buttonn {
+/* CLOSE BUTTON */
+.vw-close-wrap {
+   position: relative;
+  padding: 1.4rem 1.8rem 0.5rem;
   display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
+  justify-content: flex-end;
 }
 
-
-.savee-buttonn button {
-  background-color: #25274D;
-  font-weight: bold;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  color: white;
-  border: none; 
-  transition: background-color 0.3s ease; 
-}
-
-.savee-buttonn button:hover {
-  cursor: pointer;
-  background-color: #3D3D6B;
-  color: white;
-}
-
-
-.popup-2 {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+.vw-close-btn {
+  background: #f2f3f7;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
-}
-
-.popup-contentt {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 5px;
-  text-align: left; 
-  height: auto; 
-  width: 90%; 
-  max-width: 900px; 
-}
-
-
-.closee {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  width: 100%;
-}
-
-.closee-button {
-  cursor: pointer;
-  font-weight: bold;
-  color: #25274D;
-}
-
-
-.centered-webcam {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) ; 
-  z-index: 9999;
-  display: flex;
   justify-content: center;
-  align-items: center;
- 
-}
-.centered-webcam video {
-  transform: rotate(0deg);  
-   
-  width: 100vw;              
-  height: 150vh;             
-}
-
-
-
-.name button {
-  font-weight: bold;
-  font-size: 1rem;
-  border-radius: 5px;
-  height: 2.5rem;
-  background-color: #25274D;
-  color: white;
-}
-
-.name button:hover {
   cursor: pointer;
-  background-color: #3D3D6B;
+  transition: 0.2s;
+  color: #333;
+}
+
+.vw-close-btn:hover {
+  background: #25274D;
   color: white;
+  transform: rotate(90deg) scale(1.05);
 }
 
-
-.log {
-  height: 70px;
-  color: black;
-  margin-right: 2rem;
-}
-.popup-contentt{
-  max-height: 80vh; 
+/* FORM AREA */
+.vw-fields {
+  padding: 0 1.2rem 1.2rem;
   overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.vw-fields > div { /* each top-level field container */
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.vw-fields::-webkit-scrollbar {
+  width: 10px;
+}
+.vw-fields::-webkit-scrollbar-thumb {
+  background: #c4c4c4;
+  border-radius: 10px;
+}
+
+/* LABELS */
+.vw-fields label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #1A2A47;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 0.25rem;
+}
+
+/* INPUT */
+.vw-input {
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: #f8f9fc;
+  border: 2px solid #e0e3ea;
+  transition: 0.2s;
+  font-size: 1rem;
+}
+
+.vw-input:focus {
+  border-color: #25274D;
+  outline: none;
+  background: white;
+  box-shadow: 0 0 6px rgba(37,39,77,0.28);
+}
+
+/* INPUT + TOOLS ROW */
+.vw-input-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+.vw-input-row .vw-input {
+  flex: 1 1 auto;
+  min-width: 260px;
+  max-width: calc(100% - 200px); /* keeps room for tools */
+}
+
+/* TOOLS WRAPPER */
+.vw-tools {
+  flex: 0 0 200px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  background: #eef1f6;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+}
+
+.vw-tools .vw-thumb {
+  width: 64px;
+  height: 64px;
+}
+
+.vw-tools a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.5rem;
+}
+
+.vw-input-row.no-tools .vw-input {
+  max-width: 480px;
+}
+
+
+.vw-tools svg,
+.vw-tools a {
+  cursor: pointer;
+  /* padding: 0.45rem; */
+  border-radius: 6px;
+  transition: 0.2s;
+  color: #1A2A47;
+}
+
+.vw-tools svg:hover,
+.vw-tools a:hover {
+  background: #1A2A47;
+  color: white !important;
+}
+
+/* THUMBNAIL IMAGE */
+.vw-thumb {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid #d6d6d6;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.vw-thumb:hover {
+  transform: scale(1.06);
+  border-color: #1A2A47;
+}
+
+/* BUTTONS FOOTER */
+.vw-buttons {
+  padding: 1.5rem 2rem;
+  background: #f4f5fa;
+  border-top: 1px solid #e1e3ea;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.vw-btn-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.vw-btn-primary {
+  background: #25274D !important;
+  color: white !important;
+  padding: 0.8rem 2.2rem !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  transition: 0.2s !important;
+  width: auto !important;
+  min-width: 160px;
+  align-self: center;
+}
+
+
+.vw-btn-primary:hover {
+  background: #17192f !important;
+  transform: translateY(-2px);
+}
+
+/* IMAGE POPUP */
+.vw-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+}
+
+.vw-preview-modal {
+  background: white;
+  padding: 12px;
+  border-radius: 14px;
+  max-width: 90%;
+  max-height: 88vh;
+  animation: vw-popup 0.25s ease;
+  position: relative;
+}
+
+.vw-preview-full-img {
+  max-width: 100%;
+  max-height: 82vh;
+  border-radius: 10px;
+}
+
+/* PREVIEW CLOSE */
+.vw-preview-close {
+  position: absolute;
+  right: -12px;
+  top: -12px;
+  background: red;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vw-preview-close:hover {
+  background: #b70f0f;
+}
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+
+  .vw-input-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .vw-tools {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+  .vw-input-row .vw-input {
+    max-width: 100%;
+  }
+
+  .vw-modal {
+    max-width: 96%;
+    border-radius: 12px;
+  }
+  .vw-fields {
+    padding: 0 1.2rem 1.2rem;
+  }
+}
+/* Webcam Fullscreen Popup */
+.vw-cam-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+}
+
+/* Popup box */
+.vw-cam-box {
+  background: #ffffff;
   padding: 20px;
+  border-radius: 18px;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.25);
+  animation: scaleIn 0.25s ease;
+}
+
+/* Webcam video */
+.vw-cam-video {
+  width: 100% !important;
+  height: 460px !important;
+  object-fit: cover;
+  border-radius: 14px;
+  background: black;
+}
+
+/* Capture button */
+.vw-cam-btn {
+  background: #25274D;
+  color: white;
+  padding: 0.6rem 2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s;
+}
+
+.vw-cam-btn:hover {
+  background: #17192f;
+  transform: translateY(-2px);
+}
+
+/* Close button inside webcam popup */
+.vw-cam-close-btn {
+  background: red;
+  color: white;
+  /* position: absolute;
+  top: -12px;
+  right: -12px; */
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
