@@ -5,14 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faTrash, faEye, faCamera } from "@fortawesome/free-solid-svg-icons";
 import Table from "react-bootstrap/Table";
 import { useParams, useLocation } from "react-router-dom";
-// import "../AddPlainProduct/Product.css";
-// import WeightFormPopup from "./View"; 
 import ReactDOM from "react-dom";
 import Navbarr from "../../Navbarr/Navbarr";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-// import Barcode from "react-qr-code";
 import html2canvas from "html2canvas";
+import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactDOMServer from "react-dom/server";
@@ -35,17 +33,6 @@ const PlainProducts = () => {
   const searchParams = new URLSearchParams(location.search);
   const lotnameQuery = searchParams.get("lotname");
   const [lotNumber, setLotNumber] = useState(lotnameQuery || lot_id || "");
-  const [bulkWeightBefore, setBulkWeightBefore] = useState("");
-  const [bulkWeightAfter, setBulkWeightAfter] = useState("");
-  const [beforeWeight, setBeforeWeight] = useState("");
-  const [afterWeight, setAfterWeight] = useState("");
-  const [productNumber, setProductNumber] = useState("");
-  const [productWeight, setProductWeight] = useState("");
-  const [finalWeight, setFinalWeight] = useState("");
-  const [difference, setDifference] = useState("");
-  const [adjustment, setAdjustment] = useState("");
-  const [selectedProductId, setSelectedProductId] = useState(null);
-  const [status, setStatus] = useState("");
   const [showPopup, setShowPopup] = useState({ id: null, value: false });
   const [filterOpt, setFilterOpt] = useState("all");
 
@@ -69,14 +56,11 @@ const PlainProducts = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const [editProduct, setEditProduct] = useState(null);
+  const [savingProduct, setSavingProduct] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [printing, setPrinting] = useState(false);
 
-  // keep refs used earlier
-  const afterWeightRef = useRef(null);
-  const differenceRef = useRef(null);
-  const adjustmentRef = useRef(null);
-  const finalWeightRef = useRef(null);
-  const productNumberRef = useRef(null);
-  const productWeightRef = useRef(null);
 
   // fetch lot and products (uses your plainLot endpoint)
 useEffect(() => {
@@ -102,6 +86,7 @@ useEffect(() => {
         : [];
 
       setProducts(plainProducts);
+      console.log("lot entry name:", lotEntry.lot_name);
       if (lotEntry?.lot_name) setLotNumber(lotEntry.lot_name);
       if (!lotEntry?.lot_name && payload.lotInfo?.lotId) setLotNumber(payload.lotInfo.lotId);
     } catch (err) {
@@ -114,8 +99,6 @@ useEffect(() => {
   fetchMasters();
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [lot_id]);
-
-
 
   // fetch masters (items + goldsmith)
   const fetchMasters = async () => {
@@ -173,6 +156,9 @@ useEffect(() => {
 
   // exportPDF and handleBulkExportPdf kept (copied trimmed for brevity but same behavior)
   const exportPDF = () => {
+    if (pdfLoading) return;
+    setPdfLoading(true);
+    try{
     const doc = new jsPDF();
     const imgWidth = 30; 
     const imgHeight = 20; 
@@ -208,16 +194,25 @@ useEffect(() => {
       headStyles: { fillColor: [36, 36, 66], halign: "center" },
     });
     doc.save("plain_products.pdf");
+  } finally {
+    setPdfLoading(false);
+  }
   };
 
   // keep the big barcode export function (you had it intact earlier), omitted here for brevity. Use your existing one if needed.
 const handleBulkExportPdf = async (items) => {
+  if (printing) return;
+  setPrinting(true);
   console.log("items", items);
   if (!Array.isArray(items) || items.length === 0) {
     toast.info("No items to print");
+    setPrinting(false);
     return;
   }
-  if (isGeneratingPdf) return;
+  if (isGeneratingPdf) {
+  setPrinting(false);
+  return;
+}
   isGeneratingPdf = true;
 
   try {
@@ -234,7 +229,8 @@ const handleBulkExportPdf = async (items) => {
     for (let i = 0; i < items.length; i++) {
       const item = items[i] || {};
       // --- sanitize values
-      const rawId = item.product_id ?? item.product_id ?? item.id ?? "";
+      console.log("item for pdf", item);
+      const rawId = item.product_number ?? item.product_id ?? item.id ?? "";
       // make sure qrValue is a string and not "undefined"
       let qrValue = rawId === undefined || rawId === null ? "" : String(rawId).trim();
       // if qrValue empty, fallback to productName or an empty string
@@ -361,23 +357,30 @@ const handleBulkExportPdf = async (items) => {
     toast.error("Failed to generate PDF. See console.");
   } finally {
     isGeneratingPdf = false;
+    setPrinting(false);
   }
 };
 
 
   // Delete function (uses plainProducts delete endpoint)
   const handleDelete = async (productId) => {
+    if (deletingId) return; 
     if (!window.confirm("Are you sure you want to delete this product?")) return;
-    try {
-      const res = await axios.delete(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/delete/${productId}`);
-      if (res.status === 200) {
-        setProducts(prev => prev.filter(p => p.id !== productId));
-        toast.success("Product deleted successfully!");
+    setDeletingId(productId);
+      try {
+        const res = await axios.delete(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/delete/${productId}`);
+        if (res.status === 200) {
+          setProducts(prev => prev.filter(p => p.id !== productId));
+          toast.success("Product deleted successfully!");
+        } else {
+          toast.error("Failed to delete product.");
+        }
+      } catch (err) {
+        console.error("Error deleting product:", err);
+        toast.error("There was an error deleting the product.");
+      } finally {
+        setDeletingId(null);
       }
-    } catch (err) {
-      console.error("Error deleting product:", err);
-      toast.error("There was an error deleting the product.");
-    }
   };
 
 
@@ -477,58 +480,80 @@ const handleBulkExportPdf = async (items) => {
     }
   };
 
-// Save new plain product
-const handleSavePlainProduct = async () => {
-  if (!productName || !workerName) { toast.error("Please select product and goldsmith"); return; }
-  if (!grossWeight || !stoneWeight) { toast.error("Please enter weights"); return; }
-  if (!fileBlobRef.current) { toast.error("Please capture an image (camera)"); return; }
-
-  const fd = new FormData();
-  // make backend robust: include multiple lot keys
-  fd.append("lotId", String(lot_id));
-  fd.append("lot_id", String(lot_id));
-  fd.append("plainLotId", String(lot_id));
-
-  // plain-specific fields
-  fd.append("productName", productName);
-  fd.append("workerName", workerName);
-  fd.append("grossWeight", String(grossWeight));
-  fd.append("stoneWeight", String(stoneWeight));
-  fd.append("netWeight", String(netWeight));
-  fd.append("goldSmithCode", (goldsmithsList.find(gs=>String(gs.id)===String(selectedGoldsmithId))?.goldSmithCode) || "");
-  fd.append("itemCode", (itemsList.find(it=>String(it.id)===String(selectedItemId))?.itemCode) || "");
-
-  // IMPORTANT: backend expects itemType (must be uppercase)
-  fd.append("itemType", "PLAIN");
-
-  // send file using field name gross_weight_img so server's img mapping is clear
-  fd.append("gross_weight_img", fileBlobRef.current, fileBlobRef.current.name || `gross_${Date.now()}.jpg`);
-console.log("Submitting new plain product with data:",fd)
-  try {
-    const res = await axios.post(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/create`, fd, {
-      headers: { "Content-Type": "multipart/form-data" },
-      timeout: 30000,
-    });
-
-    const newP = res.data.newProduct;
-    // const newP = res.data?.newProduct || res.data?.createdProduct || res.data;
-    // console.log("dar", res.data.productImage);
-    console.log("boo test", res.data);
-    if (!newP) {
-      toast.error("Create response shape unexpected — check console");
-      console.error("Create product response:", res.data);
+  // Save new plain product
+  const handleSavePlainProduct = async () => {
+    if (savingProduct) return;
+    setSavingProduct(true);
+    if (!productName || !workerName) {
+      toast.error("Please select product and goldsmith");
+      setSavingProduct(false);
       return;
     }
-    console.log("Created new plain product:", newP);
-    setProducts(prev => [newP, ...prev]);
-    toast.success("Product added");
-    fileBlobRef.current = null; setPreviewUrl(null); setShowAddPopup(false);
-  } catch (err) {
-    console.error("Create product failed:", err?.response?.data || err);
-    const msg = err?.response?.data?.message || err?.response?.data?.err || "Create failed";
-    toast.error(msg);
-  }
-};
+
+    if (!grossWeight || !stoneWeight) {
+      toast.error("Please enter weights");
+      setSavingProduct(false);
+      return;
+    }
+    // if (!fileBlobRef.current) { toast.error("Please capture an image (camera)"); return; }
+
+    const fd = new FormData();
+    // make backend robust: include multiple lot keys
+    fd.append("lotId", String(lot_id));
+    fd.append("lot_id", String(lot_id));
+    fd.append("plainLotId", String(lot_id));
+
+    // plain-specific fields
+    fd.append("productName", productName);
+    fd.append("workerName", workerName);
+    fd.append("grossWeight", String(grossWeight));
+    fd.append("stoneWeight", String(stoneWeight));
+    fd.append("netWeight", String(netWeight));
+    fd.append("goldSmithCode", (goldsmithsList.find(gs=>String(gs.id)===String(selectedGoldsmithId))?.goldSmithCode) || "");
+    fd.append("itemCode", (itemsList.find(it=>String(it.id)===String(selectedItemId))?.itemCode) || "");
+
+    // IMPORTANT: backend expects itemType (must be uppercase)
+    fd.append("itemType", "PLAIN");
+
+    // send file using field name gross_weight_img so server's img mapping is clear
+    // ONLY append image if it exists
+    if (fileBlobRef.current) {
+      fd.append(
+        "gross_weight_img",
+        fileBlobRef.current,
+        fileBlobRef.current.name || `gross_${Date.now()}.jpg`
+      );
+    }
+
+   console.log("Submitting new plain product with data:",fd)
+    try {
+      const res = await axios.post(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/create`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+        timeout: 30000,
+      });
+
+      const newP = res.data.newProduct;
+      // const newP = res.data?.newProduct || res.data?.createdProduct || res.data;
+      // console.log("dar", res.data.productImage);
+      console.log("boo test", res.data);
+      if (!newP) {
+        toast.error("Create response shape unexpected — check console");
+        console.error("Create product response:", res.data);
+        setSavingProduct(false);
+        return;
+      }
+      console.log("Created new plain product:", newP);
+      setProducts(prev => [...prev, newP]);
+      toast.success("Product added");
+      fileBlobRef.current = null; setPreviewUrl(null); setShowAddPopup(false);
+    } catch (err) {
+      console.error("Create product failed:", err?.response?.data || err);
+      const msg = err?.response?.data?.message || err?.response?.data?.err || "Create failed";
+      toast.error(msg);
+    }finally {
+      setSavingProduct(false);
+    }
+  };
 
 
 
@@ -596,9 +621,11 @@ console.log("Submitting new plain product with data:",fd)
 
         {/* keep Bulk weight section removed in plain mode (you told earlier) */}
         <div id="page-to-pdf">
-          <div className="table-container">
-            <div className="list">List of Items</div>
-            <Table striped bordered hover className="tab">
+          <div className="plain-table-container">
+             <div className="list-2">Lot : {lotNumber}</div>
+            <div className="list">List of Plain Items</div>
+            <div className="list"></div>
+            <Table striped bordered hover className="plain-tab">
               <thead>
                 <tr>
                   <th>S.No</th>
@@ -613,7 +640,7 @@ console.log("Submitting new plain product with data:",fd)
                 </tr>
               </thead>
               <tbody>
-                {console.log("ssss",filterProducts)}
+                {/* {console.log("ssss",filterProducts)} */}
                 {filterProducts.map((product, index) => (
                   <tr key={product.id || index}>
                     <td>{index + 1}</td>
@@ -648,10 +675,10 @@ console.log("Submitting new plain product with data:",fd)
                       readOnly />
                     </td>
                     <td>
-                      <input style={{ fontSize: "0.95rem" }} value={product.status ?  "Sold":"UnSold" || ""}  readOnly />
+                      <input style={{ fontSize: "0.95rem" }} value={product.status ?  "Sold": "Active"}  readOnly />
                     </td>
                     <td>
-                      <div className="icon" style={{ display: "flex", gap: 18,marginLeft:"50px" }}>
+                      <div className="icon" style={{ display: "flex", gap: 18, justifyContent: "center" }}>
                         <FontAwesomeIcon
                             icon={faEye}
                             onClick={() => {
@@ -661,7 +688,13 @@ console.log("Submitting new plain product with data:",fd)
                             style={{ cursor: "pointer" }}
                           />
 
-                        <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(product.id)} style={{ cursor: "pointer" }} />
+                        <FontAwesomeIcon icon={faTrash}
+                        style={{
+                            cursor: deletingId === product.id ?  "not-allowed":"pointer",
+                            opacity: deletingId === product.id ?  0.5 : 1, 
+                            pointerEvents: deletingId === product.id ? "none":"auto",
+                        }}  
+                        onClick={() => handleDelete(product.id)} />
                       </div>
                     </td>
                   </tr>
@@ -681,8 +714,8 @@ console.log("Submitting new plain product with data:",fd)
         </div>
 
         <div style={{ margin: "1rem 0 2rem 4rem", display: "flex", gap: 12 }}>
-          <button onClick={exportPDF} style={actionBtnStyle}>Export as PDF</button>
-          <button onClick={() => handleBulkExportPdf(products)} style={actionBtnStyle}>Print All</button>
+          <button onClick={exportPDF} disabled={pdfLoading} style={actionBtnStyle}>{pdfLoading ? "Exporting..." : "Export as PDF"}</button>
+          <button onClick={() => handleBulkExportPdf(products)} style={actionBtnStyle}>{printing ? "Printing..." : "Print All"}</button>
         </div>
       </div>
 
@@ -768,13 +801,22 @@ console.log("Submitting new plain product with data:",fd)
 
                 {/* Camera area: camera icon (black), capture, preview */}
                 <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8 }}>
-                  <button onClick={startCamera} title="Open camera" style={cameraBtnStyle}>
-                    <FontAwesomeIcon icon={faCamera} style={{ color: "black" }} /> &nbsp;Open Camera
+                  <button onClick={startCamera} title="Open camera" style={cameraBtnStyle} >
+                    <FontAwesomeIcon icon={faCamera} style={{ color: "black" }} /> {cameraOpen ? "Open Camera" : "Open Camera"}
                   </button>
 
                   <button onClick={captureFromCamera} title="Capture" style={captureBtnStyle}>Capture</button>
-
-                  <button onClick={openPreview} title="Preview captured image" style={previewBtnStyle}>Preview</button>
+                  <button
+                    onClick={openPreview}
+                    title="Preview captured image"
+                    style={{
+                      ...previewBtnStyle,
+                      opacity: previewUrl ? 1 : 0.4,
+                      pointerEvents: previewUrl ? "auto" : "none",
+                    }}
+                  >
+                    Preview
+                  </button>
                 </div>
 
                 {/* video element only visible if cameraOpen */}
@@ -788,7 +830,7 @@ console.log("Submitting new plain product with data:",fd)
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
-              <button onClick={handleSavePlainProduct} style={saveBtnStyle}>Save</button>
+              <button onClick={handleSavePlainProduct} style={saveBtnStyle} disabled={savingProduct}>{savingProduct ? "Saving..." : "Save"}</button>
               <button onClick={closeAddPopup} style={cancelBtnStyle}>Cancel</button>
             </div>
           </div>
@@ -883,46 +925,96 @@ console.log("Submitting new plain product with data:",fd)
                 <label style={{ marginTop: 8 }}>Net Weight</label>
                 <input style={inputStyle} value={editProduct.netWeight} readOnly />
 
-                {/* Image Preview */}
-                <label style={{ marginTop: 8 }}>Current Image</label>
-               <img 
-                  src={`${REACT_APP_BACKEND_SERVER_URL}/uploads/${editProduct.product_images?.[0]?.gross_weight_img}`} 
-                  alt="Product" 
-                  style={{width:'300px'}}
-                />
+                {/* --- CURRENT IMAGE --- */}
+                  <label style={{ marginTop: 12 }}>Current Image</label>
+                  <img
+                    src={`${REACT_APP_BACKEND_SERVER_URL}/uploads/${editProduct.product_images?.[0]?.gross_weight_img}`}
+                    alt="Product"
+                    style={{ width: "300px", borderRadius: "10px" }}
+                  />
 
+                  {/* --- CAMERA CONTROLS --- */}
+                  <div style={{ marginTop: 15, display: "flex", gap: 10 }}>
+                    <button onClick={startCamera} style={cameraBtnStyle}>
+                      <FontAwesomeIcon icon={faCamera} /> Camera
+                    </button>
+
+                    <button onClick={captureFromCamera} style={captureBtnStyle}>
+                      Capture
+                    </button>
+
+                    <button
+                      onClick={() => setShowPreviewModal(true)}
+                      style={{
+                        ...previewBtnStyle,
+                        opacity: previewUrl ? 1 : 0.4,
+                        pointerEvents: previewUrl ? "auto" : "none"
+                      }}
+                    >
+                      Preview
+                    </button>
+                  </div>
+
+                  {/* --- CAMERA PREVIEW --- */}
+                  {cameraOpen && (
+                    <div style={{ marginTop: 10 }}>
+                      <video ref={videoRef} autoPlay style={{ width: "100%", borderRadius: 8 }} />
+                      <canvas ref={canvasRef} style={{ display: "none" }} />
+                    </div>
+                  )}
               </div>
             </div>
 
             {/* Save + Cancel */}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 16 }}>
               <button style={saveBtnStyle} onClick={updatePlainProduct}>Save</button>
-              <button style={cancelBtnStyle} onClick={() =>{ 
-                setEditProduct(null)}}>Cancel</button>
+              <button style={cancelBtnStyle} onClick={() => setEditProduct(null)}>Cancel</button>
             </div>
           </div>
         </div>
       )}
+
 
 
       {/* Preview modal */}
       {showPreviewModal && previewUrl && (
         <div className="plain-modal-overlay" style={modalOverlayStyle}>
-          <div className="plain-modal-box" style={{ ...modalBoxStyle, width: "min(90vw, 720px)" }}>
+          <div className="plain-modal-box" style={{ ...modalBoxStyle, width: "min(25rem, 720px)",padding: "16px",borderRadius: "12px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ margin: 0 }}>Captured Image</h3>
               <button onClick={() => setShowPreviewModal(false)} style={closeBtnStyle}><FontAwesomeIcon icon={faXmark} /></button>
             </div>
             <div style={{ marginTop: 12 }}>
-              <img src={previewUrl} alt="preview" style={{ width: "100%", borderRadius: 6 }} />
+              <img
+                src={previewUrl}
+                alt="preview"
+                style={{
+                  width: "100%",
+                  maxWidth: "280px",
+                  height: "auto",
+                  borderRadius: "10px",
+                  display: "block",
+                  margin: "0 auto",
+                  boxShadow: "0px 4px 12px rgba(0,0,0,0.15)"
+                }}
+              />
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
-              <button onClick={() => { navigator.clipboard?.writeText(previewUrl); toast.success("Image URL copied"); }} style={saveBtnStyle}>Copy URL</button>
+              {/* <button onClick={() => { navigator.clipboard?.writeText(previewUrl); toast.success("Image URL copied"); }} style={saveBtnStyle}>Copy URL</button> */}
               <button onClick={() => setShowPreviewModal(false)} style={cancelBtnStyle}>Close</button>
             </div>
           </div>
         </div>
       )}
+      <ToastContainer 
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          pauseOnHover
+          theme="light"
+        />
     </>
   );
 };

@@ -129,91 +129,90 @@ const AddNewRestore = () => {
 
   return (
     <>
-      <Navbarr />
-      <div className="restoreback-tab">
-        <div id="page-to-pdf">
-          <h2>Restore Details</h2>
-          <BarcodeReader onScan={handleScan} />
+      <div className="addrestore-page">
+  <Navbarr />
 
-          <Table striped bordered hover className="add-tab">
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Product.No</th>
-                <th>Before Weight</th>
-                <th>After Weight</th>
-                <th>Difference</th>
-                <th>Adjustment</th>
-                <th>Final Weight</th>
-                <th>Enamel Weight</th>
-              </tr>
-            </thead>
-            <tbody>
-              {scannedProducts.length > 0 ? (
-                scannedProducts.map((product, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{transform_text(product.product_number)}</td>
-                    <td>{product.before_weight}</td>
-                    <td>{product.after_weight}</td>
-                    <td>{product.difference}</td>
-                    <td>{product.adjustment}</td>
-                    <td>{product.barcode_weight}</td>
-                    <td>{product.final_weight}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8">No products found.</td>
-                </tr>
-              )}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan="2">
-                  <b>Total Weight</b>
-               </td>
-                <td>
-                  <b>{totalBeforeWeight}</b>
-                </td>
-                <td>
-                  <b>{totalAfterWeight}</b>
-                </td>
-                <td>
-                  <b>{totalDifference}</b>
-                </td>
-                <td>
-                  <b>{totalAdjustment}</b>
-                </td>
-                <td>
-                  <b>{totalBarcodeWeight}</b>
-                </td>
-                <td>
-                  <b>{totalFinalWeight}</b>
-                </td>
-              </tr>
-            </tfoot>
-          </Table>
-        </div>
+  <div className="addrestore-card" id="page-to-pdf">
+    <button className="addrestore-back-btn" onClick={() => navigate("/restore")}>
+      ← Back
+    </button>
+    <h2 className="addrestore-title">Restore Details</h2>
+    <BarcodeReader onScan={handleScan} />
 
-        <div className="pdf-btn">
-          <input
-            type="text"
-            className="restore-name-input"
-            placeholder="Enter Restore name"
-            value={restoreName}
-            onChange={(e) => setRestoreName(e.target.value)}
-          />
-        </div>
+    <Table className="addrestore-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Product.No</th>
+          <th>Before Weight</th>
+          <th>After Weight</th>
+          <th>Difference</th>
+          <th>Adjustment</th>
+          <th>Final Weight</th>
+          <th>Enamel Weight</th>
+        </tr>
+      </thead>
 
-        <div className="button-save">
-          <button className="pdf" onClick={()=>{handleSave()}} disabled={scannedProducts.length===0?true:false}>Save</button>
-          <button className="pdf" onClick={exportPDF}>
-            Export as PDF
-          </button>
-        </div>
-        <br />
-      </div>
+      <tbody>
+        {scannedProducts.length > 0 ? (
+          scannedProducts.map((product, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{transform_text(product.product_number)}</td>
+              <td>{product.before_weight}</td>
+              <td>{product.after_weight}</td>
+              <td>{product.difference}</td>
+              <td>{product.adjustment}</td>
+              <td>{product.barcode_weight}</td>
+              <td>{product.final_weight}</td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="8">No products found.</td>
+          </tr>
+        )}
+      </tbody>
+
+      <tfoot>
+        <tr>
+          <td colSpan="2"><b>Total Weight</b></td>
+          <td><b>{totalBeforeWeight}</b></td>
+          <td><b>{totalAfterWeight}</b></td>
+          <td><b>{totalDifference}</b></td>
+          <td><b>{totalAdjustment}</b></td>
+          <td><b>{totalBarcodeWeight}</b></td>
+          <td><b>{totalFinalWeight}</b></td>
+        </tr>
+      </tfoot>
+    </Table>
+  </div>
+
+  <div className="addrestore-name-box">
+    <input
+      type="text"
+      className="addrestore-name-input"
+      placeholder="Enter Restore name"
+      value={restoreName}
+      onChange={(e) => setRestoreName(e.target.value)}
+    />
+  </div>
+
+  <div className="addrestore-btn-row">
+    <button
+      className="addrestore-btn"
+      onClick={handleSave}
+      disabled={scannedProducts.length === 0}
+    >
+      Save
+    </button>
+
+    <button className="addrestore-btn" onClick={exportPDF}>
+      Export PDF
+    </button>
+  </div>
+</div>
+
     </>
   );
 };

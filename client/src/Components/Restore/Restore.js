@@ -51,48 +51,61 @@ const Restore = () => {
   }
   return (
     <>
-      <div className="restore-bg">
-        <Navbarr />
-        <br></br>
-        <div className="restoreBtnContainer">
-          <button
-            className="restoreBtn"
-            onClick={() =>navigate('/restore/newRestore')}
-          >
-            Add New Restore
-          </button>
-        </div>
+      <div className="restore-page">
+  <Navbarr />
 
-        <div className="tab-container">
-          <Table striped bordered hover className="tab">
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Created at</th>
-                <th>Restore Name </th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {restoreProducts.length>=1 ? restoreProducts.map((item,index)=>(
-                <tr key={index+1}>
-                  <td>{index+1}</td>
-                  <td>{new Date(item.created_at).toLocaleDateString("en-GB")}</td>
-                  <td>{item.description}</td>
-                  <td>
-                    <button className="restoreActions" onClick={()=>{navigate(`/restore/ViewRestore/${item.restore_number}`)}}>View</button>
-                    <button className="restoreActions" onClick={()=>{handleRestoreDelete(item.id)}}>Delete</button>  
-                  </td>
-                </tr>
-              )):
-              
-              (<tr>
-                  <td colSpan="4">No Restore Product found.</td>
-                </tr>)}
-            </tbody>
-          </Table>
-        </div>
-      </div>
+  <div className="restore-btn-container">
+    <button className="restore-btn" onClick={() => navigate('/restore/newRestore')}>
+      Add New Restore
+    </button>
+  </div>
+
+  <div className="restore-table-card">
+    <Table className="restore-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Created at</th>
+          <th>Restore Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {restoreProducts.length > 0 ? (
+          restoreProducts.map((item, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{new Date(item.created_at).toLocaleDateString("en-GB")}</td>
+              <td>{item.description}</td>
+              <td>
+                <button
+                  className="restore-action-btn"
+                  onClick={() => navigate(`/restore/ViewRestore/${item.restore_number}`)}
+                >
+                  View
+                </button>
+
+                <button
+                  className="restore-action-btn"
+                  onClick={() => handleRestoreDelete(item.id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="4">No Restore Product found.</td>
+          </tr>
+        )}
+      </tbody>
+
+    </Table>
+  </div>
+</div>
+
     </>
   );
 };

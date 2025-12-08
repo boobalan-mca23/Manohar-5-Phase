@@ -57,7 +57,7 @@
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
-  height: 20rem;
+  height: 25rem;
 }
 
 .add-item-card h2 {
@@ -154,15 +154,16 @@
   text-align: left;
   font-size: 14px;
   font-weight: 600;
+  background-color: #392c2c;
 }
 
-.items-table th:first-child {
+/* .items-table th:first-child {
   border-top-left-radius: 12px;
 }
 
 .items-table th:last-child {
   border-top-right-radius: 12px;
-}
+} */
 
 .items-table td {
   padding: 16px;

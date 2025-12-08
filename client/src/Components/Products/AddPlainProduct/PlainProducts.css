@@ -1,6 +1,8 @@
-/* ===========================================
-   PAGE BACKGROUND (Same as Home & Lot Pages)
-=========================================== */
+.background * {
+  font-family: "Inter", sans-serif !important;
+  box-sizing: border-box;
+}
+
 .background {
   min-height: 100vh;
   background:
@@ -15,22 +17,24 @@
   position: relative;
 }
 
-/* ===========================================
-   PAGE TITLE ANIMATION (Fade Down)
-=========================================== */
 .list {
   font-size: 1.8rem;
   font-weight: bold;
   color: #1A2A47;
   margin-bottom: 20px;
   text-align: center;
-  animation: fadeInDown 0.8s ease;
+  animation: fadeInUp 0.6s ease;
+}
+.list-2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #1A2A47;
+  margin-bottom: 0.2rem;
+  text-align: center;
+  animation: fadeInUp 0.6s ease;
 }
 
-/* ===========================================
-   TABLE CONTAINER CARD
-=========================================== */
-.table-container {
+.plain-table-container {
   background: #ffffff;
   width: 95%;
   margin: 0 auto;
@@ -40,17 +44,14 @@
   animation: fadeInUp 0.9s ease;
 }
 
-/* ===========================================
-   TABLE STYLING (Premium)
-=========================================== */
-.tab {
+.plain-tab {
   width: 100%;
   border-collapse: separate !important;
   border-spacing: 0 10px !important;
 }
 
 /* TABLE HEADER */
-.tab thead th {
+.plain-tab thead th {
   background: #1A2A47;
   color: white !important;
   padding: 12px;
@@ -60,37 +61,37 @@
 }
 
 /* TABLE ROW */
-.tab tbody tr {
+.plain-tab tbody tr {
   background: #f7fbff;
   border-radius: 12px;
   transition: 0.25s ease;
 }
 
 /* Rounded corner fix for table rows */
-.tab tbody tr td:first-child {
+.plain-tab tbody tr td:first-child {
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
 }
-.tab tbody tr td:last-child {
+.plain-tab tbody tr td:last-child {
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
 }
 
 /* Hover animation */
-.tab tbody tr:hover {
+.plain-tab tbody tr:hover {
   transform: translateY(-4px);
   box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.10);
 }
 
 /* TABLE CELL */
-.tab tbody td {
+.plain-tab tbody td {
   padding: 14px;
   text-align: center;
   border: none !important;
 }
 
 /* TABLE INPUTS */
-.tab input {
+.plain-tab input {
   background: transparent;
   border: none;
   width: 90%;
@@ -109,9 +110,6 @@ tfoot tr td {
   padding-top: 12px;
 }
 
-/* ===========================================
-   ACTION ICONS
-=========================================== */
 .icon svg {
   transition: 0.2s ease;
 }
@@ -121,9 +119,6 @@ tfoot tr td {
   transform: scale(1.15);
 }
 
-/* ===========================================
-   ADD ITEMS BUTTON
-=========================================== */
 .plain-add-items {
   display: flex;
   gap: 12px;
@@ -158,9 +153,6 @@ tfoot tr td {
   font-size: 0.9rem;
 }
 
-/* ===================================================
-   POPUP OVERLAY (dimmed background)
-=================================================== */
 .plain-modal-overlay {
   position: fixed;
   inset: 0;
@@ -172,9 +164,6 @@ tfoot tr td {
   animation: fadeIn 0.3s ease;
 }
 
-/* ===================================================
-   MODAL BOX (White premium card)
-=================================================== */
 .plain-modal-box {
   background: #ffffff;
   width: min(900px, 95vw);
@@ -209,9 +198,6 @@ tfoot tr td {
   transform: scale(1.1);
 }
 
-/* ===================================================
-   INPUT + SELECT STYLING
-=================================================== */
 .plain-modal-box label {
   font-size: 0.92rem;
   font-weight: 600;
@@ -244,9 +230,6 @@ tfoot tr td {
   background: #edf2f7;
 }
 
-/* ===================================================
-   BUTTONS
-=================================================== */
 .btn-save,
 .btn-cancel,
 .btn-camera,
@@ -315,18 +298,12 @@ tfoot tr td {
   background: #f2f2f2;
 }
 
-/* ===================================================
-   VIDEO PREVIEW
-=================================================== */
 .video-preview {
   margin-top: 10px;
   border-radius: 12px;
   overflow: hidden;
 }
 
-/* ===================================================
-   ANIMATIONS
-=================================================== */
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -337,11 +314,6 @@ tfoot tr td {
   to   { transform: scale(1); opacity: 1; }
 }
 
-
-
-/* ===========================================
-   ANIMATIONS
-=========================================== */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -364,19 +336,16 @@ tfoot tr td {
   }
 }
 
-/* ===========================================
-   RESPONSIVE FIXES
-=========================================== */
 @media (max-width: 768px) {
-  .table-container {
+  .plain-table-container {
     padding: 18px;
   }
 
-  .tab input {
+  .plain-tab input {
     font-size: 0.8rem;
   }
 
-  .tab thead th {
+  .plain-tab thead th {
     font-size: 0.8rem;
   }
 

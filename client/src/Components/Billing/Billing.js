@@ -80,51 +80,46 @@ const Billing = () => {
 
   return (
     <>
-      <Navbarr />
-      <div className="background">  
+    <Navbarr />
+    <div className="billing-page">
       <div className="bill">
         <button onClick={() => handleAddBill("customer")}>
           Add New Bill Customer
         </button>
       </div>
-
       <div className="tab-container">
-        <Table striped bordered hover className="tab">
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Created at</th>
-              <th> Bill Name </th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bills.map((bill, index) => (
-              <tr key={bill.bill_number}>
+  <Table className="tab">
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Created at</th>
+        <th>Bill Name</th>
+        <th>View</th>
+      </tr>
+    </thead>
 
-                 <td>{bill.id}</td>
-                <td>{bill.created_at}</td>
-                <td>{bill.bill_name}</td>
-                {/* <td>{index + 1}</td>
-                <td>{bill.created_at}</td>
-                <td>{bill.bill_name}</td> */}
-                <td>
-                  {/* <Link to={'/billing/bills/add'}> */}
-                <Link to={`/billing/${bill.bill_number}`}>
+    <tbody>
+      {bills.map((bill, index) => (
+        <tr key={bill.bill_number}>
+          <td>{bill.id}</td>
+          <td>{new Date(bill.created_at).toLocaleDateString("en-GB")}</td>
+          <td>{bill.bill_name}</td>
 
-                  {/* <Link to={`/billing/${bill.bill_number}/add`}> */}
-                    <button className="vieww" style={{fontSize:'1rem', fontWeight:'bold', borderRadius:'2px', width:'4rem', height:'1.6rem'}}>View</button>
-                  </Link><span> </span>
-                  <button className="vieww" style={{ fontSize:'1rem',fontWeight:'bold', borderRadius:'2px', width:'4rem', height:'1.6rem'}} onClick={() => deleteProduct(bill.id)}>
-                    {" "}
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
+          <td>
+            <Link to={`/billing/${bill.bill_number}`}>
+              <button className="vieww">View</button>
+            </Link>
+
+            <button className="vieww" onClick={() => deleteProduct(bill.id)}>
+              Delete
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </Table>
+</div>
+
       </div>
     </>
   );

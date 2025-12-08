@@ -271,13 +271,16 @@ doc.text("Bill Details", 85, 22);
   return (
     <>
       <Navbarr />
-      <div className="background">
-      <div className="back-tab">
+      <div className="addbill-page">
+      <div className="addbill-card">
         <div id="page-to-pdf">
+          <button className="addbill-back-btn" onClick={() => navigate("/billing")}>
+            ← Back
+          </button>
           <h2> Bill Details</h2>
           <BarcodeReader onScan={handleScan} />
-
-          <Table striped bordered hover className="add-tab">
+          <div className="addbill-table-wrapper">
+          <table className="addbill-table">
             <thead>
               <tr>
                 {selectedColumns.serialNo && <th>  S.No </th>}
@@ -347,29 +350,30 @@ doc.text("Bill Details", 85, 22);
                 {selectedColumns.finalWeight && <td><b>{totalFinalWeight}</b></td>}
               </tr>
             </tfoot>
-          </Table>
+          </table>
+          </div>
           </div>
 
           {bill_number === "bill" && (
-            <div className="pdf-btn">
+            <div className="addbill-name-wrapper">
               <input
                 type="text"
-                className="bill-name-input"
+                className="addbill-name-input"
                 placeholder="Enter bill name"
                 value={billName}
                 onChange={(e) => setBillName(e.target.value)}
               />
             </div>
           )}
-          <div className="button-save">
-            <button className="pdf" onClick={() => handleSellApprove("Sell")}> Save </button>
-            <button className="pdf" onClick={exportPDF}>
+          <div className="addbill-action-row">
+            <button className="addbill-btn" onClick={() => handleSellApprove("Sell")}> Save </button>
+            <button className="addbill-btn" onClick={exportPDF}>
               Export as PDF
             </button>
           </div>
           <br/>
 
-          <div className="column-checklist">
+          <div className="addbill-column-checklist">
             <label  >
               <Checkbox
                 type="checkbox"

@@ -1,9 +1,8 @@
-
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Products from "./Components/Products/Products";
 import PlainProducts from "./Components/Products/AddPlainProduct/PlainProducts";
-import Billing from './Components/Billing/Billing'
+import Billing from "./Components/Billing/Billing";
 import AddBilling from "./Components/AddBilling/AddBilling";
 import AddNewRestore from "./Components/AddRestore/AddRestore";
 import BarcodePage from "./Components/BarcodePage/BarcodePage";
@@ -18,12 +17,13 @@ import AddGoldsmith from "./Components/Master/AddGoldsmith/AddGoldsmith";
 import AddItem from "./Components/Master/AddItem/AddItem";
 import Home from "./Components/Home/Home";
 import RemoveLot from "./Components/RemovedLots/RemovedLots";
+import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
+
 import { ToastContainer } from "react-toastify";
 
 function App() {
-  const [selectedProduct, setSelectedProduct] = useState(null); 
-  const [lotNumber, setLotNumber] = useState(""); 
-
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [lotNumber, setLotNumber] = useState("");
 
   return (
     <>
@@ -31,17 +31,26 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="navbarr" element={<Navbarr />} />
-          <Route path="/admin" element={<AdminUsers />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredAccess="userCreateAccess">
+                <AdminUsers />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/products/:lot_id"
             element={
-              <Products
-                setSelectedProduct={setSelectedProduct}
-                setLotNumber={setLotNumber}
-              />
+              <ProtectedRoute requiredAccess="productAccess">
+                <Products
+                  setSelectedProduct={setSelectedProduct}
+                  setLotNumber={setLotNumber}
+                />
+              </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/plainlot/:lot_id"
             element={
@@ -51,7 +60,15 @@ function App() {
               />
             }
           />
-          <Route path="/billing" element={<Billing />} />
+          <Route
+            path="/billing"
+            element={
+              <ProtectedRoute requiredAccess="billingAccess">
+                <Billing />
+              </ProtectedRoute>
+            }
+          />
+
           {/* <Route
           path="/billing/:bill_number/add"
           element={
@@ -61,10 +78,26 @@ function App() {
             />
           }
         /> */}
-         
-          <Route path="/home" element={<Home/>} />
-          <Route path="/additem" element={<AddItem />} />
-          <Route path="/addgoldsmith" element={<AddGoldsmith />} />
+
+          <Route path="/home" element={<Home />} />
+          <Route
+            path="/additem"
+            element={
+              <ProtectedRoute requiredAccess="itemAccess">
+                <AddItem />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/addgoldsmith"
+            element={
+              <ProtectedRoute requiredAccess="goldSmithAccess">
+                <AddGoldsmith />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="/beadsenamellot" element={<Beadsenamel />} />
           <Route path="/plainlot" element={<PlainLot />} />
           <Route path="/" element={<Login />} />
@@ -75,17 +108,18 @@ function App() {
             path="/billing/:bill_number/add/:bill_type"
             element={<AddBilling />}
           />
-          <Route path="/restore" element={<Restore/>}  /> 
+          <Route
+            path="/restore"
+            element={
+              <ProtectedRoute requiredAccess="restoreAccess">
+                <Restore />
+              </ProtectedRoute>
+            }
+          />
 
-          <Route
-            path="/restore/newRestore"
-            element={<AddNewRestore/>}
-          />
-          <Route
-           path="/restore/ViewRestore/:id"
-           element={<ViewRestore/>}
-          />
-       
+          <Route path="/restore/newRestore" element={<AddNewRestore />} />
+          <Route path="/restore/ViewRestore/:id" element={<ViewRestore />} />
+
           <Route
             path="/billing/:bill_number"
             element={
@@ -95,17 +129,17 @@ function App() {
               />
             }
           />
-           <Route
-           path="/removedLots"
+          <Route
+            path="/removedLots"
             element={
-              <>
-                <Navbarr />
-             
-             <RemoveLot/>
-              </>
-             }
-           />
-        
+              <ProtectedRoute requiredAccess="deleteLotAccess">
+                <>
+                  <Navbarr />
+                  <RemoveLot />
+                </>
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>

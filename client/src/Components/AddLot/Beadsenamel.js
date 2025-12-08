@@ -26,6 +26,7 @@ import { REACT_APP_BACKEND_SERVER_URL } from "../../config";
 const RoundedTextField = styled(TextField)({
   maxWidth: 300,
   backgroundColor: "#f7fbff",
+  borderRadius: "20px",
   // marginTop: "9rem",
   "& .MuiOutlinedInput-root": {
     borderRadius: "20px",
@@ -56,7 +57,8 @@ const StyledCard = styled(Card)({
   border: "none",
   transition: "all 0.35s ease, opacity 0.5s ease",
   opacity: 0,
-  animation: "fadeInUp 0.8s ease forwards",
+  animation: "fadeInUp 0.8s ease both",
+
 
   "&:hover": {
     transform: "translateY(-10px)",

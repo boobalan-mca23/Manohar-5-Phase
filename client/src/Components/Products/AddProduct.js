@@ -123,24 +123,7 @@ const handleWeightData=async()=>{
         }
       );
 
-    
-
-        // const uploadedImage = response.data.productImage;
-        //   console.log("Uploaded image data:", uploadedImage);
-    
-        //   if (uploadedImage && uploadedImage[imgField.fieldName]) {
-    
-        //     const imageUrl = `${REACT_APP_BACKEND_SERVER_URL}/uploads/${uploadedImage[0].before_weight_img}`;
-    
-        //     console.log(`Image URL: ${imageUrl}`);
-        //     setCapturedImages((prev) => ({
-        //       ...prev,
-        //       [imgField.fieldName]: imageUrl,
-        //     }));
-         
-        //   } else {
-        //     console.error("Image URL is not found for the given field.");
-        //   }
+  
       setProducts((prevProducts) => [
           ...prevProducts,
           response.data.newProduct,
@@ -157,10 +140,7 @@ const handleWeightData=async()=>{
   
   const uploadImage = async (image, fieldName) => {
     try {
-      // const weight = await handleWeight(); 
-      // console.log(weight.weightdata);
-      //  if(weight.weightdata!==null && weight.weightdata!==undefined){
-      
+
     
     
         try {
@@ -224,418 +204,140 @@ const handleWeightData=async()=>{
       handleWeightData()    
       setImgField({image:image,fieldName:file})
  
-      
-      // uploadImage(file, currentField);
-        // extractDigitalNumber(image);
     }
   };
   
   const handleSave=async()=>{
-    //  if(newId===" "){
-    //     alert("Don't Enter ManualData Directly And Capture image first")
-    //     return;
-    //  }
-    // try {
-    //     const updatedData = {
-    //       before_weight: parseFloat(beforeWeight),
-    //       after_weight: parseFloat(afterWeight),
-    //       barcode_weight: barcodeWeight,
-    //       product_number: productNumber||null,
-    //       difference: parseFloat(difference),
-    //       adjustment: parseFloat(adjustment),
-    //       final_weight: parseFloat(finalWeight),
-    //     };
-    
-    //     console.log("Data to send:", updatedData);
-        
-    //     const response=await axios.put(
-    //       `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/update/${newId}`,
-    //       updatedData
-    //     );
-    //          if (response.status === 200) {
-    //     setProducts((prevProducts) => [
-    //       ...prevProducts,
-    //       response.data.updateProduct,
-    //     ]);
-       
-    //     closeAddItemsPopup();
-    //      toast.success("Products saved successfully!");
-       
-       
-           
-    //   }
-    // setNewId(0)
-   
-    
-  
-    
-    //   } catch (error) {
-    //     console.error("Error updating product:", error);
-    //   }
   }
 
-  return(
-    showAddItemsPopup && (
-        <div className="popup-2">
-          <div className="popup-contentt" ref={popupRef}>
-            <div className="clos">
-              <div onClick={closeAddItemsPopup} className="close-button">
-                <FontAwesomeIcon style={{ marginLeft: "28rem" }} icon={faXmark} />
+return (
+  showAddItemsPopup && (
+    <div className="add-product-popup-overlay">
+
+      <div className="add-product-popup" ref={popupRef}>
+        
+        {/* Close Button */}
+        <button className="close-btn" onClick={closeAddItemsPopup}>
+          <FontAwesomeIcon icon={faXmark} />
+        </button>
+
+        <h2>Add New Product</h2>
+
+        <form>
+
+          {/* Product Number */}
+          <div className="input-group">
+            <label>Product Number:</label>
+            <input
+              type="text"
+              value={lotnameQuery}
+              onChange={(e) => setProductNumber(e.target.value)}
+              placeholder="Enter Product Number"
+            />
+          </div>
+
+          {/* Before Weight */}
+          <div className="input-group">
+            <label>Before Weight:</label>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+              <input
+                type="number"
+                value={beforeWeight}
+                onChange={(e) => setBeforeWeight(e.target.value)}
+                placeholder="Enter Before Weight"
+              />
+
+              <CameraAltIcon
+                className="exclude-from-pdf"
+                onClick={() => toggleWebcam("before_weight_img")}
+                style={{ cursor: "pointer" }}
+              />
+
+              {capturedImages.before_weight_img && (
+                <Link
+                    className="exclude-from-pdf"
+                    style={{ cursor: "pointer" }}
+                    onClick={() =>
+                      setBeforeWeightPreview(capturedImages.before_weight_img.replace(REACT_APP_BACKEND_SERVER_URL, ""))
+                    }
+                  >
+                    Preview
+                  </Link>
+              )}
+
+            </div>
+          </div>
+
+          {/* Preview Box */}
+          {beforeWeightPreview && (
+            <div className="img-preview-overlay" onClick={() => setBeforeWeightPreview(null)}>
+              <div className="img-preview-box" onClick={(e) => e.stopPropagation()}>
+                
+                {/* Header with title and close button */}
+                <div className="img-preview-header">
+                  <h3 className="img-preview-title">Before Weight Image</h3>
+                  <button
+                    className="img-preview-close"
+                    onClick={() => setBeforeWeightPreview(null)}
+                    aria-label="Close preview"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Image content */}
+                <div className="img-preview-content">
+                  <img
+                    src={beforeWeightPreview}
+                    alt="Before Weight Preview"
+                    loading="lazy"
+                  />
+                </div>
+
               </div>
             </div>
-            <form className="in-position">
-                   <div>
-                        <label>Product Number:</label>
-                                <input
-                               type="text"
-                              value={lotnameQuery}
-                               onChange={(e) => setProductNumber(e.target.value)}
-                               placeholder="Enter Product Number"
-                                   />
-                                </div>
-
-                             <div>
-                                 <label>Before Weight:</label>
-                                <div style={{ display: "flex", alignItems: "center",marginLeft: "15px"  }}>
-                                      <input
-                                        type="number"
-                                         value={beforeWeight}
-                                         onChange={(e) => setBeforeWeight(e.target.value)}
-                                       placeholder="Enter Before Weight"
-                                       />
-                           
+          )}
 
 
-          <div style={{ display: "flex", alignItems: "center", marginLeft: "8px" }}>
-        {capturedImages.before_weight_img && (
-          <img
-            src={REACT_APP_BACKEND_SERVER_URL + capturedImages.before_weight_img}
-            alt="Captured"
-          />
+
+        </form>
+
+        {/* Webcam */}
+        {webcamVisible && (
+          <div className="centered-webcam">
+            <Webcam
+              ref={webcamRef}
+              style={{ width: "200px", height: "300px" }}
+              screenshotFormat="image/jpeg"
+            />
+
+            <Button
+              onClick={captureImage}
+              variant="contained"
+              size="small"
+              style={{ backgroundColor: "#25274D", color: "white" }}
+            >
+              Capture
+            </Button>
+          </div>
         )}
 
-        <CameraAltIcon
-          className="exclude-from-pdf"
-          onClick={() => toggleWebcam("before_weight_img")}
-          style={{ cursor: "pointer" }}
-        />
-        <Link
-          className="exclude-from-pdf"
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            if (capturedImages.before_weight_img) {
-              setBeforeWeightPreview(capturedImages.before_weight_img);
-            }
-          }}
-          size="small"
-          variant="outlined"
-        >
-          Preview
-        </Link>
+        {/* Save Button */}
+        <div className="btn-row" style={{ marginTop: "20px" }}>
+          <button className="save-btn" onClick={createNewProduct}>
+            Save
+          </button>
+          <button className="cancel-btn" onClick={closeAddItemsPopup}>
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
-   
-    <div>
-      {beforeWeightPreview && (
-        <div className="preview-container">
-          <h3> Before Weight Preview Image</h3>
-          <img
-            src={REACT_APP_BACKEND_SERVER_URL + beforeWeightPreview}
-            alt="Preview"
-          />
-          <br />
-          <Button
-            onClick={() => setBeforeWeightPreview(null)}
-            size="small"
-            variant="outlined"
-          >
-            Close Preview
-          </Button>
-        </div>
-      )}
-    </div>
-         
-  </div>
+  )
+);
 
-  {/* Save Button */}
-  {/* <div className="button-container">
-    <button className="save-button">Save</button>
-  </div>  */}
-
-
-  
-              {/* <div>
-                <label>After Weight:</label>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <input
-                    style={{ width: "30rem" }}
-                    type="number"
-                    value={afterWeight}
-                    onChange={(e) => setAfterWeight(e.target.value)}
-                    placeholder="Enter After Weight"
-                  />
-  
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginLeft: "8px",
-                    }}
-                  >
-                    {capturedImages.after_weight_img && (
-                      <img
-                        src={REACT_APP_BACKEND_SERVER_URL+capturedImages.after_weight_img}
-                        alt="Captured"
-                        style={{
-                          maxWidth: "300px",
-                          maxHeight: "300px",
-                          borderRadius: "8px",
-                          border: "1px solid #ccc",
-                        }}
-                      />
-                    )}
-  
-                    <CameraAltIcon
-                      className="exclude-from-pdf"
-                      onClick={() => toggleWebcam("after_weight_img")}
-                      style={{ cursor: "pointer" }}
-                    />
-                    <Link
-                      className="exclude-from-pdf"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        if (capturedImages.after_weight_img) {
-                          setAfterWeightPreview(capturedImages.after_weight_img);
-                        }
-                      }}
-                      size="small"
-                      variant="outlined"
-                    >
-                      Preview
-                    </Link>
-                  </div>
-                </div>
-                <div>
-                  {afterWeightPreview && (
-                    <div
-                      style={{
-                        marginTop: "20px",
-                        padding: "10px",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        textAlign: "center",
-                      }}
-                    >
-                      <h3>After Weight Preview Image</h3>
-                      <img
-                        src={REACT_APP_BACKEND_SERVER_URL+afterWeightPreview}
-                        alt="Preview"
-                        style={{
-                          maxWidth: "300px",
-                          maxHeight: "300px",
-                          borderRadius: "8px",
-                          border: "1px solid #ccc",
-                        }}
-                      />
-                      <br />
-                      <Button
-                        onClick={() => setAfterWeightPreview(null)}
-                        size="small"
-                        variant="outlined"
-                        style={{ marginTop: "10px" }}
-                      >
-                        Close Preview
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-  
-              <div>
-                <label>Difference:</label>
-                <input
-                  style={{ width: "30rem" }}
-                  type="number"
-                  value={difference}
-                  onChange={(e) => setDifference(e.target.value)}
-                  placeholder="Enter Difference Weight"
-                />
-              </div>
-              <div>
-                <label>Adjustment:</label>
-                <input
-                  style={{ width: "30rem" }}
-                  type="number"
-                  value={adjustment}
-                  onChange={(e) => setAdjustment(e.target.value)}
-                  placeholder="Enter Adjustment Weight"
-                />
-              </div>
-              <div>
-                <label>Enamel Weight:</label>
-                <input
-                  style={{ width: "30rem" }}
-                  type="number"
-                  value={finalWeight}
-                  onChange={(e) => setFinalWeight(e.target.value)}
-                  placeholder="Enter Enamel Weight"
-                />
-              </div>
-              <div>
-                <label>Final Weight:</label>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <input
-                    style={{ width: "30rem" }}
-                    type="number"
-                    value={barcodeWeight}
-                    onChange={(e) => setBarcodeWeight(e.target.value)}
-                    placeholder="Enter Final Weight"
-                  />
-  
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginLeft: "8px",
-                    }}
-                  >
-                    {capturedImages.final_weight_img && (
-                      <img
-                        src={REACT_APP_BACKEND_SERVER_URL+capturedImages.final_weight_img}
-                        alt="Captured"
-                        style={{
-                          maxWidth: "300px",
-                          maxHeight: "300px",
-                          borderRadius: "8px",
-                          border: "1px solid #ccc",
-                        }}
-                      />
-                    )}
-  
-                    <CameraAltIcon
-                      className="exclude-from-pdf"
-                      onClick={() => toggleWebcam("final_weight_img")}
-                      style={{ cursor: "pointer" }}
-                    />
-                    <Link
-                      className="exclude-from-pdf"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        if (capturedImages.final_weight_img) {
-                          setFinalWeightPreview(capturedImages.final_weight_img);
-                        }
-                      }}
-                      size="small"
-                      variant="outlined"
-                    >
-                      Preview
-                    </Link>
-                  </div>
-                </div>
-                <div>
-                  {finalWeightPreview && (
-                    <div
-                      style={{
-                        marginTop: "20px",
-                        padding: "10px",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        textAlign: "center",
-                      }}
-                    >
-                      <h3>Final Weight Preview Image</h3>
-                      <img
-                        src={REACT_APP_BACKEND_SERVER_URL+finalWeightPreview}
-                        alt="Preview"
-                        style={{
-                          maxWidth: "300px",
-                          maxHeight: "300px",
-                          borderRadius: "8px",
-                          border: "1px solid #ccc",
-                        }}
-                      />
-                      <br />
-                      <Button
-                        onClick={() => setFinalWeightPreview(null)}
-                        size="small"
-                        variant="outlined"
-                        style={{ marginTop: "10px" }}
-                      >
-                        Close Preview
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div> */}
-            </form>
-  
-            <br></br>
-            {webcamVisible && (
-              <div
-                className="centered-webcam"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  margin: "10px 0",
-                }}
-              >
-                <Webcam
-                  ref={webcamRef}
-                  style={{
-                    width: "200px",
-                    height: "300px",
-                    // border: "2px solid #ccc",
-                  }}
-                  screenshotFormat="image/jpeg"
-                  screenshotQuality={1}
-                />
-                <Button
-                  onClick={() => captureImage("image")}
-                  variant="contained"
-                  size="small"
-                  style={{
-                    marginTop: "10px",
-                    backgroundColor: "#25274D",
-                    color: "white",
-                  }}
-                >
-                  Capture
-                </Button>
-              </div>
-            )}
-  
-            <div
-              className="button-group"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              <Button
-                className="exclude-from-pdf"
-                onClick={createNewProduct}
-                variant="contained"
-                size="small"
-                style={{
-                  backgroundColor: "#25274D",
-                  color: "white",
-                  width: "20%",
-                  top:"10px"
-                }}
-              >
-                Save
-              </Button>
-  
-            
-            </div>
-           
-          </div>
-        </div>
-      )
-    );
-  
 }
 
 export default AddProduct

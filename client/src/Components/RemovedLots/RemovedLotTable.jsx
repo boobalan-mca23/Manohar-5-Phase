@@ -18,7 +18,7 @@ const RemovedLotTable = (props) => {
   const [id, setId] = useState("");
   const [index, setIndex] = useState("");
 
-  const { removedLots, handleDelete, handleRestore ,loading} = props;
+  const { removedLots, handleDelete, handleRestore ,loading, page, setPage, totalPage} = props;
 
   const handleConfirm = () => {
     access === "restore" ? handleRestore(id, index) : handleDelete(id, index);
@@ -44,9 +44,9 @@ const RemovedLotTable = (props) => {
 
   return (
     <>
-      <div className="removed-lot-container">
-        <div className="removed-lot-header">
-          <div className="removed-lot-title">
+      <div className="removedlots-card">
+        <div className="removedlots-header">
+          <div className="removedlots-title">
             <h2>Removed Lots Information</h2>
             <FontAwesomeIcon icon={faTrashAlt} fontSize={20} />
           </div>
@@ -56,7 +56,7 @@ const RemovedLotTable = (props) => {
             variant="outlined"
             margin="normal"
             fullWidth={false}
-            className="removed-lot-search"
+            className="removedlots-search"
             onChange={(e)=>{ props.setSearchInput(e.target.value)}}
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -79,7 +79,7 @@ const RemovedLotTable = (props) => {
           />
         </div>
 
-        <Table striped bordered hover className="tab">
+        <Table striped bordered hover className="removedlots-table">
           <thead>
             <tr>
               <th>S.No</th>
@@ -104,7 +104,7 @@ const RemovedLotTable = (props) => {
                     }}
                   >
                     <CircularProgress size="2rem" />
-                    <p style={{ marginTop: "10px", fontWeight: "bold" }}>
+                    <p  className="removedlots-loader" >
                       Loading...
                     </p>
                   </div>
@@ -127,9 +127,9 @@ const RemovedLotTable = (props) => {
                     <b>{item.type}</b>
                   </td>
                   <td>
-                    <div className="lot-btn-flex">
+                    <div className="removedlots-btns">
                       <button
-                        className="lot-btn-restore"
+                        className="removedlots-btn-restore"
                         onClick={() => handleRestoreLot(item.id, index)}
                       >
                         <RestorePageIcon />
@@ -137,7 +137,7 @@ const RemovedLotTable = (props) => {
                       </button>
 
                       <button
-                        className="lot-btn-delete"
+                        className="removedlots-btn-delete"
                         onClick={() => handleDeleteLot(item.id, index)}
                       >
                         <DeleteForeverIcon />
@@ -160,6 +160,19 @@ const RemovedLotTable = (props) => {
             )}
           </tbody>
         </Table>
+        <div className="removedlots-pagination">
+                <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+                  ◀ Prev
+                </button>
+        
+                <span>
+                  Page {page} of {totalPage}
+                </span>
+        
+                <button disabled={page === totalPage} onClick={() => setPage(page + 1)}>
+                  Next ▶
+                </button>
+              </div>
         <AlertDialog
           open={open}
           setOpen={setOpen}

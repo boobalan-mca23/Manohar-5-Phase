@@ -40,7 +40,7 @@ body {
 .home-content {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 100px 30px 50px;
+  /* padding: 100px 30px 50px; */
   position: relative;
   z-index: 1;
 }
@@ -82,7 +82,7 @@ body {
 .lot-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 40px;
+  gap: 70px;
   max-width: 900px;
   margin: 0 auto 60px;
   animation: fadeInUp 0.8s ease 0.2s backwards;

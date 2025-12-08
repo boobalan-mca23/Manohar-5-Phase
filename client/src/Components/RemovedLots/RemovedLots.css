@@ -1,102 +1,194 @@
-/* Main container spacing */
-.removed-lot-container {
-  margin-top: 80px;
-  margin-left: 20px;
+.removedlots-page * {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
-/* Header row */
-.removed-lot-header {
+.removedlots-page {
+  min-height: 100vh;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      #eef3fa,
+      #eef3fa 40px,
+      #e7edf7 40px,
+      #e7edf7 80px
+    );
+  padding-top: 110px;
   display: flex;
-  justify-content:flex-start;
+  justify-content: center;
+}
+
+.removedlots-card {
+  width: 90%;
+  max-width: 1200px;
+  background: white;
+  padding: 2rem;
+  border-radius: 22px;
+  border: 2px solid #dde8f4;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+   max-height: 750px;  
+  overflow: hidden;  
+}
+
+/* HEADER SECTION */
+.removedlots-header {
+  display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
 }
 
-/* Search field */
-.removed-lot-search {
-  width: 18rem !important;
-}
-
-/* Title + Icon block */
-.removed-lot-title {
+.removedlots-title {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.removed-lot-title h2 {
+.removedlots-title h2 {
+  color: #242442;
+  font-size: 1.6rem;
   margin: 0;
 }
 
-/* Restore Button */
-.lot-btn-flex{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+/* SEARCH BAR */
+.removedlots-search {
+  width: 20rem !important;
 }
-.lot-btn-restore,.lot-btn-delete {
+
+.removedlots-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  /* outer border */
+  border: 2px solid #242442;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* TABLE HEADER */
+.removedlots-table thead tr {
+  background: #242442;
+  color: white;
+}
+
+.removedlots-table th {
+  text-align: center;
+  padding: 0.9rem;
+  font-weight: 600;
+}
+
+/* TABLE ROWS */
+.removedlots-table tbody tr {
+  background: white;
+  transition: 0.2s ease;
+}
+
+.removedlots-table tbody tr:nth-child(even) {
+  background: #f0f0f0;
+}
+
+.removedlots-table td {
+  padding: 0.85rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.removedlots-btns {
   display: flex;
+  gap: 10px;
   justify-content: center;
+}
+
+.removedlots-btn-restore {
+  background: #28a745;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: flex;
   align-items: center;
   gap: 5px;
+  transition: 0.2s ease;
 }
-.lot-btn-restore {
-  background-color: #28a745;
-  border: none;
+
+.removedlots-btn-restore:hover {
+  background: #1f8a38;
+}
+
+.removedlots-btn-delete {
+  background: #dc3545;
+  color: white;
   padding: 6px 12px;
   border-radius: 6px;
-  color: white;
+  border: none;
   cursor: pointer;
-  margin-right: 5px;
-  transition: 0.2s;
+  display: flex;
   align-items: center;
+  gap: 5px;
+  transition: 0.2s ease;
 }
 
-.lot-btn-restore:hover {
-  background-color: #218838;
+.removedlots-btn-delete:hover {
+  background: #c82333;
 }
 
-/* Delete Button */
-.lot-btn-delete {
-  background-color: #dc3545;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  transition: 0.2s;
-  
-}
-
-.lot-btn-delete:hover {
-  background-color: #c82333;
-}
-.pagination {
+.removedlots-pagination {
+  margin-top: 1.8rem;
   display: flex;
   justify-content: center;
-  margin-top: 20px;
   gap: 15px;
-  align-items: center;
 }
- 
-.pagination button {
-  padding: 8px 15px;
-  border-radius: 8px;
-  border: none;
-  background: #667eea;
+
+.removedlots-pagination button {
+  background: #242442;
   color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
   cursor: pointer;
-  transition: 0.25s;
+  font-weight: 500;
+  transition: 0.25s ease;
 }
- 
-.pagination button:disabled {
-  background: #ccc;
+
+.removedlots-pagination button:hover {
+  opacity: 0.85;
+}
+
+.removedlots-pagination button:disabled {
+  background: #8d8d8d;
   cursor: not-allowed;
 }
- 
-.pagination span {
+
+.removedlots-pagination span {
   font-weight: 600;
-  color: #2d3748;
+  color: #242442;
+}
+
+.removedlots-loader {
+  text-align: center;
+  padding: 20px;
+  font-weight: 700;
+}
+/* Scroll only inside table body */
+.removedlots-tbody-scroll {
+  display: block;
+  max-height: 400px;    /* height limit before scroll */
+  overflow-y: auto;     
+  overflow-x: hidden;
+}
+
+/* Maintain column alignment */
+.removedlots-table thead,
+.removedlots-tbody-scroll tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* Table outer border still applies */
+.removedlots-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #242442; 
 }

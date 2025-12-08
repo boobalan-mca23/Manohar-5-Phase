@@ -1,53 +1,14 @@
-*{
-    margin: 0;
-    padding: 0;
-}
-.restoreBtnContainer{
-    display: flex;
-    gap: 1rem;
-    padding-left: 6.5rem;
-    padding-top: 8rem;
-}
-/* fontSize:'1rem', fontWeight:'bold', borderRadius:'2px', width:'4rem', height:'1.6rem' */
-.restoreActions{
-   font-size: 1rem;
-   font-weight: bold;
-   border-radius: 2px;
-   background-color: rgb(36, 36, 66);
-   color: white;
-   padding: 5px;
-   cursor: pointer;
-   margin-left: 10px;
-
-}
-.restoreBtn{
-    font-weight: bold;
-    font-size: 1.1rem;
-    border-radius: 5px;
-    height: 2.2rem;
-    width: fit-content;
-    background-color: rgb(36, 36, 66);
-    color: white;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    cursor: pointer;
-}
-.restoreBtn :hover{
-    background-color: rgb(61, 61, 107);
-    color: white;  
+/* ISOLATION STARTS */
+.restore-page * {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif !important;
 }
 
-.restore-bg {
+/* Page background */
+.restore-page {
   min-height: 100vh;
-  background: #eef3fa; /* soft blue base */
-  position: relative;
-  overflow: hidden;
-  padding-top: 120px;
-}
-
-.restore-bg {
-  min-height: 100vh;
-  background: 
+  padding-top: 110px;
+    background: 
     repeating-linear-gradient(
       135deg,
       #eef3fa,
@@ -56,8 +17,91 @@
       #e7edf7 80px
     );
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 120px;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* Add button */
+.restore-btn-container {
+  width: 90%;
+  max-width: 950px;
+  margin-bottom: 1.5rem;
+}
+
+.restore-btn {
+  background: #242442;
+  color: white;
+  padding: 0.8rem 1.6rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.restore-btn:hover {
+  opacity: 0.85;
+}
+
+/* Table Card */
+.restore-table-card {
+  width: 90%;
+  max-width: 950px;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 2px solid #dde8f4;
+  box-shadow: 0px 7px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Table styling */
+.restore-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid #242442;
+}
+
+/* Header */
+.restore-table thead tr {
+  background: #242442;
+}
+
+.restore-table thead th {
+  color: white;
+  padding: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Rows */
+.restore-table tbody tr:nth-child(even) {
+  background: #f0f0f0;
+}
+
+.restore-table td {
+  padding: 0.9rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #2a2a2a;
+}
+
+/* Action buttons */
+.restore-action-btn {
+  background: #242442;
+  color: white;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin: 0 0.3rem;
+  transition: 0.25s ease;
+}
+
+.restore-action-btn:hover {
+  opacity: 0.85;
+}
+/* ISOLATION ENDS */

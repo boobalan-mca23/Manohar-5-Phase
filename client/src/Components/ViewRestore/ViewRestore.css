@@ -1,41 +1,123 @@
-.ViewContainer{
-    margin-top: 8rem;
-}
-.Viewadd-tab {
-  width: 95%;             
-  margin: 20px auto;       
-  border-collapse: collapse; 
-  background: #fff;        
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+/* ISOLATED ONLY FOR ViewRestore */
+.viewrestore-page * {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif !important;
 }
 
-.ViewRestorethead th {
-   border: 1px solid black; 
-   padding: 10px 15px;   
-   text-align: center;
-   background-color: rgb(26, 26, 56);   
-   font-weight: bold;
+.viewrestore-page {
+  min-height: 100vh;
+  padding-top: 110px;
+    background: 
+    repeating-linear-gradient(
+      135deg,
+      #eef3fa,
+      #eef3fa 40px,
+      #e7edf7 40px,
+      #e7edf7 80px
+    );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.ViewRestoretbody td {
-  border: 1px solid black; 
-  padding: 8px 12px;
+/* Card */
+.viewrestore-card {
+  width: 90%;
+  max-width: 1100px;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 2px solid #dde8f4;
+  box-shadow: 0px 7px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Title */
+.viewrestore-title {
+  text-align: center;
+  color: #242442;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Table */
+.viewrestore-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #242442;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Table Header */
+.viewrestore-thead tr {
+  background: #242442;
+}
+
+.viewrestore-thead th {
+  color: white;
+  padding: 0.9rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Table Body */
+.viewrestore-tbody tr:nth-child(even) {
+  background: #f0f0f0;
+}
+
+.viewrestore-tbody td {
+  padding: 0.8rem;
+  text-align: center;
+  color: #222;
+}
+
+/* Footer Row */
+.viewrestore-tfoot tr {
+  background: #dde8f4;
+  font-weight: 700;
+}
+
+.viewrestore-tfoot td {
+  padding: 0.85rem;
   text-align: center;
 }
 
-.viewTfoot td {
-  border: 1px solid black; 
-  padding: 10px;
-  font-weight: bold;
- 
-  text-align: center;
+/* Export Button */
+.viewrestore-btn-wrapper {
+  margin-top: 1.4rem;
 }
 
-/* Button styling */
-.button-save {
-  text-align: center;
-  margin: 20px 0;
+.viewrestore-pdf-btn {
+  background: #242442;
+  color: white;
+  padding: 0.7rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s ease;
+
 }
 
+.viewrestore-pdf-btn:hover {
+  opacity: 0.85;
+}
 
+.viewrestore-back-btn {
+  position: absolute;
+  background: #242442;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  /* margin-bottom: 15px; */
+  position: absolute;
+  transition: 0.25s ease;
+}
 
+.viewrestore-back-btn:hover {
+  opacity: 0.85;
+}

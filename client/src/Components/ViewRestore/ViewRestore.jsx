@@ -6,10 +6,12 @@ import { REACT_APP_BACKEND_SERVER_URL } from "../../config";
 import { transform_text } from "../utils"; 
 import Table from "react-bootstrap/esm/Table";
 import jsPDF from "jspdf";
+import { useNavigate } from "react-router-dom";
 import html2canvas from "html2canvas";
 import './ViewRestore.css'
-const ViewRestore=()=>{
 
+const ViewRestore=()=>{
+    const navigate=useNavigate()
     const[restoreItem,setRestoreItem]=useState([])
     const {id}=useParams()
 
@@ -92,10 +94,14 @@ const ViewRestore=()=>{
     return(
     <>
       <Navbarr></Navbarr>
-      <div className="ViewContainer">
-        <h3 style={{textAlign:"center"}}>Restore Items for #{id}</h3>
-       <Table striped bordered hover className="Viewadd-tab" id="page-to-pdf">
-            <thead className="ViewRestorethead">
+      <div className="viewrestore-page">
+        <div className="viewrestore-card">
+          <button className="viewrestore-back-btn" onClick={() => navigate('/restore')}>
+            ← Back
+          </button>
+        <h3 className="viewrestore-title">Restore Items for #{id}</h3>
+       <Table className="viewrestore-table" id="page-to-pdf">
+            <thead className="viewrestore-thead">
               <tr>
                 <th>S.No</th>
                 <th>Product.No</th>
@@ -107,7 +113,7 @@ const ViewRestore=()=>{
                 <th>Enamel Weight</th>
               </tr>
             </thead>
-            <tbody className="ViewRestoretbody">
+            <tbody className="viewrestore-tbody">
               {restoreItem.length > 0 ? (
                 restoreItem.map((product, index) => (
                   <tr key={index}>
@@ -127,7 +133,7 @@ const ViewRestore=()=>{
                 </tr>
               )}
             </tbody>
-            <tfoot className="viewTfoot">
+            <tfoot className="viewrestore-tfoot">
               <tr>
                 <td colSpan="2">
                   <b>Total Weight</b>
@@ -154,11 +160,12 @@ const ViewRestore=()=>{
             </tfoot>
           </Table>
         </div>
-        <div className="button-save">
+        <div className="viewrestore-btn-wrapper">
          
-          <button className="pdf" onClick={exportPDF}>
+          <button className="viewrestore-pdf-btn" onClick={exportPDF}>
             Export as PDF
           </button>
+        </div>
         </div>
     </>)
 }

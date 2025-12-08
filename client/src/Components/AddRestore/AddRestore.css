@@ -1,13 +1,145 @@
-.restoreback-tab {
-    background-color: white; 
-    border-radius: 8px; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 80rem;
-    margin-left: 6rem;
-    padding: 2rem;
-    padding-top: 2rem;
-    overflow-x: auto; 
-    height: auto; 
-    margin-top: 7rem;
-    
+/* ISOLATION START */
+.addrestore-page * {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif !important;
+}
+
+/* PAGE BG */
+.addrestore-page {
+  min-height: 100vh;
+    background: 
+    repeating-linear-gradient(
+        135deg,
+        #eef3fa,
+        #eef3fa 40px,
+        #e7edf7 40px,
+        #e7edf7 80px
+    );
+  padding-top: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* MAIN CARD */
+.addrestore-card {
+  width: 90%;
+  max-width: 1100px;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 2px solid #dde8f4;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+  overflow-x: auto; /* horizontal scrolling */
+}
+
+/* TITLE */
+.addrestore-title {
+  text-align: center;
+  color: #242442;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* TABLE */
+.addrestore-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid #242442;
+}
+
+/* HEADER */
+.addrestore-table thead tr {
+  background: #242442;
+}
+
+.addrestore-table th {
+  color: white;
+  padding: 0.9rem;
+  text-align: center;
+}
+
+/* BODY */
+.addrestore-table td {
+  padding: 0.8rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.addrestore-table tbody tr:nth-child(even) {
+  background: #f0f0f0;
+}
+
+/* FOOTER TOTALS */
+.addrestore-table tfoot tr {
+  background: #dde8f4;
+  font-weight: 700;
+}
+
+/* INPUT BOX */
+.addrestore-name-box {
+  width: 90%;
+  max-width: 1100px;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+
+.addrestore-name-input {
+  width: 20rem;
+  padding: 0.7rem;
+  border: 2px solid #242442;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* BUTTON ROW */
+.addrestore-btn-row {
+  width: 90%;
+  max-width: 1100px;
+  display: flex;
+  gap: 15px;
+  margin-bottom: 2rem;
+}
+
+/* BUTTON STYLE */
+.addrestore-btn {
+  background: #242442;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.addrestore-btn:hover {
+  opacity: 0.85;
+}
+
+.addrestore-btn:disabled {
+  background: #8d8d8d;
+  cursor: not-allowed;
+}
+
+/* ISOLATION END */
+.addrestore-back-btn {
+  background: #242442;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  /* margin-bottom: 15px; */
+  position: absolute;
+  transition: 0.25s ease;
+}
+
+.addrestore-back-btn:hover {
+  opacity: 0.85;
 }
