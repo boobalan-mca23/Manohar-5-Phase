@@ -45,7 +45,7 @@ const Navbarr = () => {
   return (
     <div className="nav-bar">
       {/* Logo */}
-      <img src={images} alt="Logo" className="imge" />
+      <img src={images} alt="Logo" onClick={()=>navigate('/home')} className="imge" />
 
       <div className="positionn">
         {/* Billing */}
