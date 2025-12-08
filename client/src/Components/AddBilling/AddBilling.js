@@ -42,7 +42,9 @@ doc.setFontSize(18);
     const pageWidth = doc.internal.pageSize.width;  
 const textWidth = doc.getStringUnitWidth("Bill Details") * doc.internal.getFontSize(); 
 const xPos = (pageWidth - textWidth) / 2;  
-doc.text("Bill Details", 85, 22);  
+doc.text(`Bill Name : ${billName}`, 10, 22);
+doc.text("Bill Details", 85, 22); 
+doc.text(`Date:${new Date().toLocaleDateString("en-GB")}`,150,22)
    
     const columns = [];
     if (selectedColumns.serialNo) columns.push({ title: "S.No", dataKey: "serialNo" });
@@ -261,12 +263,25 @@ doc.text("Bill Details", 85, 22);
   const totalAdjustment = scannedProducts
     .reduce((acc, product) => acc + parseFloat(product.adjustment || 0), 0)
     .toFixed(3);
-  const totalBarcodeWeight = scannedProducts
-    .reduce((acc, product) => acc + parseFloat(product.barcode_weight || 0), 0)
-    .toFixed(3);
-  const totalFinalWeight = scannedProducts
-    .reduce((acc, product) => acc + parseFloat(product.final_weight || 0), 0)
-    .toFixed(3);
+   const totalBarcodeWeight = scannedProducts.reduce((acc, product) => {
+
+  if (product.itemType === "PLAIN") {
+    return acc + parseFloat(product.netWeight || 0);
+  } else {
+    // STONE
+    return acc + parseFloat(product.barcode_weight || 0);
+  }
+}, 0).toFixed(3);
+
+  const totalFinalWeight=scannedProducts.reduce((acc,product)=>{
+    if (product.itemType === "PLAIN") {
+    return acc + parseFloat(product.stoneWeight || 0);
+  } else {
+    // STONE
+    return acc + parseFloat(product.final_weight || 0);
+  }
+  },0).toFixed(3)
+
 
   return (
     <>
@@ -304,19 +319,18 @@ doc.text("Bill Details", 85, 22);
                 )}
               </tr>
             </thead>
-            <tbody>
+           <tbody>
               {scannedProducts.length > 0 ? (
                 scannedProducts.map((product, index) => (
                   <tr key={index}>
                     {selectedColumns.serialNo && <td>{index + 1}</td>}
-                    {selectedColumns.productNumber && <td> {transform_text(product.product_number)}</td>}
-                    {selectedColumns.beforeWeight && <td>{product.before_weight}</td>}
-                    {selectedColumns.afterWeight && <td>{product.after_weight}</td>}
-                    {selectedColumns.difference && <td>{product.difference}</td>}
-                    {selectedColumns.adjustment && <td>{product.adjustment}</td>}
-                    {selectedColumns.barcodeWeight&& <td>{product.barcode_weight}</td>}
-                    {selectedColumns.finalWeight && <td>{product.final_weight}</td>}
-                    
+                    {selectedColumns.productNumber && <td> { product.itemType==="STONE"? transform_text(product.product_number):product.product_number}</td>}
+                    {selectedColumns.beforeWeight && <td>{product.itemType==="STONE"? product.before_weight:"-"}</td>}
+                    {selectedColumns.afterWeight && <td>{product.itemType==="STONE"? product.after_weight:"-"}</td>}
+                    {selectedColumns.difference && <td>{product.itemType==="STONE"?product.difference:"-"}</td>}
+                    {selectedColumns.adjustment && <td>{product.itemType==="STONE"?product.adjustment:"-"}</td>}
+                    {selectedColumns.barcodeWeight&& <td>{product.itemType==="PLAIN"?product.netWeight:product.barcode_weight}</td>}
+                    {selectedColumns.finalWeight && <td>{product.itemType==="PLAIN"?product.stoneWeight:product.final_weight}</td>}
                     {selectedColumns.complete && bill_number === "bill" && (
                       <td>
                         <input

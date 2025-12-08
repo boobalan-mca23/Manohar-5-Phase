@@ -5,6 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { TextField, InputAdornment } from "@mui/material";
 import RestorePageIcon from "@mui/icons-material/RestorePage";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import Checkbox from "@mui/material/Checkbox";
 import "./RemovedLots.css";
 import React from "react";
 import { useState } from "react";
@@ -15,38 +16,77 @@ const RemovedLotTable = (props) => {
   const [open, setOpen] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState("");
   const [access, setAccess] = useState("");
-  const [id, setId] = useState("");
-  const [index, setIndex] = useState("");
+  
+  const { removedLots, handleDelete, handleRestore ,loading,selectedProduct,setSelectedProduct
+  } = props;
 
-  const { removedLots, handleDelete, handleRestore ,loading, page, setPage, totalPage} = props;
+  const handleSelect = (id, checked) => {
+  setSelectedProduct((prev) => {
+    let updatedList = [...prev.selectedItems];
+
+    if (checked) {
+      // Add id if not exist
+      if (!updatedList.includes(id)) {
+        updatedList.push(id);
+      }
+    } else {
+      // Remove when unchecked
+      updatedList = updatedList.filter((item) => item !== id);
+    }
+
+    return {
+      count: updatedList.length,
+      selectedItems: updatedList,
+    };
+  });
+};
+
+const handleSelectAll = (checked) => {
+  if (checked) {
+    const allIds = removedLots.map((item) => item.id);
+    setSelectedProduct({
+      count: allIds.length,
+      selectedItems: allIds,
+    });
+  } else {
+    setSelectedProduct({
+      count: 0,
+      selectedItems: [],
+    });
+  }
+};
+
 
   const handleConfirm = () => {
-    access === "restore" ? handleRestore(id, index) : handleDelete(id, index);
+    access === "restore" ? handleRestore() : handleDelete();
   };
 
-  const handleRestoreLot = (id, index) => {
-    setOpen(true);
-    setConfirmMessage(`Are You Want To Restore This Lot ${id}`);
-    setAccess("restore");
-    setId(id);
-    setIndex(index);
+  const handleRestoreLot = () => {
+     if(selectedProduct.selectedItems.length!==0){
+         setOpen(true);
+         setConfirmMessage(`Are You Want To Restore The Selected Lots LOT ID: ${selectedProduct.selectedItems}`);
+         setAccess("restore");
+     }
+   
+   
   };
 
-  const handleDeleteLot = (id, index) => {
-    setOpen(true);
-    setConfirmMessage(
-      `Are you sure you want to permanently delete this lot? All products under this lot will also be removed. Lot ID: ${id}`
-    );
-    setAccess("delete");
-    setId(id);
-    setIndex(index);
+  const handleDeleteLot = () => {
+     if(selectedProduct.selectedItems.length!==0){
+      setOpen(true);
+      setConfirmMessage(
+      `Are you sure you want to permanently delete this lot? All products under this lot will also be removed.
+    LOT ID:  ${selectedProduct.selectedItems}`);
+      setAccess("delete");
+     }
+   
   };
 
   return (
     <>
-      <div className="removedlots-card">
-        <div className="removedlots-header">
-          <div className="removedlots-title">
+      <div>
+        <div>
+          <div >
             <h2>Removed Lots Information</h2>
             <FontAwesomeIcon icon={faTrashAlt} fontSize={20} />
           </div>
@@ -56,7 +96,7 @@ const RemovedLotTable = (props) => {
             variant="outlined"
             margin="normal"
             fullWidth={false}
-            className="removedlots-search"
+            className="removed-lot-search"
             onChange={(e)=>{ props.setSearchInput(e.target.value)}}
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -77,16 +117,41 @@ const RemovedLotTable = (props) => {
               ),
             }}
           />
+        <div >
+                      <button
+                        
+                        onClick={()=>{handleRestoreLot()}}
+                      >
+                        <RestorePageIcon />
+                        Restore Selected({selectedProduct.count})
+                      </button>
+
+                      <button
+                       
+                        onClick={()=>{handleDeleteLot()}}
+                      >
+                        <DeleteForeverIcon />
+                        Permantely Delete Selected({selectedProduct.count})
+                      </button>
+                      </div>
         </div>
 
-        <Table striped bordered hover className="removedlots-table">
+        <Table striped bordered hover className="tab">
           <thead>
             <tr>
               <th>S.No</th>
               <th>Date</th>
               <th>Lot Name</th>
               <th>Lot Type</th>
-              <th>Actions</th>
+               <th>
+               <Checkbox
+              style={{ color: "white" }}
+              checked={selectedProduct.selectedItems.length === removedLots.length}
+              onChange={(e) => handleSelectAll(e.target.checked)}
+               />
+               Select All
+             </th>
+
             </tr>
           </thead>
           <tbody>
@@ -104,7 +169,7 @@ const RemovedLotTable = (props) => {
                     }}
                   >
                     <CircularProgress size="2rem" />
-                    <p  className="removedlots-loader" >
+                    <p style={{ marginTop: "10px", fontWeight: "bold" }}>
                       Loading...
                     </p>
                   </div>
@@ -126,24 +191,13 @@ const RemovedLotTable = (props) => {
                   >
                     <b>{item.type}</b>
                   </td>
-                  <td>
-                    <div className="removedlots-btns">
-                      <button
-                        className="removedlots-btn-restore"
-                        onClick={() => handleRestoreLot(item.id, index)}
-                      >
-                        <RestorePageIcon />
-                        Restore
-                      </button>
+                  <td> 
+                    <input
+                     type="checkbox"
+                     checked={selectedProduct.selectedItems.includes(item.id)}
+                     onChange={(e) => handleSelect(item.id, e.target.checked)}
+                     />
 
-                      <button
-                        className="removedlots-btn-delete"
-                        onClick={() => handleDeleteLot(item.id, index)}
-                      >
-                        <DeleteForeverIcon />
-                        Delete
-                      </button>
-                    </div>
                   </td>
                 </tr>
               ))
@@ -160,19 +214,6 @@ const RemovedLotTable = (props) => {
             )}
           </tbody>
         </Table>
-        <div className="removedlots-pagination">
-                <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-                  ◀ Prev
-                </button>
-        
-                <span>
-                  Page {page} of {totalPage}
-                </span>
-        
-                <button disabled={page === totalPage} onClick={() => setPage(page + 1)}>
-                  Next ▶
-                </button>
-              </div>
         <AlertDialog
           open={open}
           setOpen={setOpen}

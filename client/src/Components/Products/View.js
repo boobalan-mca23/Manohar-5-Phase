@@ -377,9 +377,18 @@ const handleSave = async () => {
      formData.append('difference', parseFloat(difference))
      formData.append('adjustment', parseFloat(adjustment))
      formData.append('final_weight',parseFloat(finalWeight))
-     formData.append('before_weight_img',updateImg[0].before_weight_img)
-     formData.append('after_weight_img',updateImg[0].after_weight_img)
-     formData.append('final_weight_img',updateImg[0].final_weight_img)
+    if (updateImg[0].before_weight_img) {
+      console.log('b')
+     formData.append("before_weight_img", updateImg[0].before_weight_img);
+     }
+    if (updateImg[0].after_weight_img) {
+     formData.append("after_weight_img", updateImg[0].after_weight_img);
+      console.log('a')
+    }
+    if (updateImg[0].final_weight_img) {
+       console.log('f')
+     formData.append("final_weight_img", updateImg[0].final_weight_img);
+    }
      formData.append('itemType',"STONE")
     // const formData=new formData()
     // formData.appendC

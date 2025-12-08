@@ -675,7 +675,7 @@ const handleBulkExportPdf = async (items) => {
                       readOnly />
                     </td>
                     <td>
-                      <input style={{ fontSize: "0.95rem" }} value={product.status ?  "Sold": "Active"}  readOnly />
+                      <input style={{ fontSize: "0.95rem" }} value={ product.product_type==="active" ? "Active" : "Sold"}  readOnly />
                     </td>
                     <td>
                       <div className="icon" style={{ display: "flex", gap: 18, justifyContent: "center" }}>

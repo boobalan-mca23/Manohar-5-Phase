@@ -121,19 +121,6 @@ exports.getProductByNumber = async (req, res) => {
         product_type: "sold",
         // lot_info: { lot_process: "completed" },
       },
-      select: {
-        id: true,
-        product_number: true,
-        before_weight: true,
-        after_weight: true,
-        difference: true,
-        adjustment: true,
-        final_weight: true,
-        barcode_weight:true,
-        tag_number: true,
-        created_at: true,
-        updated_at: true,
-      },
     });
     if (product.length === 0) {
       return res.status(500).json({ msg: "Product not found" });

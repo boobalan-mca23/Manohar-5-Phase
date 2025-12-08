@@ -93,33 +93,46 @@ exports.get_Diactivate_Lots = async (req, res) => {
 };
 
 
-// changeToactivate stage
-exports.activateLot=async(req,res)=>{
-     
-      const {id}=req.params
+exports.activateLot = async (req, res) => {
+  try {
+    const { selectedProduct } = req.body;  // [1,2,3]
 
-      try{
-        if (isNaN(id))  return res.status(400).json({ message: "Lot id is Required" });
-         const existLot = await prisma.lot_info.findUnique({
-          where: {
-           id:parseInt(id),
-         },
-        });
+    if (!selectedProduct || !Array.isArray(selectedProduct) || selectedProduct.length === 0) {
+      return res.status(400).json({ message: "Selected product IDs required" });
+    }
 
-        if (!existLot) return res.status(400).json({ message: "Lot Not Found" });
+    // Convert all ids to integer
+    const lotIds = selectedProduct.map(id => parseInt(id));
 
-        const changeToActivate=await prisma.lot_info.update({
-            where:{
-                id:parseInt(id),
-            },
-            data:{
-                isAvailable:true
-            }
-        })
-        return res.status(200).json({ success: true,message: "Change to Activate SuccessFully",changeToActivate,});
-      
-      }catch(err){
-        console.log(err.message);
-        return res.status(500).json({ message: err.message });
+    // Check existing lots
+    const existLot = await prisma.lot_info.findMany({
+      where: {
+        id: { in: lotIds }
       }
-}
+    });
+
+    if (existLot.length === 0) {
+      return res.status(404).json({ message: "No lots found for given IDs" });
+    }
+
+    // Update all given IDs
+    const changeToActivate = await prisma.lot_info.updateMany({
+      where: {
+        id: { in: lotIds }
+      },
+      data: {
+        isAvailable: true
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Lots activated successfully",
+      updatedCount: changeToActivate.count
+    });
+
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ message: err.message });
+  }
+};

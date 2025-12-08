@@ -443,12 +443,9 @@ const UpdatingProduct = async (req, res) => {
       });
     }
 
-    const img = {
-      before_weight_img: isStone ? fileMap["before_weight_img"] || null : null,
-      after_weight_img: isStone ? fileMap["after_weight_img"] || null : null,
-      final_weight_img: isStone ? fileMap["final_weight_img"] || null : null,
-      gross_weight_img: isPlain ? fileMap["gross_weight_img"] || null : null,
-    };
+    
+    console.log('fileMap',fileMap)
+    console.log('file map',Object.keys(fileMap).length)
 
     // Update the product in the database
 
@@ -457,6 +454,9 @@ const UpdatingProduct = async (req, res) => {
       data: {
         ...productInfo,
       },
+      include:{
+        product_images:true
+      }
     });
 
     let productImage = await prisma.product_images.findFirst({
@@ -465,16 +465,23 @@ const UpdatingProduct = async (req, res) => {
 
     if (productImage) {
       // Update existing image
-      await prisma.product_images.update({
+      // file map have any new img that time only we need to update the image to that product
+      if(Object.keys(fileMap).length!==0){
+        await prisma.product_images.update({
         where: { id: productImage.id },
-        data: img,
+        data:{
+         ...fileMap
+        },
       });
+      }
+
+      
     } else {
       // Create new image set
       await prisma.product_images.create({
         data: {
           product_id: Number(id),
-          ...img,
+          ...fileMap,
         },
       });
     }

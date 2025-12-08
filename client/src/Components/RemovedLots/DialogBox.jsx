@@ -30,7 +30,12 @@ export default function AlertDialog(props) {
         aria-describedby="alert-dialog-description"
       >
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="alert-dialog-description"
+            sx={{
+              color:"black",
+              fontSize:"1rem"
+            }}
+           >
             {confirmMessage}
           </DialogContentText>
         </DialogContent>

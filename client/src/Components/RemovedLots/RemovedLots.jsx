@@ -19,6 +19,10 @@ const RemoveLot = () => {
     message: "",
     severity: "",
   });
+  const [selectedProduct,setSelectedProduct]=useState({
+      count:0,
+      selectedItems:[]
+  })
 
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
@@ -59,10 +63,15 @@ const RemoveLot = () => {
   }, [page, limit,search]);
 
 
-  const handleRestore = async (id, index) => {
+  const handleRestore = async () => {
     try {
+      const payload={
+         selectedProduct:selectedProduct.selectedItems
+      }
       const resposne = await axios.put(
-        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/restoreLot/changetoActivate/${id}`
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/restoreLot/changetoActivate`,
+      payload
+           
       );
       if (resposne.data.success === true) {
         setSnackbar({
@@ -70,7 +79,18 @@ const RemoveLot = () => {
           message: resposne.data.message,
           severity: "success",
         });
-        setRemovedLots((prev) => prev.filter((_, i) => i !== index));
+      const updatedRemovedLots = removedLots.filter(
+         (item) => !selectedProduct.selectedItems.includes(item.id)
+        );
+        
+        setRemovedLots(updatedRemovedLots);
+         
+        // also clear selected items
+      
+         setSelectedProduct({
+        count: 0,
+        selectedItems: []
+       });
       }
     } catch (err) {
       console.log("err", err.message);
@@ -82,20 +102,36 @@ const RemoveLot = () => {
     }
   };
 
-  const handleDelete = async (id, index) => {
+  const handleDelete = async () => {
     try {
-      const resposne = await axios.delete(
-        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/lot/lot_info/${id}`
+      const payload={
+         selectedProduct:selectedProduct.selectedItems
+      }
+
+      const resposne = await axios.put(
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/lot/lotDelete`,
+        payload
       );
 
       if (resposne.data.success === true) {
         setSnackbar({
           open: true,
-          message: resposne.data.msg,
+          message: resposne.data.message,
           severity: "success",
         });
+       const updatedRemovedLots = removedLots.filter(
+         (item) => !selectedProduct.selectedItems.includes(item.id)
+        );
+        setRemovedLots(updatedRemovedLots);
+         
+        // also clear selected items
+      
+         setSelectedProduct({
+        count: 0,
+        selectedItems: []
+       });
 
-        setRemovedLots((prev) => prev.filter((_, i) => i !== index));
+        
       }
     } catch (err) {
       console.log("err", err.message);
@@ -113,19 +149,29 @@ const RemoveLot = () => {
 
   return (
     <>
-    <div className="removedlots-page">
       <RemovedLotTable
         removedLots={removedLots}
         handleDelete={handleDelete}
         handleRestore={handleRestore}
         loading={loading}
-        setSearchInput={setSearchInput}  // NEW
-        page={page}
-        setPage={setPage}
-        totalPage={totalPage}
+        setSearchInput={setSearchInput} 
+        selectedProduct={selectedProduct}
+        setSelectedProduct={setSelectedProduct}
       />
       
-        
+        <div >
+        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+          ◀ Prev
+        </button>
+
+        <span>
+          Page {page} of {totalPage}
+        </span>
+
+        <button disabled={page === totalPage} onClick={() => setPage(page + 1)}>
+          Next ▶
+        </button>
+      </div>
 
       {/* Snackbar for feedback */}
       <Snackbar
@@ -149,7 +195,6 @@ const RemoveLot = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-      </div>
     </>
   );
 };

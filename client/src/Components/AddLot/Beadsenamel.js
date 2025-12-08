@@ -190,10 +190,9 @@ function Beadsenamel() {
   const confirmDelete = async () => {
     try {
       // Make a DELETE request to remove the lot from the database
-      const response = await axios.delete(
-        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/lot/lot_info/${deleteLotId}`
+       const response = await axios.put(
+        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/restoreLot/changetoDiactivate/${deleteLotId}`
       );
-
       if (response.status === 200) {
         const updatedLotNumbers = lotNumbers.filter(
           (lot, index) => index !== deleteIndex

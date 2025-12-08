@@ -46,37 +46,46 @@ const AddNewRestore = () => {
   };
 
   //  Export as PDF
-  const exportPDF = () => {
+ const exportPDF = () => {
   const input = document.getElementById("page-to-pdf");
 
   html2canvas(input, { scale: 2 }).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
 
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const margin = 5; // 10mm margin on all sides
+    const margin = 5;
     const imgWidth = pageWidth - margin * 2;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    let heightLeft = imgHeight;
-    let position = margin + 20; // leave space for heading
+    const imgData = canvas.toDataURL("image/png");
 
-    // Add heading
+    // -------- Center Heading --------
+    const heading = "Restore Details";
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(18);
-    
 
-    // Add first page content
-    pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight - position;
+    const textWidth =
+      pdf.getStringUnitWidth(heading) *
+      pdf.internal.getFontSize() /
+      pdf.internal.scaleFactor;
 
-    // Add extra pages if content exceeds one page
+    const textX = (pageWidth - textWidth) / 2;
+
+    pdf.text(heading, textX, 15); // top center
+
+    let contentStartY = 25; // table starts below heading
+
+    // -------- First Page Content --------
+    pdf.addImage(imgData, "PNG", margin, contentStartY, imgWidth, imgHeight);
+
+    let heightLeft = imgHeight - (pageHeight - contentStartY);
+
+    // -------- Extra Pages --------
     while (heightLeft > 0) {
       pdf.addPage();
-      position = margin;
-      pdf.addImage(imgData, "PNG", margin, position - (imgHeight - heightLeft), imgWidth, imgHeight);
+      pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
       heightLeft -= pageHeight - margin;
     }
 
@@ -99,12 +108,24 @@ const AddNewRestore = () => {
   const totalAdjustment = scannedProducts
     .reduce((acc, product) => acc + parseFloat(product.adjustment || 0), 0)
     .toFixed(3);
-  const totalBarcodeWeight = scannedProducts
-    .reduce((acc, product) => acc + parseFloat(product.barcode_weight || 0), 0)
-    .toFixed(3);
-  const totalFinalWeight = scannedProducts
-    .reduce((acc, product) => acc + parseFloat(product.final_weight || 0), 0)
-    .toFixed(3);
+ const totalBarcodeWeight = scannedProducts.reduce((acc, product) => {
+
+  if (product.itemType === "PLAIN") {
+    return acc + parseFloat(product.netWeight || 0);
+  } else {
+    // STONE
+    return acc + parseFloat(product.barcode_weight || 0);
+  }
+}, 0).toFixed(3);
+
+  const totalFinalWeight=scannedProducts.reduce((acc,product)=>{
+    if (product.itemType === "PLAIN") {
+    return acc + parseFloat(product.stoneWeight || 0);
+  } else {
+    // STONE
+    return acc + parseFloat(product.final_weight || 0);
+  }
+  },0).toFixed(3)
 
     const handleSave=async()=>{
       const payload={
@@ -132,14 +153,14 @@ const AddNewRestore = () => {
       <div className="addrestore-page">
   <Navbarr />
 
-  <div className="addrestore-card" id="page-to-pdf">
+  <div className="addrestore-card" >
     <button className="addrestore-back-btn" onClick={() => navigate("/restore")}>
       ← Back
     </button>
     <h2 className="addrestore-title">Restore Details</h2>
     <BarcodeReader onScan={handleScan} />
 
-    <Table className="addrestore-table">
+    <Table className="addrestore-table" id="page-to-pdf">
       <thead>
         <tr>
           <th>S.No</th>
@@ -150,29 +171,48 @@ const AddNewRestore = () => {
           <th>Adjustment</th>
           <th>Final Weight</th>
           <th>Enamel Weight</th>
+          <th>ProductType</th>
         </tr>
       </thead>
 
-      <tbody>
-        {scannedProducts.length > 0 ? (
-          scannedProducts.map((product, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{transform_text(product.product_number)}</td>
-              <td>{product.before_weight}</td>
-              <td>{product.after_weight}</td>
-              <td>{product.difference}</td>
-              <td>{product.adjustment}</td>
-              <td>{product.barcode_weight}</td>
-              <td>{product.final_weight}</td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="8">No products found.</td>
-          </tr>
-        )}
-      </tbody>
+      <tbody >
+              {scannedProducts.length > 0 ? (
+                scannedProducts.map((product, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{transform_text(product.product_number)}</td>
+                    {
+                      product.itemType==="STONE" ? (
+                      <>
+                         <td>{product.before_weight}</td>
+                         <td>{product.after_weight}</td>
+                         <td>{product.difference}</td>
+                         <td>{product.adjustment}</td>
+                         <td>{product.barcode_weight}</td>
+                         <td>{product.final_weight}</td>
+                      </>
+                      ):(
+                      <>
+                         <td className="blank">-</td>
+                         <td className="blank">-</td>
+                         <td className="blank">-</td>
+                         <td className="blank">-</td>
+                         <td >{product.netWeight}</td>
+                         <td>{product.stoneWeight}</td>
+                      </>)
+                    }
+                   
+                    <td
+                     style={{ color: product.itemType === "STONE" ? "green" : "blue" }}
+                    ><b>{product.itemType}</b></td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="10">No products found.</td>
+                </tr>
+              )}
+            </tbody>
 
       <tfoot>
         <tr>
@@ -183,6 +223,7 @@ const AddNewRestore = () => {
           <td><b>{totalAdjustment}</b></td>
           <td><b>{totalBarcodeWeight}</b></td>
           <td><b>{totalFinalWeight}</b></td>
+          <td></td>
         </tr>
       </tfoot>
     </Table>

@@ -3,7 +3,7 @@ import {REACT_APP_BACKEND_SERVER_URL} from '../../config/index'
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import './Login.css';
-
+ 
 export default function JewelryLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,34 +18,34 @@ export default function JewelryLogin() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userName : username, password  }),
       });
-
+ 
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.message);
         setLoading(false);
         return;
       }
-
+ 
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.userInfo)); 
+      localStorage.setItem("user", JSON.stringify(data.userInfo));
       localStorage.setItem("username", username);  
-      // localStorage.setItem("userRole", data.user.role);
+      localStorage.setItem("userRole", data.userInfo.role);
       // localStorage.setItem("userAccess", JSON.stringify(data.user.access[0]));
-
+ 
       const role = data.userInfo.role?.toLowerCase();
       toast.success("Login successful");
-
+ 
       if (role === "admin" || role === "superadmin") navigate("/admin");
       else navigate("/home");
     } catch (err) {
       toast.error("Server error");
     }
   };
-
+ 
     // console.log('Login attempt:', { username, password });
     // toas(`Welcome back, ${username}!`);
   // };
-
+ 
   return (
     <div className="login-container">
       <div className="background-overlay"></div>
@@ -56,7 +56,7 @@ export default function JewelryLogin() {
           <h1 className="brand-name">MANOHAR JEWELS</h1>
           <p className="tagline">Timeless Elegance</p>
         </div>
-
+ 
         <div className="login-form">
           <div className="input-group">
             <label htmlFor="username">Username</label>
@@ -71,7 +71,7 @@ export default function JewelryLogin() {
               />
             </div>
           </div>
-
+ 
           <div className="input-group">
             <label htmlFor="password">Password</label>
             <div className="input-wrapper">
@@ -92,7 +92,7 @@ export default function JewelryLogin() {
               </button>
             </div>
           </div>
-
+ 
           {/* <div className="form-options">
             <label className="remember-me">
               <input type="checkbox" />
@@ -100,17 +100,17 @@ export default function JewelryLogin() {
             </label>
             <a href="#" className="forgot-password">Forgot Password?</a>
           </div> */}
-
+ 
           <button type="button" className="login-button" onClick={handleSubmit}>
             {loading ?<span>Sign In</span>:<span>Signing in</span>}
             <span className="button-shine"></span>
           </button>
         </div>
-
+ 
         {/* <div className="signup-section">
           <p>Don't have an account? <a href="#" className="signup-link">Create Account</a></p>
         </div> */}
-
+ 
         <div className="decorative-elements">
           <div className="sparkle sparkle-1">✨</div>
           <div className="sparkle sparkle-2">✨</div>
