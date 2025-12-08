@@ -102,7 +102,7 @@ export default function JewelryLogin() {
           </div> */}
  
           <button type="button" className="login-button" onClick={handleSubmit}>
-            {loading ?<span>Sign In</span>:<span>Signing in</span>}
+            {loading ?<span>Sign In</span>:<span>Sign in</span>}
             <span className="button-shine"></span>
           </button>
         </div>
