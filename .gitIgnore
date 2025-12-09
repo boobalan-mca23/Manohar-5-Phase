@@ -30,7 +30,7 @@ server/prisma/.env
 server/prisma/migrations/*
 
 # uploads folder
-server/uploads
+/uploads
 
 # Others
 *.log
