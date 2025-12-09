@@ -1,229 +1,281 @@
-import Table from "react-bootstrap/esm/Table";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import SearchIcon from "@mui/icons-material/Search";
-import { TextField, InputAdornment } from "@mui/material";
-import RestorePageIcon from "@mui/icons-material/RestorePage";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import Checkbox from "@mui/material/Checkbox";
-import "./RemovedLots.css";
-import React from "react";
-import { useState } from "react";
-import AlertDialog from "./DialogBox";
-import CircularProgress from "@mui/material/CircularProgress";
+.rl-page * {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
 
-const RemovedLotTable = (props) => {
-  const [open, setOpen] = useState(false);
-  const [confirmMessage, setConfirmMessage] = useState("");
-  const [access, setAccess] = useState("");
-  
-  const { removedLots, handleDelete, handleRestore ,loading,selectedProduct,setSelectedProduct
-  } = props;
-
-  const handleSelect = (id, checked) => {
-  setSelectedProduct((prev) => {
-    let updatedList = [...prev.selectedItems];
-
-    if (checked) {
-      // Add id if not exist
-      if (!updatedList.includes(id)) {
-        updatedList.push(id);
-      }
-    } else {
-      // Remove when unchecked
-      updatedList = updatedList.filter((item) => item !== id);
-    }
-
-    return {
-      count: updatedList.length,
-      selectedItems: updatedList,
-    };
-  });
-};
-
-const handleSelectAll = (checked) => {
-  if (checked) {
-    const allIds = removedLots.map((item) => item.id);
-    setSelectedProduct({
-      count: allIds.length,
-      selectedItems: allIds,
-    });
-  } else {
-    setSelectedProduct({
-      count: 0,
-      selectedItems: [],
-    });
-  }
-};
-
-
-  const handleConfirm = () => {
-    access === "restore" ? handleRestore() : handleDelete();
-  };
-
-  const handleRestoreLot = () => {
-     if(selectedProduct.selectedItems.length!==0){
-         setOpen(true);
-         setConfirmMessage(`Are You Want To Restore The Selected Lots LOT ID: ${selectedProduct.selectedItems}`);
-         setAccess("restore");
-     }
-   
-   
-  };
-
-  const handleDeleteLot = () => {
-     if(selectedProduct.selectedItems.length!==0){
-      setOpen(true);
-      setConfirmMessage(
-      `Are you sure you want to permanently delete this lot? All products under this lot will also be removed.
-    LOT ID:  ${selectedProduct.selectedItems}`);
-      setAccess("delete");
-     }
-   
-  };
-
-  return (
-    <>
-      <div>
-        <div>
-          <div >
-            <h2>Removed Lots Information</h2>
-            <FontAwesomeIcon icon={faTrashAlt} fontSize={20} />
-          </div>
-          <TextField
-            autoComplete="off"
-            placeholder="Search By Lot Id,Type etc.."
-            variant="outlined"
-            margin="normal"
-            fullWidth={false}
-            className="removed-lot-search"
-            onChange={(e)=>{ props.setSearchInput(e.target.value)}}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                backgroundColor: "#f8f9fa",
-                padding: "0px",
-              },
-              "& .MuiOutlinedInput-input": {
-                padding: "12px 10px",
-                fontSize: "17px",
-              },
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon style={{ color: "#373333ff" }} />
-                </InputAdornment>
-              ),
-            }}
-          />
-        <div >
-                      <button
-                        
-                        onClick={()=>{handleRestoreLot()}}
-                      >
-                        <RestorePageIcon />
-                        Restore Selected({selectedProduct.count})
-                      </button>
-
-                      <button
-                       
-                        onClick={()=>{handleDeleteLot()}}
-                      >
-                        <DeleteForeverIcon />
-                        Permantely Delete Selected({selectedProduct.count})
-                      </button>
-                      </div>
-        </div>
-
-        <Table striped bordered hover className="tab">
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Date</th>
-              <th>Lot Name</th>
-              <th>Lot Type</th>
-               <th>
-               <Checkbox
-              style={{ color: "white" }}
-              checked={selectedProduct.selectedItems.length === removedLots.length}
-              onChange={(e) => handleSelectAll(e.target.checked)}
-               />
-               Select All
-             </th>
-
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              // Show loader for 5 sec
-              <tr>
-                <td colSpan={5}>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "20px 0",
-                    }}
-                  >
-                    <CircularProgress size="2rem" />
-                    <p style={{ marginTop: "10px", fontWeight: "bold" }}>
-                      Loading...
-                    </p>
-                  </div>
-                </td>
-              </tr>
-            ) : removedLots.length >= 1 ? (
-              // Show data
-              removedLots.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{index + 1}</td>
-                  <td>
-                    {new Date(item.created_at)
-                      .toLocaleDateString("en-GB")
-                      .replace(/\//g, "-")}
-                  </td>
-                  <td>{item.lot_name}</td>
-                  <td
-                    style={{ color: item.type === "STONE" ? "green" : "blue" }}
-                  >
-                    <b>{item.type}</b>
-                  </td>
-                  <td> 
-                    <input
-                     type="checkbox"
-                     checked={selectedProduct.selectedItems.includes(item.id)}
-                     onChange={(e) => handleSelect(item.id, e.target.checked)}
-                     />
-
-                  </td>
-                </tr>
-              ))
-            ) : (
-              // After loader stops → no data
-              <tr>
-                <td
-                  colSpan={5}
-                  style={{ textAlign: "center", padding: "20px" }}
-                >
-                  <b>No Lots Available</b>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
-        <AlertDialog
-          open={open}
-          setOpen={setOpen}
-          setAccess={setAccess}
-          confirmMessage={confirmMessage}
-          handleConfirm={handleConfirm}
-        />
-      </div>
-    </>
+.rl-page {
+  min-height: 100vh;
+  background: repeating-linear-gradient(
+    135deg,
+    #eef3fa,
+    #eef3fa 40px,
+    #e7edf7 40px,
+    #e7edf7 80px
   );
-};
+  padding-top: 110px;
+  display: flex;
+  justify-content: center;
+}
 
-export default React.memo(RemovedLotTable);
+/* CARD */
+.rl-card {
+  width: 90%;
+  max-width: 1200px;
+  background: white;
+  padding: 2rem;
+  border-radius: 22px;
+  border: 2px solid #dde8f4;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  max-height: 750px;
+  overflow: hidden;
+}
+
+/* PAGINATION */
+.rl-pagination {
+  margin-top: 1.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.rl-pagination button {
+  background: #242442;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.rl-pagination button:hover {
+  opacity: 0.85;
+}
+
+.rl-pagination button:disabled {
+  background: #8d8d8d;
+  cursor: not-allowed;
+}
+
+.rl-pagination span {
+  font-weight: 600;
+  color: #242442;
+}
+
+/* ===================================
+   REMOVED LOT TABLE MODULE (rl-*)
+   =================================== */
+
+.rl-table-wrapper {
+  margin-top: 1rem;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+  border: 2px solid #e5eaf3;
+  margin-bottom: 20rem;
+  width: 80rem;
+}
+
+/* HEADER */
+.rl-table-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.rl-table-header h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #242442;
+  margin: 0;
+}
+
+/* SEARCH BAR */
+.rl-search {
+  width: 18rem !important;
+  margin-bottom: 1rem;
+}
+
+/* ACTION BUTTONS */
+.rl-action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.rl-action-button-1{
+  background: #20b428;
+  height: 3rem;
+  margin-top:1rem;
+}
+
+.rl-action-button-2{
+  background: #e94a0b;
+  height: 3rem;
+  margin-top:1rem;
+}
+
+.rl-action-buttons button {
+  /* background: #242442; */
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+.rl-action-buttons button:hover {
+  opacity: 0.85;
+  transform: scale(1.03);
+}
+
+.rl-nav-button{
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.rl-nav-button button{
+  background: #242442;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+/* TABLE */
+.rl-table {
+  width: 100%;
+  /* border: 2px solid #242442; */
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.rl-table thead tr {
+  background: #242442;
+  color: white;
+}
+
+.rl-table th,
+.rl-table td {
+  text-align: center;
+  padding: 0.9rem;
+  font-size: 0.95rem;
+}
+
+.rl-table tbody tr:nth-child(even) {
+  background: #f3f4f7;
+}
+
+.rl-table tbody tr:hover {
+  background: #e7eafd;
+}
+
+/* LOADER */
+.rl-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.rl-loader p {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #242442;
+}
+
+/* NO DATA */
+.rl-no-data {
+  text-align: center;
+  font-weight: 700;
+  padding: 20px;
+}
+
+
+/* ============================================
+   REMOVED LOTS — DIALOG MODULE (rl-dialog-*)
+   ============================================ */
+
+/* Wrapper — doesn't style anything, just namespace */
+.rl-dialog-wrap {
+  all: unset;
+}
+
+/* Dialog Paper (main popup box) */
+.rl-dialog-paper {
+  border-radius: 14px !important;
+  padding-top: 10px;
+  background: #ffffff !important;
+  min-width: 340px;
+  border: 2px solid #e5eaf3;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.15) !important;
+}
+
+/* Content Text */
+.rl-dialog-text {
+  font-size: 1rem !important;
+  color: #222 !important;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Top content spacing */
+.rl-dialog-content {
+  padding: 18px 24px !important;
+}
+
+/* Actions (buttons row) */
+.rl-dialog-actions {
+  padding: 12px 20px !important;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* All buttons */
+.rl-dialog-btn {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  padding: 6px 16px !important;
+  transition: 0.2s ease !important;
+}
+
+/* Cancel button */
+.rl-dialog-cancel {
+  background: #e3e4eb !important;
+  color: #333 !important;
+}
+
+.rl-dialog-cancel:hover {
+  background: #d0d1d8 !important;
+}
+
+/* Confirm button */
+.rl-dialog-confirm {
+  background: #242442 !important;
+  color: white !important;
+}
+
+.rl-dialog-confirm:hover {
+  background: #17192f !important;
+}
