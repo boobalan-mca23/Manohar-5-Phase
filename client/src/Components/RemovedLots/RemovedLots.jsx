@@ -149,6 +149,8 @@ const RemoveLot = () => {
 
   return (
     <>
+    <div className="rl-page">
+      {/* <div className="rl-card"> */}
       <RemovedLotTable
         removedLots={removedLots}
         handleDelete={handleDelete}
@@ -157,21 +159,11 @@ const RemoveLot = () => {
         setSearchInput={setSearchInput} 
         selectedProduct={selectedProduct}
         setSelectedProduct={setSelectedProduct}
+        page={page}
+        totalPage={totalPage}
+        setPage={setPage}
       />
-      
-        <div >
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-          ◀ Prev
-        </button>
-
-        <span>
-          Page {page} of {totalPage}
-        </span>
-
-        <button disabled={page === totalPage} onClick={() => setPage(page + 1)}>
-          Next ▶
-        </button>
-      </div>
+  
 
       {/* Snackbar for feedback */}
       <Snackbar
@@ -195,6 +187,8 @@ const RemoveLot = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      {/* </div> */}
+      </div>
     </>
   );
 };

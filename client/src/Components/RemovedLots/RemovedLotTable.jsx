@@ -17,8 +17,7 @@ const RemovedLotTable = (props) => {
   const [confirmMessage, setConfirmMessage] = useState("");
   const [access, setAccess] = useState("");
   
-  const { removedLots, handleDelete, handleRestore ,loading,selectedProduct,setSelectedProduct
-  } = props;
+  const { removedLots, handleDelete, handleRestore ,loading,selectedProduct,setSelectedProduct, page, totalPage, setPage } = props;
 
   const handleSelect = (id, checked) => {
   setSelectedProduct((prev) => {
@@ -84,31 +83,21 @@ const handleSelectAll = (checked) => {
 
   return (
     <>
-      <div>
-        <div>
-          <div >
+      <div className="rl-table-wrapper">
+    <div className="rl-table-header">
             <h2>Removed Lots Information</h2>
             <FontAwesomeIcon icon={faTrashAlt} fontSize={20} />
           </div>
+      
+         <div className="rl-action-buttons">
           <TextField
             autoComplete="off"
             placeholder="Search By Lot Id,Type etc.."
             variant="outlined"
             margin="normal"
             fullWidth={false}
-            className="removed-lot-search"
+            className="rl-search"
             onChange={(e)=>{ props.setSearchInput(e.target.value)}}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                backgroundColor: "#f8f9fa",
-                padding: "0px",
-              },
-              "& .MuiOutlinedInput-input": {
-                padding: "12px 10px",
-                fontSize: "17px",
-              },
-            }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="end">
@@ -117,41 +106,35 @@ const handleSelectAll = (checked) => {
               ),
             }}
           />
-        <div >
-                      <button
-                        
-                        onClick={()=>{handleRestoreLot()}}
-                      >
-                        <RestorePageIcon />
-                        Restore Selected({selectedProduct.count})
-                      </button>
+          <button
+            className="rl-action-button-1"
+            onClick={()=>{handleRestoreLot()}}>
+            <RestorePageIcon />{`Restore Selected [${selectedProduct.count}]`}
+          </button>
+          <button
+            className="rl-action-button-2"
+            onClick={()=>{handleDeleteLot()}}>
+            <DeleteForeverIcon /> {`Permantely Delete Selected [${selectedProduct.count}]`}
+          </button>
+          </div>
 
-                      <button
-                       
-                        onClick={()=>{handleDeleteLot()}}
-                      >
-                        <DeleteForeverIcon />
-                        Permantely Delete Selected({selectedProduct.count})
-                      </button>
-                      </div>
-        </div>
 
-        <Table striped bordered hover className="tab">
+        <Table striped bordered hover className="rl-table">
           <thead>
             <tr>
               <th>S.No</th>
               <th>Date</th>
               <th>Lot Name</th>
               <th>Lot Type</th>
-               <th>
-               <Checkbox
-              style={{ color: "white" }}
-              checked={selectedProduct.selectedItems.length === removedLots.length}
-              onChange={(e) => handleSelectAll(e.target.checked)}
-               />
+              <th><Checkbox
+                  style={{
+                    color:"whitesmoke"
+                  }}
+                  checked={selectedProduct.selectedItems.length === removedLots.length}
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                  />
                Select All
              </th>
-
             </tr>
           </thead>
           <tbody>
@@ -159,24 +142,14 @@ const handleSelectAll = (checked) => {
               // Show loader for 5 sec
               <tr>
                 <td colSpan={5}>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "20px 0",
-                    }}
+                  <div className="rl-loader"
                   >
                     <CircularProgress size="2rem" />
-                    <p style={{ marginTop: "10px", fontWeight: "bold" }}>
-                      Loading...
-                    </p>
+                    <p>Loading...</p>
                   </div>
                 </td>
               </tr>
             ) : removedLots.length >= 1 ? (
-              // Show data
               removedLots.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
@@ -197,16 +170,14 @@ const handleSelectAll = (checked) => {
                      checked={selectedProduct.selectedItems.includes(item.id)}
                      onChange={(e) => handleSelect(item.id, e.target.checked)}
                      />
-
                   </td>
                 </tr>
               ))
             ) : (
-              // After loader stops → no data
               <tr>
                 <td
                   colSpan={5}
-                  style={{ textAlign: "center", padding: "20px" }}
+                  className="rl-no-data"
                 >
                   <b>No Lots Available</b>
                 </td>
@@ -214,6 +185,19 @@ const handleSelectAll = (checked) => {
             )}
           </tbody>
         </Table>
+        <div className="rl-nav-button" >
+          <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+            ◀ Prev
+          </button>
+  
+          <span>
+            Page {page} of {totalPage}
+          </span>
+  
+          <button disabled={page === totalPage} onClick={() => setPage(page + 1)}>
+            Next ▶
+          </button>
+        </div>
         <AlertDialog
           open={open}
           setOpen={setOpen}

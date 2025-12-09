@@ -6,46 +6,47 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
 export default function AlertDialog(props) {
-    const {open,setOpen,confirmMessage,handleConfirm}=props
-   
-    const handleClose = () => {
-      setOpen(false);
+  const { open, setOpen, confirmMessage, handleConfirm } = props;
 
-   };
-
-   const handleCloseWithConfirm=()=>{
-      setOpen(false)
-      handleConfirm()
-
-   }
-
+  const handleClose = () => setOpen(false);
+  const handleCloseWithConfirm = () => {
+    setOpen(false);
+    handleConfirm();
+  };
 
   return (
-    <React.Fragment>
-     
+    <div className="rl-dialog-wrap">
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        PaperProps={{
+          className: "rl-dialog-paper"  // <-- this isolates the whole popup
+        }}
       >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description"
-            sx={{
-              color:"black",
-              fontSize:"1rem"
-            }}
-           >
+        <DialogContent className="rl-dialog-content">
+          <DialogContentText
+            id="alert-dialog-description"
+            className="rl-dialog-text"
+          >
             {confirmMessage}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancle</Button>
-          <Button onClick={handleCloseWithConfirm} autoFocus>
+
+        <DialogActions className="rl-dialog-actions">
+          <Button className="rl-dialog-btn rl-dialog-cancel" onClick={handleClose}>
+            Cancel
+          </Button>
+
+          <Button
+            className="rl-dialog-btn rl-dialog-confirm"
+            onClick={handleCloseWithConfirm}
+            autoFocus
+          >
             Confirm
           </Button>
         </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </div>
   );
 }

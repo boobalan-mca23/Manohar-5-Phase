@@ -1,146 +1,45 @@
-.removedlots-page * {
+.rl-page * {
   box-sizing: border-box;
   font-family: "Inter", sans-serif;
 }
 
-.removedlots-page {
+.rl-page {
   min-height: 100vh;
-  background:
-    repeating-linear-gradient(
-      135deg,
-      #eef3fa,
-      #eef3fa 40px,
-      #e7edf7 40px,
-      #e7edf7 80px
-    );
+  background: repeating-linear-gradient(
+    135deg,
+    #eef3fa,
+    #eef3fa 40px,
+    #e7edf7 40px,
+    #e7edf7 80px
+  );
   padding-top: 110px;
   display: flex;
   justify-content: center;
 }
 
-.removedlots-card {
+/* CARD */
+.rl-card {
   width: 90%;
   max-width: 1200px;
   background: white;
   padding: 2rem;
   border-radius: 22px;
   border: 2px solid #dde8f4;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-   max-height: 750px;  
-  overflow: hidden;  
-}
-
-/* HEADER SECTION */
-.removedlots-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-}
-
-.removedlots-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.removedlots-title h2 {
-  color: #242442;
-  font-size: 1.6rem;
-  margin: 0;
-}
-
-/* SEARCH BAR */
-.removedlots-search {
-  width: 20rem !important;
-}
-
-.removedlots-table {
-  width: 100%;
-  border-collapse: collapse;
-
-  /* outer border */
-  border: 2px solid #242442;
-  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  max-height: 750px;
   overflow: hidden;
 }
 
-/* TABLE HEADER */
-.removedlots-table thead tr {
-  background: #242442;
-  color: white;
-}
-
-.removedlots-table th {
-  text-align: center;
-  padding: 0.9rem;
-  font-weight: 600;
-}
-
-/* TABLE ROWS */
-.removedlots-table tbody tr {
-  background: white;
-  transition: 0.2s ease;
-}
-
-.removedlots-table tbody tr:nth-child(even) {
-  background: #f0f0f0;
-}
-
-.removedlots-table td {
-  padding: 0.85rem;
-  text-align: center;
-  font-size: 0.95rem;
-}
-
-.removedlots-btns {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.removedlots-btn-restore {
-  background: #28a745;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: 0.2s ease;
-}
-
-.removedlots-btn-restore:hover {
-  background: #1f8a38;
-}
-
-.removedlots-btn-delete {
-  background: #dc3545;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: 0.2s ease;
-}
-
-.removedlots-btn-delete:hover {
-  background: #c82333;
-}
-
-.removedlots-pagination {
+/* PAGINATION */
+.rl-pagination {
   margin-top: 1.8rem;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 15px;
 }
 
-.removedlots-pagination button {
+.rl-pagination button {
   background: #242442;
   color: white;
   padding: 8px 15px;
@@ -151,44 +50,232 @@
   transition: 0.25s ease;
 }
 
-.removedlots-pagination button:hover {
+.rl-pagination button:hover {
   opacity: 0.85;
 }
 
-.removedlots-pagination button:disabled {
+.rl-pagination button:disabled {
   background: #8d8d8d;
   cursor: not-allowed;
 }
 
-.removedlots-pagination span {
+.rl-pagination span {
   font-weight: 600;
   color: #242442;
 }
 
-.removedlots-loader {
-  text-align: center;
-  padding: 20px;
+/* ===================================
+   REMOVED LOT TABLE MODULE (rl-*)
+   =================================== */
+
+.rl-table-wrapper {
+  margin-top: 1rem;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+  border: 2px solid #e5eaf3;
+  margin-bottom: 20rem;
+  width: 80rem;
+}
+
+/* HEADER */
+.rl-table-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.rl-table-header h2 {
+  font-size: 1.4rem;
   font-weight: 700;
-}
-/* Scroll only inside table body */
-.removedlots-tbody-scroll {
-  display: block;
-  max-height: 400px;    /* height limit before scroll */
-  overflow-y: auto;     
-  overflow-x: hidden;
+  color: #242442;
+  margin: 0;
 }
 
-/* Maintain column alignment */
-.removedlots-table thead,
-.removedlots-tbody-scroll tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
+/* SEARCH BAR */
+.rl-search {
+  width: 18rem !important;
+  margin-bottom: 1rem;
 }
 
-/* Table outer border still applies */
-.removedlots-table {
+/* ACTION BUTTONS */
+.rl-action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.rl-action-button-1{
+  background: #20b428;
+  height: 3rem;
+  margin-top:1rem;
+}
+
+.rl-action-button-2{
+  background: #e94a0b;
+  height: 3rem;
+  margin-top:1rem;
+}
+
+.rl-action-buttons button {
+  /* background: #242442; */
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+.rl-action-buttons button:hover {
+  opacity: 0.85;
+  transform: scale(1.03);
+}
+
+.rl-nav-button{
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.rl-nav-button button{
+  background: #242442;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+/* TABLE */
+.rl-table {
   width: 100%;
-  border-collapse: collapse;
-  border: 2px solid #242442; 
+  /* border: 2px solid #242442; */
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.rl-table thead tr {
+  background: #242442;
+  color: white;
+}
+
+.rl-table th,
+.rl-table td {
+  text-align: center;
+  padding: 0.9rem;
+  font-size: 0.95rem;
+}
+
+.rl-table tbody tr:nth-child(even) {
+  background: #f3f4f7;
+}
+
+.rl-table tbody tr:hover {
+  background: #e7eafd;
+}
+
+/* LOADER */
+.rl-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.rl-loader p {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #242442;
+}
+
+/* NO DATA */
+.rl-no-data {
+  text-align: center;
+  font-weight: 700;
+  padding: 20px;
+}
+
+
+/* ============================================
+   REMOVED LOTS — DIALOG MODULE (rl-dialog-*)
+   ============================================ */
+
+/* Wrapper — doesn't style anything, just namespace */
+.rl-dialog-wrap {
+  all: unset;
+}
+
+/* Dialog Paper (main popup box) */
+.rl-dialog-paper {
+  border-radius: 14px !important;
+  padding-top: 10px;
+  background: #ffffff !important;
+  min-width: 340px;
+  border: 2px solid #e5eaf3;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.15) !important;
+}
+
+/* Content Text */
+.rl-dialog-text {
+  font-size: 1rem !important;
+  color: #222 !important;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Top content spacing */
+.rl-dialog-content {
+  padding: 18px 24px !important;
+}
+
+/* Actions (buttons row) */
+.rl-dialog-actions {
+  padding: 12px 20px !important;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* All buttons */
+.rl-dialog-btn {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  padding: 6px 16px !important;
+  transition: 0.2s ease !important;
+}
+
+/* Cancel button */
+.rl-dialog-cancel {
+  background: #e3e4eb !important;
+  color: #333 !important;
+}
+
+.rl-dialog-cancel:hover {
+  background: #d0d1d8 !important;
+}
+
+/* Confirm button */
+.rl-dialog-confirm {
+  background: #242442 !important;
+  color: white !important;
+}
+
+.rl-dialog-confirm:hover {
+  background: #17192f !important;
 }
