@@ -296,7 +296,12 @@
           left: 15%;
           animation-delay: 3s;
         }
-
+       .loader{
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         gap: 1rem;
+       }
         @keyframes sparkle {
           0%, 100% {
             opacity: 0;
