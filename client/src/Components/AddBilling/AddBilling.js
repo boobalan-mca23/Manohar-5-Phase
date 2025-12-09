@@ -354,7 +354,7 @@ doc.text(`Date:${new Date().toLocaleDateString("en-GB")}`,150,22)
             </tbody>
             
             <tfoot>
-              <tr>
+              <tr className="bill-tfoot">
                 <td colSpan="2"><b>Total Weight </b></td>
                 {selectedColumns.beforeWeight && <td><b>{totalBeforeWeight}</b></td>}
                 {selectedColumns.afterWeight && <td><b>{totalAfterWeight}</b></td>}

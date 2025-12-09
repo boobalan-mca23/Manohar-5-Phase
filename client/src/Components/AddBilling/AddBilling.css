@@ -172,3 +172,6 @@
 .addbill-back-btn:hover {
   opacity: 0.85;
 }
+.bill-tfoot td{
+  text-align: center;
+}

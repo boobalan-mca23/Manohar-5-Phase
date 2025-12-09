@@ -214,6 +214,7 @@ function PlainLot() {
   };
 
   const handleViewLotDetails = (lot_id, lot_name) => {
+    console.log('lot_name',lot_name)
     navigate(`/plainlot/${lot_id}?lotname=${lot_name}`);
   };
 
@@ -351,7 +352,7 @@ function PlainLot() {
                         px: 2,
                       }}
                     >
-                      <IconButton onClick={() => handleViewLotDetails(lot.id, lot.lotId)}>
+                      <IconButton onClick={() => handleViewLotDetails(lot.id, lot.lot_name)}>
                         <RiEyeLine size={20} color="white" />
                       </IconButton>
                       <IconButton onClick={() => handleDeleteLotNumber(index, lot.id)}>

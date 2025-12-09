@@ -669,20 +669,21 @@ useEffect(() => {
 const handleBulkWeight=async(fieldName)=>{
   try {
          const weight = await handleWeight();  // Await the function call and Weight Api
-         console.log('ETETETETEWTWYT',weight.weightdata);
+         console.log('ETETETETEWTWYT',weight);
  
          switch (fieldName) {
              case "bulkWeightBefore":
-                 setBulkWeightBefore(weight.weightdata);
+                 setBulkWeightBefore(weight);
                  break;
              case "bulkWeightAfter":
-                setBulkWeightAfter(weight.weightdata);
+                setBulkWeightAfter(weight);
                  break;
             
              default:
                  console.warn("Invalid field:", fieldName);
          }
      } catch (err) {
+         toast.warn('Weight Mechine Not Connected')
          console.error("Error fetching weight:", err);
      }
 }

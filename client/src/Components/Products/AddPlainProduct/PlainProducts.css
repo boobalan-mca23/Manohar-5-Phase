@@ -303,6 +303,20 @@ tfoot tr td {
   border-radius: 12px;
   overflow: hidden;
 }
+.weightImg {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+ }
+ .weightImg img:hover {
+  background-color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+.weightImg img {
+  cursor: pointer;
+  
+}
 
 @keyframes fadeIn {
   from { opacity: 0; }
