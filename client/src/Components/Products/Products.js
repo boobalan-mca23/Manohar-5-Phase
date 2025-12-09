@@ -4,7 +4,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faTrash, faEye } from "@fortawesome/free-solid-svg-icons";
 import Table from "react-bootstrap/Table";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation,useNavigate } from "react-router-dom";
 import "../Products/Products.css";
 import WeightFormPopup from "./View";
 import AddProduct from "./AddProduct";
@@ -50,7 +50,7 @@ const Products = () => {
   const productNumberRef = useRef(null);
   const productWeightRef = useRef(null);
   const [filterOpt, setFilterOpt] = useState("all");
-
+  const navigate = useNavigate();
   const exportPDF = () => {
     const doc = new jsPDF();
     const imgWidth = 30; 
@@ -438,7 +438,7 @@ const handleKeyDown = (e, nextField) => {
           `${REACT_APP_BACKEND_SERVER_URL}/api/v1/lot/${lot_id}`
         );
 
-        const lot = response.data.products?.[0];
+        const lot = response.data.lotInfo?.[0];
         console.log("Fetched Lot Data:", lot);
 
         if (lot) {
@@ -698,6 +698,9 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
       <div className="products-page">
         <Navbarr />
         <div className="add-items">
+          <button  onClick={() => navigate("/beadsenamellot")}>
+            ← Back
+          </button>
           <button onClick={handleAddItems}>Add Items</button>
           <select
             style={{ marginLeft: "1rem", height: "1.5rem", width: "4rem" }}

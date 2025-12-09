@@ -29,7 +29,7 @@ router.get("/", getAllLots);
 // params : lot_id
 // route - url/api/lot/lot_info/:id
 
-router.delete("/lot_info/:lot_id", deleteLot);
+router.put("/lotDelete", deleteLot);
 
 // particular lot details
 //  body : {

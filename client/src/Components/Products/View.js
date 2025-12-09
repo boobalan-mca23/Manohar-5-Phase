@@ -72,7 +72,7 @@ const WeightFormPopup = ({
      final_weight_img:""
    }
   ])
-
+  const [saving, setSaving] = useState(false);
   const barcodeRef = useRef(null);
    const tableData = products.map((product, index) => [
         index + 1,
@@ -370,6 +370,7 @@ const handleExportdetailsPdf = async () => {
 
 const handleSave = async () => {
   try {
+     setSaving(true)
      const formData=new FormData()
      formData.append('before_weight',parseFloat(beforeWeight))
      formData.append('after_weight',parseFloat(afterWeight))
@@ -405,17 +406,20 @@ const handleSave = async () => {
  
     console.log("Updated Product Data:", updatedData);
  
-    const updatedProduct = {
-      ...product,
-      ...updatedData,
-    };
- 
+    
+    setSaving(false)
     toast.success("Product saved successfully!");
     window.location.reload();
-    updateProductList(updatedProduct);
+    
+    // const updatedProduct = {
+    //   ...product,
+    //   ...updatedData,
+    // };
+    // updateProductList(updatedProduct);
  
  
   } catch (error) {
+    setSaving(false)
     console.error("Error updating product:", error);
   }
 };
@@ -572,6 +576,7 @@ const captureImage = () => {
               <label>Before Weight:</label>
               <div className="vw-input-row">
                 <input
+                  onWheel={(e)=>{e.target.blur()}}
                   className="vw-input"
                   type="number"
                   value={beforeWeight}
@@ -642,6 +647,7 @@ const captureImage = () => {
               <label>After Weight:</label>
               <div className="vw-input-row">
                 <input
+                  onWheel={(e)=>{e.target.blur()}}
                   className="vw-input"
                   type="number"
                   value={afterWeight}
@@ -708,7 +714,8 @@ const captureImage = () => {
             <div>
               <label>Difference:</label>
               <input
-               className="vw-input"
+                onWheel={(e)=>{e.target.blur()}}
+                className="vw-input"
                 type="number"
                 value={difference}
                 onChange={(e) => setDifference(e.target.value)}
@@ -718,6 +725,7 @@ const captureImage = () => {
             <div>
               <label>Adjustment:</label>
               <input
+                onWheel={(e)=>{e.target.blur()}}
                 className="vw-input"
                 type="number"
                 value={adjustment}
@@ -728,6 +736,7 @@ const captureImage = () => {
             <div>
               <label>Enamel Weight:</label>
               <input
+                onWheel={(e)=>{e.target.blur()}}
                 className="vw-input"
                 type="number"
                 value={finalWeight}
@@ -735,10 +744,12 @@ const captureImage = () => {
                 placeholder="Enter Enamel Weight"
               />
             </div>
+          
             <div>
               <label>Final Weight:</label>
               <div  className="vw-input-row">
                 <input
+                  onWheel={(e)=>{e.target.blur()}}
                   className="vw-input"
                   type="number"
                   value={barcodeWeight}
@@ -842,11 +853,12 @@ const captureImage = () => {
             <Button
               // className="exclude-from-pdf"
               onClick={handleSave}
+              disabled={saving}
               variant="contained"
               size="small"
               className="vw-btn-primary"
             >
-              Save
+              {saving?"Product Updating...":"Update"}
             </Button>
 
             <div className="vw-btn-group">

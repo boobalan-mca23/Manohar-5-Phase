@@ -4,7 +4,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faTrash, faEye, faCamera } from "@fortawesome/free-solid-svg-icons";
 import Table from "react-bootstrap/Table";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation ,useNavigate} from "react-router-dom";
 import ReactDOM from "react-dom";
 import Navbarr from "../../Navbarr/Navbarr";
 import jsPDF from "jspdf";
@@ -26,7 +26,7 @@ const PlainProducts = () => {
   console.log("lot_id param:", lot_id);
   const location = useLocation();
   const [showAddPopup, setShowAddPopup] = useState(false);
-
+  const navigate = useNavigate();
   // original states
   const [products, setProducts] = useState([]);
   const [showBarcode, setShowBarcode] = useState(false);
@@ -412,8 +412,16 @@ const handleBulkExportPdf = async (items) => {
       const tracks = videoRef.current.srcObject.getTracks() || [];
       tracks.forEach(t => t.stop());
     }
+    setSelectedItemId("");
+    setSelectedGoldsmithId("");
+    setProductName("");
+    setWorkerName("");
+    setGrossWeight("");
+    setStoneWeight("");
     setCameraOpen(false);
     setShowAddPopup(false);
+   
+    
   };
 
   const startCamera = async () => {
@@ -546,6 +554,12 @@ const handleBulkExportPdf = async (items) => {
       setProducts(prev => [...prev, newP]);
       toast.success("Product added");
       fileBlobRef.current = null; setPreviewUrl(null); setShowAddPopup(false);
+      setSelectedItemId("");
+      setSelectedGoldsmithId("");
+      setProductName("");
+      setWorkerName("");
+      setGrossWeight("");
+      setStoneWeight("");
     } catch (err) {
       console.error("Create product failed:", err?.response?.data || err);
       const msg = err?.response?.data?.message || err?.response?.data?.err || "Create failed";
@@ -605,6 +619,9 @@ const handleBulkExportPdf = async (items) => {
       <div className="background">
         <Navbarr />
         <div className="plain-add-items">
+           <button  onClick={() => navigate("/PlainLot ")}>
+            ← Back
+          </button>
           <button onClick={() => setShowAddPopup(true)}>Add Items</button>
           <select
             style={{ marginLeft: "1rem", height: "1.5rem", width: "4rem" }}
@@ -702,10 +719,10 @@ const handleBulkExportPdf = async (items) => {
               </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan="3"><b>Totals</b></td>
-                    <td><b>{filterProducts.reduce((a,p)=>a+Number(p.grossWeight||0),0).toFixed(3)}</b></td>
-                    <td><b>{filterProducts.reduce((a,p)=>a+Number(p.stoneWeight||0),0).toFixed(3)}</b></td>
-                    <td><b>{filterProducts.reduce((a,p)=>a+Number(p.netWeight||0),0).toFixed(3)}</b></td>
+                    <td colSpan="4"><b>Totals</b></td>
+                    <td style={{textAlign:"center"}}><b>{filterProducts.reduce((a,p)=>a+Number(p.grossWeight||0),0).toFixed(3)}</b></td>
+                    <td style={{textAlign:"center"}}><b>{filterProducts.reduce((a,p)=>a+Number(p.stoneWeight||0),0).toFixed(3)}</b></td>
+                    <td style={{textAlign:"center"}}><b>{filterProducts.reduce((a,p)=>a+Number(p.netWeight||0),0).toFixed(3)}</b></td>
                     <td colSpan="2"></td>
                    </tr>
                 </tfoot>

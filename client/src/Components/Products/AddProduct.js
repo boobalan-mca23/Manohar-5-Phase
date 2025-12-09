@@ -63,6 +63,8 @@ const AddProduct=({
       fieldName:""
     }
   )
+  const [saving, setSaving] = useState(false);
+
 const handleWeightData=async()=>{
       try{
         const weight = await handleWeight(); 
@@ -101,6 +103,7 @@ const handleWeightData=async()=>{
    
   const createNewProduct=async()=>{
     try {
+      setSaving(true)
       const formData=new FormData()
       formData.append("tag_number",lotNumber)
       formData.append("before_weight",beforeWeight||null)
@@ -128,13 +131,14 @@ const handleWeightData=async()=>{
           ...prevProducts,
           response.data.newProduct,
         ]);
-        
+       setSaving(false)
        closeAddItemsPopup()
        toast.success(response.data.message,{autoClose:2000})
-  
+        
     } catch (error) {
       console.error("Error creating product:", error);
       alert("There was an error create product.");
+      setSaving(false)
     }
   }
   
@@ -243,6 +247,7 @@ return (
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
 
               <input
+                onWheel={(e)=>{e.target.blur()}}
                 type="number"
                 value={beforeWeight}
                 onChange={(e) => setBeforeWeight(e.target.value)}
@@ -326,8 +331,9 @@ return (
 
         {/* Save Button */}
         <div className="btn-row" style={{ marginTop: "20px" }}>
-          <button className="save-btn" onClick={createNewProduct}>
-            Save
+          <button className="save-btn" onClick={createNewProduct}
+           disabled={saving}>
+            {saving?"Product Saving..":"Save"}
           </button>
           <button className="cancel-btn" onClick={closeAddItemsPopup}>
             Cancel

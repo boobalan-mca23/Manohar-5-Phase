@@ -185,17 +185,40 @@ const getLotById = async (req, res, next) => {
 
 const deleteLot = async (req, res, next) => {
   try {
-    const { lot_id } = req.params;
-    if (lot_id) {
-      const lot = await prisma.lot_info.delete({
-        where: {
-          id: parseInt(lot_id),
-        },
-      });
-      return res.status(200).json({ msg: "successfully deleted", result: lot });
-    } else {
-      return res.status(400).json({ msg: "Unable to delete the lot" });
+
+   const { selectedProduct } = req.body;  // [1,2,3]
+   
+    if (!selectedProduct || !Array.isArray(selectedProduct) || selectedProduct.length === 0) {
+      return res.status(400).json({ message: "Selected product IDs required" });
     }
+
+    // Convert all ids to integer
+    const lotIds = selectedProduct.map(id => parseInt(id));
+
+    // Check existing lots
+    const existLot = await prisma.lot_info.findMany({
+      where: {
+        id: { in: lotIds }
+      }
+    });
+
+    if (existLot.length === 0) {
+      return res.status(404).json({ message: "No lots found for given IDs" });
+    }
+     const deletedLots = await prisma.lot_info.deleteMany({
+      where: {
+        id: { in: lotIds }
+      },
+     });
+
+    return res.status(200).json({
+      success: true,
+      message: "Lots Deleted successfully",
+      updatedCount: deletedLots.count
+    });
+
+
+
   } catch (error) {
     console.log(error);
     return next(error);
