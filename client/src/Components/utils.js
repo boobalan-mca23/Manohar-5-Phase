@@ -2,6 +2,7 @@ import axios from "axios"
 import {REACT_APP_BACKEND_SERVER_URL} from "../config/index"
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import WebSocket from "ws";
 
 export const transform_text = (num) => {
   if (num === undefined || num === null) return "";
