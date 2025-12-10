@@ -1,6 +1,6 @@
 // PlainProducts.jsx
 import React, { useState, useRef, useEffect } from "react";
-// import { subscribeWeight } from "../../../services/webSocket";
+import { subscribeWeight } from "../../../services/webSocket";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faTrash, faEye, faCamera } from "@fortawesome/free-solid-svg-icons";
@@ -63,16 +63,16 @@ const PlainProducts = () => {
   const [deletingId, setDeletingId] = useState(null);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [printing, setPrinting] = useState(false);
-  // const [weight, setWeight] = useState(0);
+  const [weight, setWeight] = useState(0);
 
 
 
 // get weight using call back function
-  // useEffect(() => {
-  //   const unsubscribe = subscribeWeight((w) => setWeight(w));
+  useEffect(() => {
+    const unsubscribe = subscribeWeight((w) => setWeight(w));
 
-  //   return () => unsubscribe();
-  // }, []);
+    return () => unsubscribe();
+  }, []);
 
 
 
@@ -840,7 +840,7 @@ const handleWeightData=async()=>{
                 <label>Gross Weight</label>
                 <div className="weightImg">
                 <input value={grossWeight} onChange={(e) => setGrossWeight(e.target.value)} style={inputStyle} />
-                <img src={weightImg} onClick={()=>{handleWeightData()}} alt="weightImage" width={40} height={40}></img>
+                <img src={weightImg} onClick={()=>{setGrossWeight(weight)}} alt="weightImage" width={40} height={40}></img>
                 </div>
 
                 <label style={{ marginTop: 8 }}>Stone Weight</label>
@@ -957,7 +957,7 @@ const handleWeightData=async()=>{
                     });
                   }}
                 />
-                <img src={weightImg} onClick={()=>{handleWeightData()}} alt="weightImage" width={40} height={40}></img>
+                <img src={weightImg} onClick={()=>{setGrossWeight(weight)}} alt="weightImage" width={40} height={40}></img>
               </div>
           
                 <label style={{ marginTop: 8 }}>Stone Weight</label>
