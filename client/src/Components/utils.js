@@ -13,36 +13,36 @@ export const transform_text = (num) => {
   return str.split("__")[0];
 };
 
-export const handleWeight = async () => {
-    try {
-      const res = await axios.get('http://94.136.190.133:6020');
-      return res.data;  // Ensure the function returns the weight data
-    } catch (err) {
-      toast.warn("weight mechine not Connected",{autoClose:2000})
-      // console.log(err.message);
-      return null;  // Return null if there's an error
-    }
-  };
+// export const handleWeight = async () => {
+//     try {
+//       const res = await axios.get(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/weight/getWeight`);
+//       return res.data;  // Ensure the function returns the weight data
+//     } catch (err) {
+//       toast.warn("weight mechine not Connected",{autoClose:2000})
+//       // console.log(err.message);
+//       return null;  // Return null if there's an error
+//     }
+//   };
 // this is web socket Port for get weight form this port
 // http://94.136.190.133:6020
 
+const ws = new WebSocket("wss://94.136.190.133:6020/ws");
 
+export const handleWeight = () => {
+  return new Promise((resolve, reject) => {
 
-// export const handleWeight = () => {
-//   return new Promise((resolve, reject) => {
+    if (ws.readyState !== WebSocket.OPEN) {
+      return reject("Weight machine not connected");
+    }
 
-//     if (ws.readyState !== WebSocket.OPEN) {
-//       return reject("Weight machine not connected");
-//     }
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      resolve(data.weight);
+    };
 
-//     ws.onmessage = (event) => {
-//       const data = JSON.parse(event.data);
-//       resolve(data.weight);
-//     };
-
-//     ws.onerror = () => reject("Error receiving weight");
-//   });
-// };
+    ws.onerror = () => reject("Error receiving weight");
+  });
+};
 
 
   
