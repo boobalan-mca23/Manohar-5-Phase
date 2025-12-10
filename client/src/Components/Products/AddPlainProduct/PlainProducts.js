@@ -389,15 +389,15 @@ const handleBulkExportPdf = async (items) => {
   const handleWeightData=async()=>{
         try{
           const weight = await handleWeight(); 
-          console.log(weight);
+          console.log(weight.weightdata);
   
-          if(weight==null && weight!==undefined){
+          if(weight.weightdata==null && weight.weightdata!==undefined){
               setGrossWeight(weight);
          }
   
         }catch(err){
            console.log(err.message)
-           toast.warn('Weight Mechine not Connected')
+         
           
         }
     }

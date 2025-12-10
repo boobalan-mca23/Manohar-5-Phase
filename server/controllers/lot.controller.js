@@ -115,6 +115,41 @@ const getAllLots = async (req, res, next) => {
   }
 };
 
+
+// const searchLots = async (req, res, next) => {
+//   try {
+//     const { query, type } = req.query;
+ 
+//     if (!query) {
+//       return res.status(400).json({ message: "Search query is required" });
+//     }
+ 
+//     const validTypes = Object.values(LOT_TYPE);
+//     if (!validTypes.includes(type.toUpperCase())) {
+//       return res.status(400).json({
+//         message: `Invalid Type. Allowed values: ${validTypes.join(", ")}`,
+//       });
+//     }
+ 
+//     const results = await prisma.lot_info.findMany({
+//       where: {
+//         isAvailable: true,
+//         type: type.toUpperCase(),
+//         lot_name: {
+//          contains: query.toUpperCase()
+//         },
+//       },
+//       orderBy: { id: "desc" },
+//     });
+ 
+//     return res.status(200).json({ result: results });
+ 
+//   } catch (error) {
+//     console.error(error);
+//     return next(error);
+//   }
+// };
+
 // fetch lot items by id
 
 // const getLotById = async (req, res, next) => {
@@ -283,4 +318,5 @@ module.exports = {
   getLotById,
   deleteLot,
   updateLotData,
+  // searchLots
 };
