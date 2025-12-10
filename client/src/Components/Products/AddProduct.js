@@ -67,15 +67,14 @@ const AddProduct=({
 
 const handleWeightData=async()=>{
       try{
-        const weight = await handleWeight(); 
-        console.log(weight);
-
-        if(weight==null && weight!==undefined){
-            setBeforeWeight(weight);
+        const weight = await handleWeight();
+        console.log(weight.weightdata);
+ 
+        if(weight.weightdata!==null && weight.weightdata!==undefined){
+            setBeforeWeight(weight.weightdata);
        }
-
+ 
       }catch(err){
-         toast.warn('Weight Mechine Not Connected')
          console.log(err.message)
         
       }

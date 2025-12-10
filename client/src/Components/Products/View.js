@@ -488,17 +488,17 @@ const handleSave = async () => {
       ]);
           try {
             const weight = await handleWeight();  // Await the function call and Weight Api
-            console.log(weight);
+            console.log(weight.weightdata);
   
             switch (fieldName) {
                 case "before_weight_img":
-                    setBeforeWeight(weight);
+                    setBeforeWeight(weight.weightdata);
                     break;
                 case "after_weight_img":
-                    setAfterWeight(weight);
+                    setAfterWeight(weight.weightdata);
                     break;
                 case "final_weight_img":
-                    setBarcodeWeight(weight);
+                    setBarcodeWeight(weight.weightdata);
                     break;
                 default:
                     console.warn("Invalid field:", fieldName);
@@ -506,7 +506,7 @@ const handleSave = async () => {
         }
         catch (err) {
             console.error("Error fetching weight:", err);
-             toast.warn('Weight Mechine Not Connected')
+             
         }
       
     

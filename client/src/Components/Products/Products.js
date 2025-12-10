@@ -673,17 +673,17 @@ const handleBulkWeight=async(fieldName)=>{
  
          switch (fieldName) {
              case "bulkWeightBefore":
-                 setBulkWeightBefore(weight);
+                 setBulkWeightBefore(weight.weightdata);
                  break;
              case "bulkWeightAfter":
-                setBulkWeightAfter(weight);
+                setBulkWeightAfter(weight.weightdata);
                  break;
             
              default:
                  console.warn("Invalid field:", fieldName);
          }
      } catch (err) {
-         toast.warn('Weight Mechine Not Connected')
+        
          console.error("Error fetching weight:", err);
      }
 }

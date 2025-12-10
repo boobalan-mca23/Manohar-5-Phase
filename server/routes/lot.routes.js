@@ -5,9 +5,9 @@ const {
   getLotById,
   deleteLot,
   updateLotData,
-  changeToActivateLot,
-  changeToDiactivateLot,
-  getDiactivateLots
+  searchLots
+  
+
 } = require("../controllers/lot.controller");
 
 const router = express.Router();
@@ -24,6 +24,7 @@ router.post("/lot_info", postLotInfo);
 // route - url/api/lot
 
 router.get("/", getAllLots);
+// router.get("/search", searchLots);
 
 // delete a lot
 // params : lot_id
