@@ -11,9 +11,9 @@
   padding-top: 120px;
   position: relative;
   /* animation: fadeIn 0.5s ease; */
-  padding-bottom: 60px !important; 
+  padding-bottom: 60px !important;
 }
-
+ 
 .products-page .add-items {
   display: flex;
   align-items: center;
@@ -21,7 +21,7 @@
   margin-left: 2rem;
   margin-bottom: 2rem;
 }
-
+ 
 .products-page .add-items button {
   background: transparent;
   border: 2px solid #1A2A47;
@@ -32,12 +32,12 @@
   cursor: pointer;
   transition: 0.25s ease;
 }
-
+ 
 .products-page .add-items button:hover {
   background: #1A2A47;
   color: white;
 }
-
+ 
 .products-page select {
   height: 1.8rem;
   padding: 2px 6px;
@@ -46,7 +46,7 @@
   background: #fff;
   font-size: 0.9rem;
 }
-
+ 
 .products-page .weight {
   display: flex;
   gap: 20px;
@@ -55,18 +55,18 @@
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
-
+ 
 .products-page .cont {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
+ 
 .products-page .cont label {
   font-weight: 600;
   color: #1A2A47;
 }
-
+ 
 .products-page .cont input {
   padding: 6px 10px;
   width: 120px;
@@ -74,7 +74,7 @@
   border: 1px solid #ccd4e0;
   background: #f8fbff;
 }
-
+ 
 .products-page .bulkWeightbtn {
   background: white;
   border: 1px solid #1A2A47;
@@ -83,12 +83,12 @@
   cursor: pointer;
   transition: 0.25s;
 }
-
+ 
 .products-page .bulkWeightbtn:hover {
   background: #1A2A47;
   color: white;
 }
-
+ 
 .products-page .up {
   background: #1A2A47;
   color: white;
@@ -96,7 +96,7 @@
   cursor: pointer;
   transition: 0.25s ease;
 }
-
+ 
 .products-page .up:hover {
   background: #0f1d35;
 }
@@ -114,12 +114,12 @@
   border-radius: 8px;
   font-size: 1rem;
 }
-
+ 
 .products-page .update button:hover {
   background: #122343;
 }
-
- .products-page .table-container {
+ 
+.products-page .table-container {
   background: #ffffff;
   width: 95%;
   margin: 0 auto;
@@ -129,7 +129,7 @@
   box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.08);
   animation: fadeInUp 0.6s ease;
 }
-
+ 
 .products-page .list {
   font-size: 1.7rem;
   font-weight: 700;
@@ -138,13 +138,13 @@
   text-align: center;
   animation: fadeInUp 0.6s ease;
 }
-
+ 
 .products-page .tab {
   width: 100%;
   border-collapse: separate !important;
   border-spacing: 0 12px !important;
 }
-
+ 
 .products-page .tab thead th {
   background: #1A2A47 !important;
   color: #fff !important;
@@ -153,25 +153,25 @@
   padding: 12px;
   font-size: 0.95rem;
 }
-
+ 
 .products-page .tab tbody tr {
   background: #f7fbff;
   transition: 0.25s ease;
   border-radius: 12px;
 }
-
+ 
 .products-page .tab tbody tr:hover {
   transform: scale(1.01);
   box-shadow: 0px 6px 14px rgba(0,0,0,0.12);
 }
-
+ 
 .products-page .tab tbody td {
   border: none !important;
   text-align: center;
   padding: 14px;
   font-size: 0.9rem;
 }
-
+ 
 .products-page .tab input {
   background: transparent;
   border: none;
@@ -180,7 +180,7 @@
   font-weight: 600;
   color: #1A2A47;
 }
-
+ 
 /* Rounded row edges */
 .products-page .tab tbody tr td:first-child {
   border-top-left-radius: 12px;
@@ -190,7 +190,7 @@
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
 }
-
+ 
 /* TFOOT (totals) */
 .products-page tfoot td {
   border: none !important;
@@ -198,7 +198,7 @@
   color: #1A2A47;
   font-size: 1rem;
 }
-
+ 
 /* Verify buttons */
 .products-page .weight-verify {
   margin-left: 10px;
@@ -208,44 +208,44 @@
   background: white;
   cursor: pointer;
 }
-
+ 
 .products-page .weight-verify:hover {
   background: #1A2A47;
   color: white;
 }
-
+ 
 .products-page .row-container {
   margin-top: 10px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
 }
-
+ 
 .products-page .diffCont {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
+ 
 .products-page .diffCont label {
   font-weight: 600;
   color: #1A2A47;
 }
-
+ 
 .products-page .diffCont input {
   padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid #ccd4e0;
 }
-
+ 
 .stone-icon{
   /* font-size: 1.1rem; */
   /* margin-right: 10px; */
   display: flex;
   cursor: pointer;
   gap: 1rem;
- align-items: center;
- justify-content: center;
+align-items: center;
+justify-content: center;
   transition: 0.2s ease;
 }
 .products-page .icon svg {
@@ -255,12 +255,12 @@
   gap: 20px;
   transition: 0.2s ease;
 }
-
+ 
 .products-page .icon svg:hover {
   color: #1A2A47;
   transform: scale(1.15);
 }
-
+ 
 .products-page .export-btn,
 .products-page .print-btn {
   margin-top: 1rem;
@@ -276,30 +276,30 @@
   cursor: pointer;
   transition: 0.25s;
 }
-
+ 
 .products-page .export-btn:hover,
 .products-page .print-btn:hover {
   background: #142544;
 }
-
+ 
 /* Fix table container spacing */
 .products-page .table-container {
   margin-top: 1.5rem;
   padding: 35px;
   border-radius: 18px;
 }
-
+ 
 /* Fix spacing between header & table */
 .products-page .tab {
   margin-top: 15px;
 }
-
+ 
 /* Correct rounded edges + spacing */
 .products-page .tab tbody tr {
   background: #f6f9ff;
   border-radius: 12px;
 }
-
+ 
 /* Fix inputs inside table */
 .products-page .tab input {
   background: transparent;
@@ -309,13 +309,13 @@
   font-weight: 600;
   color: #1A2A47;
 }
-
+ 
 /* FIX footer styling */
 .products-page tfoot td {
   padding-top: 18px !important;
   font-size: 1rem;
 }
-
+ 
 /* New diff boxes wrapper */
 .products-page-diff-wrapper {
   margin-top: 25px;
@@ -326,7 +326,7 @@
   justify-content: center;
   flex-wrap: wrap;
 }
-
+ 
 /* Each diff box */
 .products-page .diffCont {
   background: #ffffff;
@@ -337,12 +337,12 @@
   align-items: center;
   gap: 12px;
 }
-
+ 
 .products-page .diffCont label {
   color: #1A2A47;
   font-weight: 600;
 }
-
+ 
 .products-page .diffCont input {
   padding: 6px 10px;
   border: 1px solid #d0d7e6;
@@ -350,12 +350,12 @@
   border-radius: 6px;
   width: 120px;
 }
-
+ 
 /* ================================
    ADD PRODUCT POPUP — FULL CSS
    Scoped to avoid interfering
    ================================ */
-
+ 
 .add-product-popup-overlay {
   position: fixed;
   inset: 0;
@@ -367,7 +367,7 @@
   z-index: 9999;
   animation: fadeIn 0.3s ease;
 }
-
+ 
 .add-product-popup {
   background: #ffffff;
   width: 500px;
@@ -378,7 +378,7 @@
   animation: scaleIn 0.35s ease;
   position: relative;
 }
-
+ 
 .add-product-popup h2 {
   text-align: center;
   font-size: 1.4rem;
@@ -386,7 +386,7 @@
   color: #1A2A47;
   margin-bottom: 25px;
 }
-
+ 
 /* Close button */
 .add-product-popup .close-btn {
   position: absolute;
@@ -399,26 +399,26 @@
   cursor: pointer;
   transition: 0.2s ease;
 }
-
+ 
 .add-product-popup .close-btn:hover {
   transform: scale(1.15);
   color: #0d1b33;
 }
-
+ 
 /* Input block */
 .add-product-popup .input-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 18px;
 }
-
+ 
 .add-product-popup label {
   font-size: 0.95rem;
   font-weight: 600;
   color: #1A2A47;
   margin-bottom: 6px;
 }
-
+ 
 .add-product-popup input {
   padding: 10px 14px;
   border-radius: 10px;
@@ -427,19 +427,19 @@
   font-size: 0.95rem;
   transition: 0.25s ease;
 }
-
+ 
 .add-product-popup input:focus {
   border-color: #1A2A47;
   box-shadow: 0px 0px 0px 2px rgba(26, 42, 71, 0.15);
 }
-
+ 
 /* Buttons */
 .add-product-popup .btn-row {
   display: flex;
   justify-content: space-between;
   margin-top: 25px;
 }
-
+ 
 .add-product-popup button {
   padding: 10px 20px;
   border-radius: 10px;
@@ -448,73 +448,58 @@
   border: none;
   transition: 0.25s ease;
 }
-
+ 
 .add-product-popup .save-btn {
   background: #1A2A47;
   color: white;
 }
-
+ 
 .add-product-popup .save-btn:hover {
   background: #0f1d35;
 }
-
+ 
 .add-product-popup .cancel-btn {
   background: #e6eaf3;
   color: #1A2A47;
 }
-
+ 
 .add-product-popup .cancel-btn:hover {
   background: #d1d8e6;
 }
-
-.exportPdfBtn,.printAllBtn{
-   margin-top:2rem;
-   margin-bottom:2rem;
-   margin-left: 2rem;
-   height: 2rem;
-   width: 8rem;
-   font-weight:bold;
-   font-size: 1rem;
-   border-radius:5px;
-   background-color:rgb(36,36,66) ;
-   color: white;
-   cursor: pointer;
-
-}
-
+ 
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
+ 
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }
 }
-
-
-
-
+ 
+ 
+ 
+ 
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-
+ 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(25px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
+ 
 @media (max-width: 768px) {
   .products-page .weight {
     flex-direction: column;
   }
-
+ 
   .products-page .table-container {
     padding: 18px;
   }
-
+ 
   .products-page .tab input {
     font-size: 0.8rem;
   }
