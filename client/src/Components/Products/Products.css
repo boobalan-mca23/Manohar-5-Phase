@@ -10,7 +10,6 @@
     );
   padding-top: 120px;
   position: relative;
-  /* animation: fadeIn 0.5s ease; */
   padding-bottom: 60px !important; 
 }
 
@@ -181,7 +180,7 @@
   color: #1A2A47;
 }
 
-/* Rounded row edges */
+
 .products-page .tab tbody tr td:first-child {
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
@@ -191,7 +190,7 @@
   border-bottom-right-radius: 12px;
 }
 
-/* TFOOT (totals) */
+
 .products-page tfoot td {
   border: none !important;
   font-weight: bold;
@@ -199,7 +198,7 @@
   font-size: 1rem;
 }
 
-/* Verify buttons */
+
 .products-page .weight-verify {
   margin-left: 10px;
   padding: 2px 8px;
@@ -239,8 +238,6 @@
 }
 
 .stone-icon{
-  /* font-size: 1.1rem; */
-  /* margin-right: 10px; */
   display: flex;
   cursor: pointer;
   gap: 1rem;
@@ -282,25 +279,25 @@
   background: #142544;
 }
 
-/* Fix table container spacing */
+
 .products-page .table-container {
   margin-top: 1.5rem;
   padding: 35px;
   border-radius: 18px;
 }
 
-/* Fix spacing between header & table */
+
 .products-page .tab {
   margin-top: 15px;
 }
 
-/* Correct rounded edges + spacing */
+
 .products-page .tab tbody tr {
   background: #f6f9ff;
   border-radius: 12px;
 }
 
-/* Fix inputs inside table */
+
 .products-page .tab input {
   background: transparent;
   border: none;
@@ -310,13 +307,13 @@
   color: #1A2A47;
 }
 
-/* FIX footer styling */
+
 .products-page tfoot td {
   padding-top: 18px !important;
   font-size: 1rem;
 }
 
-/* New diff boxes wrapper */
+
 .products-page-diff-wrapper {
   margin-top: 25px;
   margin-bottom: 25px;
@@ -327,7 +324,7 @@
   flex-wrap: wrap;
 }
 
-/* Each diff box */
+
 .products-page .diffCont {
   background: #ffffff;
   padding: 14px 20px;
@@ -351,10 +348,7 @@
   width: 120px;
 }
 
-/* ================================
-   ADD PRODUCT POPUP — FULL CSS
-   Scoped to avoid interfering
-   ================================ */
+
 
 .add-product-popup-overlay {
   position: fixed;
@@ -387,7 +381,7 @@
   margin-bottom: 25px;
 }
 
-/* Close button */
+
 .add-product-popup .close-btn {
   position: absolute;
   right: 16px;
@@ -405,7 +399,7 @@
   color: #0d1b33;
 }
 
-/* Input block */
+
 .add-product-popup .input-group {
   display: flex;
   flex-direction: column;
@@ -433,7 +427,6 @@
   box-shadow: 0px 0px 0px 2px rgba(26, 42, 71, 0.15);
 }
 
-/* Buttons */
 .add-product-popup .btn-row {
   display: flex;
   justify-content: space-between;
@@ -482,7 +475,7 @@
 
 }
 
-/* Animations */
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -493,13 +486,6 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-
-
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(25px); }

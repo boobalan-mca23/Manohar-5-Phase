@@ -55,7 +55,7 @@
   pointer-events: none;
 }
  
-* Pagination container */
+/* Pagination container */
 .sl-pagination {
   display: flex;
   align-items: center;

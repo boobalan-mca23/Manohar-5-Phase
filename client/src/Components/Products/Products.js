@@ -337,7 +337,7 @@ const handleBulkExportPdf = async (items) => {
       qrCodeContainer.appendChild(barcodeContainer);
  
       const barcodeSvg = (
-        <Barcode value={item.product_number} size={30} format="svg" />
+        <Barcode value={item.product_number} size={30} format="png" />
       );
       const svgContainer = ReactDOMServer.renderToStaticMarkup(barcodeSvg);
       barcodeContainer.innerHTML = svgContainer;

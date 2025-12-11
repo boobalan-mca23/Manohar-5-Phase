@@ -17,7 +17,7 @@
   justify-content: center;
 }
 
-/* CARD */
+
 .rl-card {
   width: 90%;
   max-width: 1200px;
@@ -30,7 +30,6 @@
   overflow: hidden;
 }
 
-/* PAGINATION */
 .rl-pagination {
   margin-top: 1.8rem;
   display: flex;
@@ -64,9 +63,7 @@
   color: #242442;
 }
 
-/* ===================================
-   REMOVED LOT TABLE MODULE (rl-*)
-   =================================== */
+
 
 .rl-table-wrapper {
   margin-top: 1rem;
@@ -79,7 +76,7 @@
   width: 80rem;
 }
 
-/* HEADER */
+
 .rl-table-header {
   display: flex;
   justify-content: center;
@@ -95,13 +92,13 @@
   margin: 0;
 }
 
-/* SEARCH BAR */
+
 .rl-search {
   width: 18rem !important;
   margin-bottom: 1rem;
 }
 
-/* ACTION BUTTONS */
+
 .rl-action-buttons {
   display: flex;
   gap: 12px;
