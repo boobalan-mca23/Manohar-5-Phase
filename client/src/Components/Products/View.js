@@ -488,17 +488,17 @@ const handleSave = async () => {
       ]);
           try {
             const weight = await handleWeight();  // Await the function call and Weight Api
-            console.log(weight.weightdata);
+            console.log(weight);
   
             switch (fieldName) {
                 case "before_weight_img":
-                    setBeforeWeight(weight.weightdata);
+                    setBeforeWeight(weight);
                     break;
                 case "after_weight_img":
-                    setAfterWeight(weight.weightdata);
+                    setAfterWeight(weight);
                     break;
                 case "final_weight_img":
-                    setBarcodeWeight(weight.weightdata);
+                    setBarcodeWeight(weight);
                     break;
                 default:
                     console.warn("Invalid field:", fieldName);

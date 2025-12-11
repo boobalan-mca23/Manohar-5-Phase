@@ -1,34 +1,35 @@
+// let ws;
+// let listeners = [];
 
-let ws;
-let listeners = [];
+// export function initWebSocket() {
+//   if (ws) return; // prevent multiple connections
 
-function initWebSocket() {
-  ws = new WebSocket("wss://wss1_ibacus.octosignals.com/ws/data");
+//   ws = new WebSocket("wss://wss1_ibacus.octosignals.com/ws/stream");
 
-  ws.onopen = () => console.log("WS Connected");
+//   ws.onopen = () => console.log("WS Connected");
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('weight data',data)
-    // notify all listeners
-    listeners.forEach((cb) => cb(data.weight));
-  };
+//   ws.onmessage = (event) => {
+//     const data = JSON.parse(event.data);
+//     console.log("WS DATA:", data);
 
-  ws.onerror = () => console.log("WS Error");
-  ws.onclose = () => {
-    console.log("WS Closed. Reconnecting in 2 seconds...");
-    setTimeout(initWebSocket, 2000);
-  };
-}
+//     listeners.forEach(cb => cb(data.weight));
+//   };
 
-initWebSocket();
+//   ws.onerror = (err) => console.log("WS Error", err);
 
+//   ws.onclose = () => {
+//     console.log("WS Closed… reconnecting");
+//     ws = null;
+//     setTimeout(initWebSocket, 2000);
+//   };
+// }
 
-export const subscribeWeight = (callback) => {
-  listeners.push(callback);
+// initWebSocket()
 
-  return () => {
-    // Unsubscribe
-    listeners = listeners.filter((cb) => cb !== callback);
-  };
-};
+// export function subscribeWeight(callback) {
+//   listeners.push(callback);
+
+//   return () => {
+//     listeners = listeners.filter(cb => cb !== callback);
+//   };
+// }
