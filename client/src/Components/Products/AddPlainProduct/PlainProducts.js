@@ -482,16 +482,17 @@ const PlainProducts = () => {
   };
 
   const handleWeightData = async () => {
-    try {
-      const weight = await handleWeight();
-      console.log(weight);
+    // tempory closed
+    // try {
+    //   const weight = await handleWeight();
+    //   console.log(weight);
 
-      if (weight !== null && weight !== undefined) {
-        setGrossWeight(weight);
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
+    //   if (weight !== null && weight !== undefined) {
+    //     setGrossWeight(weight);
+    //   }
+    // } catch (err) {
+    //   console.log(err.message);
+    // }
   };
 
   // Delete function (uses plainProducts delete endpoint)
@@ -638,7 +639,7 @@ const PlainProducts = () => {
       return;
     }
 
-    if (!grossWeight || !stoneWeight) {
+    if (!grossWeight) {
       toast.error("Please enter weights");
       setSavingProduct(false);
       return;
@@ -831,7 +832,6 @@ const PlainProducts = () => {
                 {filterProducts.map((product, index) => (
                   <tr key={product.id || index}>
                     <td>{index + 1}</td>
-
                     <td>
                       {(
                         product.product_number ||
@@ -840,7 +840,6 @@ const PlainProducts = () => {
                         ""
                       ).replace(/^PL\d+/, "")}
                     </td>
-
                     <td>{product.productName || ""}</td>
                     <td>{product.workerName || ""}</td>
                     <td>{product.grossWeight || ""}</td>
@@ -1165,6 +1164,7 @@ const PlainProducts = () => {
               {/* Left Side */}
               <div>
                 <label>Item (master)</label>
+
                 <select
                   style={inputStyle}
                   value={
@@ -1400,8 +1400,8 @@ const PlainProducts = () => {
                 alt="preview"
                 style={{
                   width: "100%",
-                  maxWidth: "280px",
-                  height: "auto",
+                  maxWidth: "20rem",
+                  height: "15rem",
                   borderRadius: "10px",
                   display: "block",
                   margin: "0 auto",
