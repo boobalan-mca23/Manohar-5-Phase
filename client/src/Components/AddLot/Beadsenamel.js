@@ -292,6 +292,7 @@ function Beadsenamel() {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 , animation: "fadeInUp 0.8s ease 0.1s both"}}>
+           
             <RoundedTextField
               label="Search Lot Number"
               variant="outlined"
