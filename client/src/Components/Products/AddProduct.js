@@ -20,7 +20,7 @@ import { REACT_APP_BACKEND_SERVER_URL } from "../../config";
 import ReactDOMServer from "react-dom/server";
 import { handleWeight } from "../utils";
 import Products from "./Products";
-
+import { ToastContainer } from "react-toastify";
 const AddProduct=({
     showAddItemsPopup,
     closeAddItemsPopup,
@@ -64,21 +64,21 @@ const AddProduct=({
     }
   )
   const [saving, setSaving] = useState(false);
-
-const handleWeightData=async()=>{
-      try{
-        const weight = await handleWeight();
-        console.log(weight);
+// tempory closed
+// const handleWeightData=async()=>{
+//       try{
+//         const weight = await handleWeight();
+//         console.log(weight);
  
-        if(weight!==null && weight!==undefined){
-            setBeforeWeight(weight);
-       }
+//         if(weight!==null && weight!==undefined){
+//             setBeforeWeight(weight);
+//        }
  
-      }catch(err){
-         console.log(err.message)
+//       }catch(err){
+//          console.log(err.message)
         
-      }
-  }
+//       }
+//   }
 
   const toggleWebcam = (field) => {
     setWebcamVisible((prev) => !prev);
@@ -115,7 +115,12 @@ const handleWeightData=async()=>{
       formData.append("image",imgField.image);
       formData.append("fieldName",imgField.fieldName);
       formData.append("itemType", "STONE");
-
+      
+     if(!beforeWeight){
+       toast.warn('Please Add Before Weight',{autoClose:1000})
+       setSaving(false)
+       return;
+     }
       const response = await axios.post(
         `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/create`,
         formData,
@@ -205,19 +210,19 @@ const handleWeightData=async()=>{
   
       const image = canvas.toDataURL("image/jpeg", 1.0); 
       const file = base64ToFile(image, "captured-image.jpg", "image/jpeg");
-      handleWeightData()    
+      // temprory closed
+      // handleWeightData()    
       setImgField({image:image,fieldName:file})
  
     }
   };
   
-  const handleSave=async()=>{
-  }
 
 return (
   showAddItemsPopup && (
+    
     <div className="add-product-popup-overlay">
-
+    <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       <div className="add-product-popup" ref={popupRef}>
         
         {/* Close Button */}

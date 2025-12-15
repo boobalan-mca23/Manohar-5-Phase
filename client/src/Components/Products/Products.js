@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faTrash, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faTrash, faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
 import Table from "react-bootstrap/Table";
 import { useParams, useLocation,useNavigate } from "react-router-dom";
 import "../Products/Products.css";
@@ -674,25 +674,25 @@ useEffect(() => {
   };
 }, [showBarcode]);
 const handleBulkWeight=async(fieldName)=>{
-  try {
-         const weight = await handleWeight();  // Await the function call and Weight Api
-         console.log('ETETETETEWTWYT',weight);
- 
-         switch (fieldName) {
-             case "bulkWeightBefore":
-                 setBulkWeightBefore(weight);
-                 break;
-             case "bulkWeightAfter":
-                setBulkWeightAfter(weight);
-                 break;
-            
-             default:
-                 console.warn("Invalid field:", fieldName);
-         }
-     } catch (err) {
+  // temprory closed
+  // try {
+  //        const weight = await handleWeight();  // Await the function call and Weight Api
         
-         console.error("Error fetching weight:", err);
-     }
+  //        switch (fieldName) {
+  //            case "bulkWeightBefore":
+  //                setBulkWeightBefore(weight);
+  //                break;
+  //            case "bulkWeightAfter":
+  //               setBulkWeightAfter(weight);
+  //                break;
+            
+  //            default:
+  //                console.warn("Invalid field:", fieldName);
+  //        }
+  //    } catch (err) {
+        
+  //        console.error("Error fetching weight:", err);
+  //    }
 }
 
 const handleVerify=(value)=>{
@@ -711,7 +711,7 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
           </button>
           <button onClick={handleAddItems}>Add Items</button>
           <select
-            style={{ marginLeft: "1rem", height: "1.5rem", width: "4rem" }}
+            style={{ marginLeft: "1rem", height: "1.5rem", width: "5rem" }}
             id="cars"
             name="cars"
             value={filterOpt}
@@ -787,7 +787,7 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
                 {filterProducts.map((product, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{transform_text(product.product_number)}</td>
+                    <td >{transform_text(product.product_number)}</td>
                     <td>{product.before_weight || ""}</td>
                     <td>{product.after_weight || ""}</td>
                     <td>{product.difference?.toFixed(2) || ""}</td>
@@ -806,7 +806,7 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
                     <td>
                       <div className="stone-icon">
                         <FontAwesomeIcon
-                          icon={faEye}
+                          icon={faEdit}
                           onClick={() => openPopup(product.id)}
                         />
                       
@@ -822,7 +822,7 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
               <tfoot>
                 <tr>
                   <td colSpan="2" style={{textAlign:"center"}}>
-                    <b>Total Weight = </b>
+                    <b>Total Weight  </b>
                   </td>
                   <td style={{textAlign:"center"}}>
                     <b>{totalBeforeWeight}</b>

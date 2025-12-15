@@ -124,9 +124,10 @@ import "react-toastify/dist/ReactToastify.css";
  
  
 export const transform_text = (num) => {
-  if (num === undefined || num === null) return "";
+  if (num === undefined || num === null  ) return "";
   // Force convert to string always
   const str = String(num);
+  if (str === "null" || str.startsWith("null__")) return "-";
   // If "__" not found, return whole string
   if (!str.includes("__")) return str;
   return str.split("__")[0];

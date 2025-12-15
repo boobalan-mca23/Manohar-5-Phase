@@ -196,6 +196,7 @@ const searchLots = async (req, res, next) => {
 const getLotById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    console.log('id',id)
    
     if(isNaN(id) || !id) return res.status(400).json({message:"Lot Id is Required"})
  
@@ -222,7 +223,8 @@ const getLotById = async (req, res, next) => {
       }
     }
     })
-    
+    console.log('lotValue',lotInfo[0].products)
+
     // Return the fetched lot
     return res.status(200).json({ msg: "Successfully fetched",lotInfo,success:true});
   } catch (error) {
