@@ -174,7 +174,6 @@ export default function AddItem() {
             <div className="form-group">
               <label>Item Code</label>
               <input
-                maxLength={2}
                 type="text"
                 value={itemCode}
                 onChange={(e) => setItemCode(e.target.value)}
@@ -218,7 +217,6 @@ export default function AddItem() {
                         <td>
                           {editItemId === item.id ? (
                             <input
-                              maxLength={2}
                               type="text"
                               className="edit-input"
                               value={editCode}

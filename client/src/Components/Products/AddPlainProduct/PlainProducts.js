@@ -638,7 +638,7 @@ const PlainProducts = () => {
       return;
     }
 
-    if (!grossWeight) {
+    if (!grossWeight || !stoneWeight) {
       toast.error("Please enter weights");
       setSavingProduct(false);
       return;
@@ -831,6 +831,7 @@ const PlainProducts = () => {
                 {filterProducts.map((product, index) => (
                   <tr key={product.id || index}>
                     <td>{index + 1}</td>
+
                     <td>
                       {(
                         product.product_number ||
@@ -839,6 +840,7 @@ const PlainProducts = () => {
                         ""
                       ).replace(/^PL\d+/, "")}
                     </td>
+
                     <td>{product.productName || ""}</td>
                     <td>{product.workerName || ""}</td>
                     <td>{product.grossWeight || ""}</td>
@@ -1163,7 +1165,6 @@ const PlainProducts = () => {
               {/* Left Side */}
               <div>
                 <label>Item (master)</label>
-
                 <select
                   style={inputStyle}
                   value={
@@ -1399,8 +1400,8 @@ const PlainProducts = () => {
                 alt="preview"
                 style={{
                   width: "100%",
-                  maxWidth: "20rem",
-                  height: "15rem",
+                  maxWidth: "280px",
+                  height: "auto",
                   borderRadius: "10px",
                   display: "block",
                   margin: "0 auto",
