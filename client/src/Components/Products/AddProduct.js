@@ -64,21 +64,21 @@ const AddProduct=({
     }
   )
   const [saving, setSaving] = useState(false);
-// tempory closed
-// const handleWeightData=async()=>{
-//       try{
-//         const weight = await handleWeight();
-//         console.log(weight);
+
+const handleWeightData=async()=>{
+      try{
+        const weight = await handleWeight();
+        console.log(weight);
  
-//         if(weight!==null && weight!==undefined){
-//             setBeforeWeight(weight);
-//        }
+        if(weight!==null && weight!==undefined){
+            setBeforeWeight(weight);
+       }
  
-//       }catch(err){
-//          console.log(err.message)
+      }catch(err){
+         console.log(err.message)
         
-//       }
-//   }
+      }
+  }
 
   const toggleWebcam = (field) => {
     setWebcamVisible((prev) => !prev);
@@ -210,8 +210,8 @@ const AddProduct=({
   
       const image = canvas.toDataURL("image/jpeg", 1.0); 
       const file = base64ToFile(image, "captured-image.jpg", "image/jpeg");
-      // temprory closed
-      // handleWeightData()    
+      
+      handleWeightData()    
       setImgField({image:image,fieldName:file})
  
     }

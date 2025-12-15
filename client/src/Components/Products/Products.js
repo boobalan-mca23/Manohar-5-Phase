@@ -674,25 +674,24 @@ useEffect(() => {
   };
 }, [showBarcode]);
 const handleBulkWeight=async(fieldName)=>{
-  // temprory closed
-  // try {
-  //        const weight = await handleWeight();  // Await the function call and Weight Api
+  try {
+         const weight = await handleWeight();  // Await the function call and Weight Api
         
-  //        switch (fieldName) {
-  //            case "bulkWeightBefore":
-  //                setBulkWeightBefore(weight);
-  //                break;
-  //            case "bulkWeightAfter":
-  //               setBulkWeightAfter(weight);
-  //                break;
+         switch (fieldName) {
+             case "bulkWeightBefore":
+                 setBulkWeightBefore(weight);
+                 break;
+             case "bulkWeightAfter":
+                setBulkWeightAfter(weight);
+                 break;
             
-  //            default:
-  //                console.warn("Invalid field:", fieldName);
-  //        }
-  //    } catch (err) {
+             default:
+                 console.warn("Invalid field:", fieldName);
+         }
+     } catch (err) {
         
-  //        console.error("Error fetching weight:", err);
-  //    }
+         console.error("Error fetching weight:", err);
+     }
 }
 
 const handleVerify=(value)=>{

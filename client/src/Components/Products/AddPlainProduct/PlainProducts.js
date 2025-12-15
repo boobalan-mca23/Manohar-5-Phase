@@ -482,17 +482,17 @@ const PlainProducts = () => {
   };
 
   const handleWeightData = async () => {
-    // tempory closed
-    // try {
-    //   const weight = await handleWeight();
-    //   console.log(weight);
+   
+    try {
+      const weight = await handleWeight();
+      console.log(weight);
 
-    //   if (weight !== null && weight !== undefined) {
-    //     setGrossWeight(weight);
-    //   }
-    // } catch (err) {
-    //   console.log(err.message);
-    // }
+      if (weight !== null && weight !== undefined) {
+        setGrossWeight(weight);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   // Delete function (uses plainProducts delete endpoint)
