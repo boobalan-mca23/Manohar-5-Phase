@@ -40,7 +40,6 @@ export default function AddItem() {
     }
   };
 
-
   const handleAddItem = async () => {
     if (!itemName.trim() || !itemCode.trim()) {
       toast.warn("Please enter both item name and code.");
@@ -51,6 +50,25 @@ export default function AddItem() {
       toast.warn("Special characters are not allowed.", { autoClose: 2000 });
       return;
     }
+
+    const isNameExists = items.some(
+      item => item.itemName.toLowerCase() === itemName.trim().toLowerCase()
+    );
+
+    const isCodeExists = items.some(
+      item => item.itemCode.toLowerCase() === itemCode.trim().toLowerCase()
+    );
+
+    if (isNameExists) {
+      toast.warn("Item name already exists");
+      return;
+    }
+
+    if (isCodeExists) {
+      toast.warn("Item code already exists");
+      return;
+    }
+
 
     try {
       await axios.post(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/masterItem`, {
@@ -125,6 +143,23 @@ export default function AddItem() {
       return;
     }
 
+    const otherItems = items.filter(item => item.id !== id);
+
+    const isNameExists = otherItems.some(item => item.itemName.toLowerCase() === editName.trim().toLowerCase());
+
+    const isCodeExists = otherItems.some(item => item.itemCode.toLowerCase() === editCode.trim().toLowerCase());
+
+    if (isNameExists) {
+      toast.warn("Item name already exists");
+      return;
+    }
+
+    if (isCodeExists) {
+      toast.warn("Item code already exists");
+      return;
+    }
+
+
     try {
       await axios.put(`${REACT_APP_BACKEND_SERVER_URL}/api/v1/masterItem/${id}`, {
         itemName: editName.trim(),
@@ -167,7 +202,10 @@ export default function AddItem() {
               <input
                 type="text"
                 value={itemName}
-                onChange={(e) => setItemName(e.target.value)}
+                onChange={(e) => {
+                  const cleaned = e.target.value.replace(/\s/g,'')
+                  setItemName(cleaned)
+                }}
                 placeholder="Enter item name"
               />
             </div>
@@ -176,8 +214,12 @@ export default function AddItem() {
               <input
                 type="text"
                 value={itemCode}
-                onChange={(e) => setItemCode(e.target.value)}
+                onChange={(e) =>{
+                  const cleaned = e.target.value.replace(/[^a-zA-Z]/g,'')
+                  setItemCode(cleaned)
+                }}
                 placeholder="Enter item code"
+                maxLength={2}
               />
             </div>
             <button className="btn-add" onClick={handleAddItem}>
@@ -192,7 +234,7 @@ export default function AddItem() {
                 <table className="items-table">
                   <thead>
                     <tr>
-                      <th>No.</th>
+                      <th>S.No</th>
                       <th>Item Name</th>
                       <th>Item Code</th>
                       <th>Actions</th>
@@ -201,7 +243,7 @@ export default function AddItem() {
                   <tbody>
                     {items.map((item, index) => (
                       <tr key={item.id}>
-                        <td>{index + 1}</td>
+                        <td>{(page - 1) * limit + index + 1}</td>
                         <td>
                           {editItemId === item.id ? (
                             <input

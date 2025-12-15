@@ -4,6 +4,9 @@ import { toast } from "react-toastify";
 import { REACT_APP_BACKEND_SERVER_URL } from "../../../config";
 import Navbarr from "../../Navbarr/Navbarr";
 import { ToastContainer } from "react-toastify";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
+import { IoPersonAddSharp } from "react-icons/io5";
 
 const PAGE_SIZE = 8;
 function normalizeRole(role) {
@@ -36,6 +39,7 @@ export default function AdminUsers() {
   const [showPassword, setShowPassword] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const currentUserRole = (localStorage.getItem("userRole") || "").toLowerCase();
+  const token = localStorage.getItem("token");
   const [newUser, setNewUser] = useState({
     userName: "",
     phone: "",
@@ -45,14 +49,41 @@ export default function AdminUsers() {
       userCreateAccess: false,
       goldSmithAccess: false,
       itemAccess: false,
-      productAccess: false,
+      productAccess: true,
       billingAccess: false,
       restoreAccess: false,
       deleteLotAccess: false,
     },
   });
 
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (newUser.role === "user") {
+      setNewUser(prev => ({
+        ...prev,
+        access: {
+          ...prev.access,
+          userCreateAccess: false, // force-disable
+        }
+      }));
+    }
+  }, [newUser.role]);
+
+  useEffect(() => {
+    if (selectedUser && selectedUser.role === "user") {
+      setSelectedUser(prev => {
+        const accessObj = Array.isArray(prev.access)
+          ? { ...prev.access[0] }
+          : { ...prev.access };
+
+        accessObj.userCreateAccess = false;
+
+        return {
+          ...prev,
+          access: Array.isArray(prev.access) ? [accessObj] : accessObj,
+        };
+      });
+    }
+  }, [selectedUser?.role]);
 
   useEffect(() => {
     fetchUsers();
@@ -183,6 +214,24 @@ export default function AdminUsers() {
       toast.error("Username and password are required");
       return;
     }
+    if (newUser.userName .trim() ===""){
+      toast.error("User Name is invalid");
+      return;
+    }
+
+    if (newUser.phone) {
+      const exists = users.some(u => u.phone === newUser.phone);
+
+      if (exists) {
+        toast.error("Phone number already exists");
+        return;
+      }
+    }
+
+    if (/^(\d)\1{9}$/.test(newUser.phone.trim())) {
+      toast.warn("Invalid phone number", { autoClose: 2000 });
+      return;
+    }
 
     try {
       const res = await fetch(
@@ -224,6 +273,22 @@ export default function AdminUsers() {
 
     if (!accessItem || !accessItem.id) {
       toast.error("Invalid access object from backend");
+      return;
+    }
+
+    if (selectedUser.phone) {
+      const exists = users.some(
+        u => u.phone === selectedUser.phone && u.id !== selectedUser.id
+      );
+
+      if (exists) {
+        toast.error("Phone number already exists");
+        return;
+      }
+    }
+
+    if (/^(\d)\1{9}$/.test(selectedUser.phone.trim())) {
+      toast.warn("Invalid phone number", { autoClose: 2000 });
       return;
     }
     console.log("accessItem", accessItem);
@@ -320,7 +385,8 @@ async function handleDelete(u) {
         <div className="admin-header">
           <div className="header-content">
             <div>
-              <h2>
+              
+              <h2 style={{display:"flex", justifyContent:'center',alignItems:'center'}}>
                 <img
                   src="https://img.icons8.com/?size=100&id=z-JBA_KtSkxG&format=png&color=000000"
                   alt="user"
@@ -336,7 +402,7 @@ async function handleDelete(u) {
               className="btn-primary"
               onClick={() => setShowAddModal(true)}
             >
-              <span className="btn-icon">+</span> Add New User
+              <span className="btn-icon"><IoPersonAddSharp /></span> Add New User
             </button>
           </div>
         </div>
@@ -377,7 +443,7 @@ async function handleDelete(u) {
               <table className="users-table">
                 <thead>
                   <tr>
-                    <th>#</th>
+                    <th>S.No</th>
                     <th>Username</th>
                     <th>Phone</th>
                     <th>Role</th>
@@ -470,7 +536,7 @@ async function handleDelete(u) {
           <div className="modal-backdrop" onClick={closeAddModal}>
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h3>➕ Add New User</h3>
+                <h3 style={{display:"flex", justifyContent:'center',alignItems:'center',gap:'1rem'}}><IoPersonAddSharp /> Add New User</h3>
                 <button className="modal-close" onClick={closeAddModal}>
                   ×
                 </button>
@@ -482,24 +548,36 @@ async function handleDelete(u) {
                   <input
                     type="text"
                     value={newUser.userName}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, userName: e.target.value })
-                    }
+                    onChange={(e) =>{
+                      const cleaned = e.target.value.replace(/\s/g,'')
+                      setNewUser({ ...newUser, userName: cleaned })
+                    }}
                     placeholder="Enter username"
                     className="form-input"
                   />
-                </div>
-
+                </div>  
                 <div className="form-group">
                   <label>Phone</label>
                   <input
-                    type="text"
+                    type="tel"
                     value={newUser.phone}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, phone: e.target.value })
-                    }
+                    onChange={(e) => {
+                      const phoneValue = e.target.value.replace(/\D/g, '');
+                      if (phoneValue.length > 10) {
+                        return;
+                      }
+                      // const allSameDigits = /^(\d)\1{9}$/.test(phoneValue);
+                      // if (allSameDigits) {
+                      //   toast.error("Invalid phone number");
+                      //   setNewUser({...newUser, phone: ""})
+                      //   return;
+                      // }
+                      setNewUser({ ...newUser, phone: phoneValue });
+                    }}
                     placeholder="Enter phone number"
                     className="form-input"
+                    maxLength="10"
+                    inputMode="numeric"
                   />
                 </div>
 
@@ -509,9 +587,10 @@ async function handleDelete(u) {
                     <input
                       type={showPassword ? "text" : "password"}
                       value={newUser.password}
-                      onChange={(e) =>
-                        setNewUser({ ...newUser, password: e.target.value })
-                      }
+                      onChange={(e) =>{
+                        const cleaned = e.target.value.replace(/\s/,"")
+                        setNewUser({ ...newUser, password: cleaned })
+                      }}
                       placeholder="Enter password"
                       className="form-input"
                     />
@@ -520,7 +599,7 @@ async function handleDelete(u) {
                       className="password-toggle"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? "👁️" : "👁️‍🗨️"}
+                      {showPassword ? <FaEye /> : <FaEyeSlash />}
                     </button>
                   </div>
                 </div>
@@ -543,41 +622,15 @@ async function handleDelete(u) {
                 <div className="form-group">
                   <label>Access Permissions</label>
                   <div className="access-grid">
-                    <label className="checkbox-label">
+                    
+                    {newUser.role != 'user' && <label className="checkbox-label">
                       <input
                         type="checkbox"
                         checked={newUser.access.userCreateAccess}
                         onChange={() => toggleNewUserAccess("userCreateAccess")}
                       />
-                      <span>Create Users 👥</span>
-                    </label>
-
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={newUser.access.productAccess}
-                        onChange={() => toggleNewUserAccess("productAccess")}
-                      />
-                      <span>Products 📦</span>
-                    </label>
-
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={newUser.access.billingAccess}
-                        onChange={() => toggleNewUserAccess("billingAccess")}
-                      />
-                      <span>Billing 💰</span>
-                    </label>
-
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={newUser.access.restoreAccess}
-                        onChange={() => toggleNewUserAccess("restoreAccess")}
-                      />
-                      <span>Restore ♻️</span>
-                    </label>
+                      <span> Users Management </span>
+                    </label>}
 
                     <label className="checkbox-label">
                       <input
@@ -585,7 +638,7 @@ async function handleDelete(u) {
                         checked={newUser.access.goldSmithAccess}
                         onChange={() => toggleNewUserAccess("goldSmithAccess")}
                       />
-                      <span>GoldSmith ⚒️</span>
+                      <span> Add GoldSmith </span>
                     </label>
 
                     <label className="checkbox-label">
@@ -594,15 +647,43 @@ async function handleDelete(u) {
                         checked={newUser.access.itemAccess}
                         onChange={() => toggleNewUserAccess("itemAccess")}
                       />
-                      <span>Items 📋</span>
+                      <span style={{}}> Add Items </span>
                     </label>
+
+                    {/* <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={newUser.access.productAccess}
+                        onChange={() => toggleNewUserAccess("productAccess")}
+                      />
+                      <span>Products </span>
+                    </label> */}
+
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={newUser.access.billingAccess}
+                        onChange={() => toggleNewUserAccess("billingAccess")}
+                      />
+                      <span> Billing</span>
+                    </label>
+
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={newUser.access.restoreAccess}
+                        onChange={() => toggleNewUserAccess("restoreAccess")}
+                      />
+                      <span> Restore </span>
+                    </label>
+
                     <label className="checkbox-label">
                       <input
                         type="checkbox"
                         checked={newUser.access.deleteLotAccess}
                         onChange={() => toggleNewUserAccess("deleteLotAccess")}
                       />
-                      <span> Deleted Lots 🗑️ </span>
+                      <span> Deleted Lots</span>
                     </label>
                   </div>
                 </div>
@@ -635,16 +716,21 @@ async function handleDelete(u) {
                 <div className="form-group">
                   <label>Phone</label>
                   <input
-                    type="text"
+                    type="tel"
                     value={selectedUser.phone || ""}
-                    onChange={(e) =>
+                    onChange={(e) =>{
+                      const phoneValue = e.target.value.replace(/\D/g, '');
+                      if (phoneValue.length > 10) {
+                        return;
+                      }
                       setSelectedUser({
                         ...selectedUser,
-                        phone: e.target.value,
-                      })
+                        phone: phoneValue,
+                      })}
                     }
                     placeholder="Enter phone number"
                     className="form-input"
+                    maxLength="10"
                   />
                 </div>
 
@@ -661,7 +747,7 @@ async function handleDelete(u) {
                       className="password-toggle-btn"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? "👁️" : "👁️‍🗨️"}
+                      {showPassword ? <FaEye /> : <FaEyeSlash />}
                     </button>
                   </div>
                 </div>
@@ -705,7 +791,7 @@ async function handleDelete(u) {
                 <div className="form-group">
                   <label>Access Permissions</label>
                   <div className="access-grid">
-                    <label className="checkbox-label">
+                   {selectedUser.role != 'user' &&  <label className="checkbox-label">
                       <input
                         type="checkbox"
                         checked={Boolean(
@@ -717,53 +803,8 @@ async function handleDelete(u) {
                         )}
                         onChange={() => toggleAccess("userCreateAccess")}
                       />
-                      <span>Create Users 👥</span>
-                    </label>
-
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(
-                          (selectedUser.access &&
-                            selectedUser.access[0] &&
-                            selectedUser.access[0].productAccess) ||
-                            (selectedUser.access &&
-                              selectedUser.access.productAccess)
-                        )}
-                        onChange={() => toggleAccess("productAccess")}
-                      />
-                      <span>Products 📦</span>
-                    </label>
-
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(
-                          (selectedUser.access &&
-                            selectedUser.access[0] &&
-                            selectedUser.access[0].billingAccess) ||
-                            (selectedUser.access &&
-                              selectedUser.access.billingAccess)
-                        )}
-                        onChange={() => toggleAccess("billingAccess")}
-                      />
-                      <span>Billing 💰</span>
-                    </label>
-
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(
-                          (selectedUser.access &&
-                            selectedUser.access[0] &&
-                            selectedUser.access[0].restoreAccess) ||
-                            (selectedUser.access &&
-                              selectedUser.access.restoreAccess)
-                        )}
-                        onChange={() => toggleAccess("restoreAccess")}
-                      />
-                      <span>Restore ♻️</span>
-                    </label>
+                      <span> Users Management</span>
+                    </label>}
 
                     <label className="checkbox-label">
                       <input
@@ -777,7 +818,7 @@ async function handleDelete(u) {
                         )}
                         onChange={() => toggleAccess("goldSmithAccess")}
                       />
-                      <span>GoldSmith ⚒️</span>
+                      <span> Add GoldSmith</span>
                     </label>
 
                     <label className="checkbox-label">
@@ -792,8 +833,54 @@ async function handleDelete(u) {
                         )}
                         onChange={() => toggleAccess("itemAccess")}
                       />
-                      <span>Items 📋</span>
+                      <span> Add Items</span>
                     </label>
+
+                    {/* <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].productAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.productAccess)
+                        )}
+                        onChange={() => toggleAccess("productAccess")}
+                      />
+                      <span>Products </span>
+                    </label> */}
+
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].billingAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.billingAccess)
+                        )}
+                        onChange={() => toggleAccess("billingAccess")}
+                      />
+                      <span> Billing </span>
+                    </label>
+
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(
+                          (selectedUser.access &&
+                            selectedUser.access[0] &&
+                            selectedUser.access[0].restoreAccess) ||
+                            (selectedUser.access &&
+                              selectedUser.access.restoreAccess)
+                        )}
+                        onChange={() => toggleAccess("restoreAccess")}
+                      />
+                      <span> Restore </span>
+                    </label>
+
                     <label className="checkbox-label">
                       <input
                         type="checkbox"
@@ -806,7 +893,7 @@ async function handleDelete(u) {
                         )}
                         onChange={() => toggleAccess("deleteLotAccess")}
                       />
-                      <span> Deleted Lots 🗑️ </span>
+                      <span> Deleted Lots </span>
                     </label>
                   </div>
                 </div>

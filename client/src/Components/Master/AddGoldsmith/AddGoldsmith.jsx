@@ -67,8 +67,35 @@ export default function AddGoldsmith() {
       return;
     }
 
+    if (goldsmithName) {
+      const exists = goldsmith.some(
+        u => u.name === goldsmithName
+      ); 
+
+      if (exists) {
+        toast.error("Goldsmith name already exists");
+        return;
+      }
+    }
+
+        const isCodeExists = goldsmith.some(
+      u =>
+        u.goldSmithCode?.trim().toLowerCase() ===
+        goldSmithCode.trim().toLowerCase()
+    );
+
+    if (isCodeExists) {
+      toast.error("Goldsmith code already exists");
+      return;
+    }
+    
     if (phoneNumber.trim() && !/^\d{10}$/.test(phoneNumber.trim())) {
       toast.warn("Phone number must be 10 digits.", { autoClose: 2000 });
+      return;
+    }
+
+    if (/^(\d)\1{9}$/.test(phoneNumber.trim())) {
+      toast.warn("Invalid phone number", { autoClose: 2000 });
       return;
     }
 
@@ -126,8 +153,31 @@ export default function AddGoldsmith() {
       return;
     }
 
+    if (editName) {
+          const exists = goldsmith.some(
+            u => u.name === editName && u.id !== id
+          ); 
+    
+          if (exists) {
+            toast.error("Goldsmith name already exists");
+            return;
+          }
+        }
+
     if (!editCode.trim()) {
       toast.warn("Goldsmith code is required.");
+      return;
+    }
+    
+    const isCodeExists = goldsmith.some(
+      u =>
+        u.id !== id &&
+        u.goldSmithCode?.trim().toLowerCase() ===
+        editCode.trim().toLowerCase()
+    );
+
+    if (isCodeExists) {
+      toast.error("Goldsmith code already exists");
       return;
     }
 
@@ -136,10 +186,28 @@ export default function AddGoldsmith() {
       return;
     }
 
+    const isPhoneExists = goldsmith.some(
+      u =>
+        u.id !== id &&
+        u.phone?.trim().toLowerCase() ===
+        editPhone.trim().toLowerCase()
+    );
+
+    if (isPhoneExists) {
+      toast.error("Goldsmith Phone already exists");
+      return;
+    }
+
     if (editPhone.trim() && !/^\d{10}$/.test(editPhone.trim())) {
       toast.warn("Phone number must be 10 digits.", { autoClose: 2000 });
       return;
     }
+
+    if (/^(\d)\1{9}$/.test(editPhone.trim())) {
+      toast.warn("Invalid phone number", { autoClose: 2000 });
+      return;
+    }
+
 
     const payload = {
       name: editName.trim(),
@@ -233,7 +301,10 @@ export default function AddGoldsmith() {
               <input
                 type="text"
                 value={goldsmithName}
-                onChange={(e) => setGoldsmithName(e.target.value)}
+                onChange={(e) =>{
+                  const cleaned = e.target.value.replace(/\s/g,'')
+                  setGoldsmithName(cleaned)
+                  }}
                 placeholder="Enter goldsmith name"
               />
             </div>
@@ -243,9 +314,17 @@ export default function AddGoldsmith() {
               <input
                 type="tel"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) =>{ 
+                  const phoneValue = e.target.value.replace(/\D/g, '');
+                  if (phoneValue.length > 10) {
+                                        return;
+                                      }
+                  
+                  setPhoneNumber(phoneValue)
+                }}
                 placeholder="Enter 10 digit phone number"
                 maxLength="10"
+                inputMode="numeric"
               />
             </div>
 
@@ -254,8 +333,12 @@ export default function AddGoldsmith() {
               <input
                 type="text"
                 value={goldSmithCode}
-                onChange={(e) => setGoldSmithCode(e.target.value)}
+                onChange={(e) => {
+                  const cleaned = e.target.value.replace(/[^a-zA-Z]/g,'')
+                  setGoldSmithCode(cleaned)
+                }}
                 placeholder="Enter goldsmith code"
+                maxLength="2"
               />
             </div>
 
@@ -285,7 +368,7 @@ export default function AddGoldsmith() {
                 <table className="goldsmith-table">
                   <thead>
                     <tr>
-                      <th>No.</th>
+                      <th>S.No</th>
                       <th>Name</th>
                       <th>Phone</th>
                       <th>Code</th>
@@ -296,7 +379,7 @@ export default function AddGoldsmith() {
                   <tbody>
                     {goldsmith.map((item, index) => (
                       <tr key={item.id}>
-                        <td>{index + 1}</td>
+                        <td>{(page - 1) * limit + index + 1}</td>                        
                         <td>
                           {editItemId === item.id ? (
                             <input
@@ -315,7 +398,7 @@ export default function AddGoldsmith() {
                               type="tel"
                               className="edit-input"
                               value={editPhone}
-                              onChange={(e) => setEditPhone(e.target.value)}
+                              onChange={(e) => setEditPhone(e.target.value.replace(/\D/g, ''))}
                               maxLength="10"
                             />
                           ) : (
@@ -328,7 +411,8 @@ export default function AddGoldsmith() {
                               type="text"
                               className="edit-input"
                               value={editCode}
-                              onChange={(e) => setEditCode(e.target.value)}
+                              maxLength={2}
+                              onChange={(e) => setEditCode(e.target.value.replace(/[^a-zA-Z]/g, ''))}
                             />
                           ) : (
                             <strong>{item.goldSmithCode}</strong>
