@@ -101,7 +101,7 @@ const Billing = () => {
     <tbody>
       {bills.map((bill, index) => (
         <tr key={bill.bill_number}>
-          <td>{bill.id}</td>
+          <td>{index+1}</td>
           <td>{new Date(bill.created_at).toLocaleDateString("en-GB")}</td>
           <td>{bill.bill_name}</td>
 

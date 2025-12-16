@@ -238,126 +238,151 @@ const handleBulkExportPdf = async (items) => {
   
 };
 
+// safe img handling
+
+
 
 const handleExportdetailsPdf = async () => {
-  console.log('captured images',capturedImages)
-  
-  if (popupRef.current) {
-    try {
-      const logoWidth = 20;
-      const logoHeight = 20;
-      console.log("Capturing content...");
-      const elementsToHide = document.querySelectorAll(".exclude-from-pdf");
-      elementsToHide.forEach((el) => (el.style.display = "none"));
+  console.log("Captured Images:", capturedImages);
 
-      const productDetails = [
-        ["Product Number", product_number],
-        ["Before Weight", beforeWeight],
-        ["After Weight", afterWeight],
-        ["Difference", difference],
-        ["Adjustment", adjustment],
-        ["Enamel Weight", finalWeight],
-        ["Final Weight", barcodeWeight],
-      ];
+  if (!popupRef.current || !capturedImages) {
+    console.warn("Popup or images not ready");
+    return;
+  }
 
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const margin = 10;
-      let currentY = margin;
+  try {
+    const logoWidth = 20;
+    const logoHeight = 20;
 
-      pdf.setFontSize(16);
-      pdf.text("Product Details", pageWidth / 2, currentY, { align: "center" });
-      currentY += 10;
+    // Hide unwanted elements
+    const elementsToHide = document.querySelectorAll(".exclude-from-pdf");
+    elementsToHide.forEach((el) => (el.style.display = "none"));
 
+    const productDetails = [
+      ["Product Number", product_number || "-"],
+      ["Before Weight", beforeWeight || "0.000"],
+      ["After Weight", afterWeight || "0.000"],
+      ["Difference", difference || "0.000"],
+      ["Adjustment", adjustment || "0.000"],
+      ["Enamel Weight", finalWeight || "0.000"],
+      ["Final Weight", barcodeWeight || "0.000"],
+    ];
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 10;
+    let currentY = margin;
+
+    // Title
+    pdf.setFontSize(16);
+    pdf.text("Product Details", pageWidth / 2, currentY, { align: "center" });
+    currentY += 10;
+
+    // Logo (already base64)
+    if (manoImage?.startsWith("data:image")) {
       const logoX = pageWidth - margin - logoWidth;
-      pdf.addImage(
-        manoImage,
-        "JPEG",
-        logoX,
-        margin - 10,
-        logoWidth,
-        logoHeight
-      );
-
-      elementsToHide.forEach((el) => (el.style.display = ""));
-
-      pdf.autoTable({
-        startY: currentY,
-        margin: { left: margin, right: margin },
-        body: productDetails.map(([key, value]) => [key, value]),
-        theme: "grid",
-        head: [["Field", "Value"]],
-        styles: {
-          fontSize: 10,
-          cellPadding: 1,
-        },
-        headStyles: {
-          fillColor: "#25274D",
-          textColor: "#ffffff",
-        },
-      });
-
-      currentY = pdf.autoTable.previous.finalY + 10;
-
-      const imageWidth = 60;
-      const imageHeight = 100;
-
-      const totalHeightRequired = currentY + imageHeight;
-      if (totalHeightRequired > pageHeight) {
-        console.log(
-          "Not enough space on the current page, reducing image size..."
-        );
-        imageWidth = 50; 
-        imageHeight = 85; 
-      }
-
-
-      const imageStartX = (pageWidth - 2 * imageWidth) / 2; 
-
-      pdf.text("Before Weight Image", imageStartX, currentY);
-      pdf.addImage(
-        capturedImages.before_weight_img,
-        "JPEG",
-        imageStartX,
-        currentY + 5,
-        imageWidth,
-        imageHeight
-      );
-
-      pdf.text("After Weight Image", imageStartX + imageWidth, currentY);
-      pdf.addImage(
-        capturedImages.after_weight_img,
-        "JPEG",
-        imageStartX + imageWidth,
-        currentY + 5,
-        imageWidth,
-        imageHeight
-      );
-
-      currentY += imageHeight + 10;
-
-      pdf.text("Final Weight Image", pageWidth / 2, currentY, {
-        align: "center",
-      });
-      pdf.addImage(
-        capturedImages.final_weight_img,
-        "JPEG",
-        (pageWidth - imageWidth) / 2,
-        currentY + 5,
-        imageWidth,
-        imageHeight
-      );
-
-      console.log("Saving PDF...");
-      pdf.save("product_details.pdf");
-
-      elementsToHide.forEach((el) => (el.style.display = ""));
-    } catch (error) {
-      console.error("Error exporting popup as PDF:", error);
+      pdf.addImage(manoImage, "JPEG", logoX, margin - 10, logoWidth, logoHeight);
     }
+
+    // Table
+    pdf.autoTable({
+      startY: currentY,
+      margin: { left: margin, right: margin },
+      head: [["Field", "Value"]],
+      body: productDetails,
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 1 },
+      headStyles: { fillColor: "#25274D", textColor: "#ffffff" },
+    });
+
+    currentY = pdf.autoTable.previous.finalY + 10;
+
+      // Image size
+         const imageWidth = 55;
+         const imageHeight = 85;
+         const gap = 10;
+
+    if (currentY + imageHeight > pageHeight) {
+      imageWidth = 50;
+      imageHeight = 85;
+    }
+
+    const imageStartX = (pageWidth - 2 * imageWidth) / 2;
+
+    /* ---------------- BASE64 CONVERTER ---------------- */
+    const convertToBase64 = async (path) => {
+      const response = await fetch(`${REACT_APP_BACKEND_SERVER_URL}${path}`);
+      const blob = await response.blob();
+
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    };
+
+    /* ---------------- SAFE ADD IMAGE ---------------- */
+    const safeAddImage = async (path, x, y, w, h) => {
+      if (!path) return;
+
+      const base64Img = path.startsWith("data:image")
+        ? path
+        : await convertToBase64(path);
+
+      pdf.addImage(base64Img, "JPEG", x, y, w, h);
+    };
+
+
+
+// ---- ROW 1 : BEFORE & AFTER ----
+const totalRowWidth = imageWidth * 2 + gap;
+const rowStartX = (pageWidth - totalRowWidth) / 2;
+
+pdf.text("Before Weight Image", rowStartX, currentY);
+await safeAddImage(
+  capturedImages.before_weight_img,
+  rowStartX,
+  currentY + 5,
+  imageWidth,
+  imageHeight
+);
+
+pdf.text("After Weight Image", rowStartX + imageWidth + gap, currentY);
+await safeAddImage(
+  capturedImages.after_weight_img,
+  rowStartX + imageWidth + gap,
+  currentY + 5,
+  imageWidth,
+  imageHeight
+);
+
+// Move Y for next row
+currentY += imageHeight + 20;
+
+// ---- ROW 2 : FINAL IMAGE (CENTERED) ----
+pdf.text("Final Weight Image", pageWidth / 2, currentY, { align: "center" });
+await safeAddImage(
+  capturedImages.final_weight_img,
+  (pageWidth - imageWidth) / 2,
+  currentY + 5,
+  imageWidth,
+  imageHeight
+);
+
+
+    // Save PDF
+    pdf.save("product_details.pdf");
+
+    // Restore hidden elements
+    elementsToHide.forEach((el) => (el.style.display = ""));
+
+    console.log("PDF exported successfully");
+  } catch (error) {
+    console.error("Error exporting popup as PDF:", error);
   }
 };
+
 
   const handleGenerateBarcode = (productNo) => {
     if (!productNo) {

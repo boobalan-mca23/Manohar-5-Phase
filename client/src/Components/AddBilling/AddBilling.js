@@ -146,6 +146,7 @@ doc.text(`Date:${new Date().toLocaleDateString("en-GB")}`,150,22)
       const response = await axios.get(
         `${REACT_APP_BACKEND_SERVER_URL}/bills/bills/` + bill_number
       );
+      setBillName(response.data.billName.bill_name)
       setScannedProducts(response.data.products);
     } catch (error) {
       console.log("Error fetching bill data:", error);
@@ -368,7 +369,7 @@ doc.text(`Date:${new Date().toLocaleDateString("en-GB")}`,150,22)
           </div>
           </div>
 
-          {bill_number === "bill" && (
+          {bill_number === "bill" ? (
             <div className="addbill-name-wrapper">
               <input
                 type="text"
@@ -378,9 +379,17 @@ doc.text(`Date:${new Date().toLocaleDateString("en-GB")}`,150,22)
                 onChange={(e) => setBillName(e.target.value)}
               />
             </div>
-          )}
+          ):<div className="addbill-name-wrapper" >
+               <input
+                type="text"
+                readOnly
+                className="addbill-name-input"
+                value={billName}
+             
+              />
+            </div>}
           <div className="addbill-action-row">
-            <button className="addbill-btn" onClick={() => handleSellApprove("Sell")}> Save </button>
+            {bill_number==="bill" &&  <button className="addbill-btn" onClick={() => handleSellApprove("Sell")}> Save </button>}
             <button className="addbill-btn" onClick={exportPDF}>
               Export as PDF
             </button>
