@@ -533,7 +533,7 @@ async function handleDelete(u) {
 
         {/* Add User Modal */}
         {showAddModal && (
-          <div className="modal-backdrop" onClick={closeAddModal}>
+          <div className="modal-backdrop">
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h3 style={{display:"flex", justifyContent:'center',alignItems:'center',gap:'1rem'}}><IoPersonAddSharp /> Add New User</h3>
