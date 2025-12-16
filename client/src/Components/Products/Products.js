@@ -822,7 +822,7 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
               <tfoot>
                 <tr>
                   <td colSpan="2" style={{textAlign:"center"}}>
-                    <b>Total Weight  </b>
+                    <b>Total Weight = </b>
                   </td>
                   <td style={{textAlign:"center"}}>
                     <b>{totalBeforeWeight}</b>
