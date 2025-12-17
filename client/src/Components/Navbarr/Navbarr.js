@@ -70,7 +70,7 @@ const Navbarr = () => {
             </NavLink>
             <div className="master-dropdown">
               {canCreateUsers && (
-                <NavLink to="/admin">Admin</NavLink>
+                <NavLink to="/admin">Users Managment</NavLink>
               )}
               {canAccessItems && (
                 <NavLink to="/additem">Add Item</NavLink>
