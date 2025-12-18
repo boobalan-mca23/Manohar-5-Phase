@@ -5,7 +5,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './AddRestore.css'
-import { transform_text } from "../utils"; 
+import { transform_text,cleanPlainProduct } from "../utils"; 
 import Table from "react-bootstrap/esm/Table";
 
 //  Import for PDF
@@ -180,7 +180,7 @@ const AddNewRestore = () => {
                 scannedProducts.map((product, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{transform_text(product.product_number)}</td>
+                    <td>{product.itemType==="STONE"? transform_text(product.product_number):cleanPlainProduct(product.product_number)}</td>
                     {
                       product.itemType==="STONE" ? (
                       <>

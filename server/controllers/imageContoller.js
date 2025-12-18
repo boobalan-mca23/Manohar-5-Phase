@@ -123,17 +123,17 @@ const getImages = async (req, res) => {
         .json({ message: "No images found for this product" });
     }
 
-    const baseUrl = "/uploads/";
+ 
 
     res.status(200).json({
       before_weight_img: productImage.before_weight_img
-        ? `${baseUrl}${productImage.before_weight_img}`
+        ? productImage.before_weight_img
         : null,
       after_weight_img: productImage.after_weight_img
-        ? `${baseUrl}${productImage.after_weight_img}`
+        ? productImage.after_weight_img
         : null,
       final_weight_img: productImage.final_weight_img
-        ? `${baseUrl}${productImage.final_weight_img}`
+        ? productImage.final_weight_img
         : null,
     });
   } catch (error) {

@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { REACT_APP_BACKEND_SERVER_URL } from "../../config";
 import ReactDOMServer from "react-dom/server";
-import { handleWeight } from "../utils";
+import { handleWeight,formatWeight } from "../utils";
 let isGeneratingPdf = false;
 
 const WeightFormPopup = ({
@@ -259,13 +259,13 @@ const handleExportdetailsPdf = async () => {
     elementsToHide.forEach((el) => (el.style.display = "none"));
 
     const productDetails = [
-      ["Product Number", product_number || "-"],
-      ["Before Weight", beforeWeight || "0.000"],
-      ["After Weight", afterWeight || "0.000"],
-      ["Difference", difference || "0.000"],
-      ["Adjustment", adjustment || "0.000"],
-      ["Enamel Weight", finalWeight || "0.000"],
-      ["Final Weight", barcodeWeight || "0.000"],
+      ["Product Number", product_number||"-"],
+      ["Before Weight", formatWeight(beforeWeight)],
+      ["After Weight", formatWeight(afterWeight)],
+      ["Difference", formatWeight(difference) ],
+      ["Adjustment", formatWeight(adjustment) ],
+      ["Enamel Weight", formatWeight(finalWeight)],
+      ["Final Weight", formatWeight(barcodeWeight) ],
     ];
 
     const pdf = new jsPDF("p", "mm", "a4");
@@ -620,7 +620,7 @@ const captureImage = () => {
                 >
                   {capturedImages.before_weight_img && (
                     <img
-                      src={REACT_APP_BACKEND_SERVER_URL+capturedImages.before_weight_img}
+                      src={capturedImages.before_weight_img}
                       alt="Captured"
                       className="vw-thumb"
                     />
@@ -636,7 +636,7 @@ const captureImage = () => {
                     // style={{ cursor: "pointer" }}
                     onClick={() => {
                       if (capturedImages.before_weight_img) {
-                         setPreviewImage(REACT_APP_BACKEND_SERVER_URL + capturedImages.before_weight_img);
+                         setPreviewImage(capturedImages.before_weight_img);
                       }
                     }}
                     size="small"
@@ -688,7 +688,7 @@ const captureImage = () => {
                 >
                   {capturedImages.after_weight_img && (
                     <img
-                      src={REACT_APP_BACKEND_SERVER_URL+capturedImages.after_weight_img}
+                      src={capturedImages.after_weight_img}
                       alt="Captured"
                       className="vw-thumb"
                     />
@@ -704,7 +704,7 @@ const captureImage = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => {
                       if (capturedImages.after_weight_img) {
-                         setPreviewImage(REACT_APP_BACKEND_SERVER_URL + capturedImages.after_weight_img);
+                         setPreviewImage(capturedImages.after_weight_img);
                       }
                     }}
                     size="small"
@@ -790,7 +790,7 @@ const captureImage = () => {
                 >
                   {capturedImages.final_weight_img && (
                     <img
-                      src={REACT_APP_BACKEND_SERVER_URL+capturedImages.final_weight_img}
+                      src={capturedImages.final_weight_img}
                       alt="Captured"
                       className="vw-thumb"
                     />
@@ -806,7 +806,7 @@ const captureImage = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => {
                       if (capturedImages.final_weight_img) {
-                         setPreviewImage(REACT_APP_BACKEND_SERVER_URL + capturedImages.final_weight_img);
+                         setPreviewImage(capturedImages.final_weight_img);
                       }
                     }}
                     size="small"

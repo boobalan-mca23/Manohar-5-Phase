@@ -317,6 +317,29 @@ tfoot tr td {
   cursor: pointer;
   
 }
+  /* plain products individual barcode*/
+.plain-individual-barcode{
+    color: white;
+    background: #1A2A47; 
+    font-size: 1rem;  
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.3 ease;
+}
+
+.plain-individual-barcode:hover{
+   background-color: #243a63;
+   transform: translateY(-2px);
+   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+.plain-individual-barcode:active{
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
 
 @keyframes fadeIn {
   from { opacity: 0; }

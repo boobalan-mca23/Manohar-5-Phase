@@ -24,11 +24,13 @@ import ReactDOMServer from "react-dom/server";
 import manoImage from "../../../Components/Logo/mp.png";
 import { REACT_APP_BACKEND_SERVER_URL } from "../../../config";
 import QRCode from "react-qr-code";
+
 import {
   weightVerify,
   weightVerifyBoth,
   handleWeight,
   transform_text,
+  cleanPlainProduct
 } from "../../utils";
 import "./PlainProducts.css";
 import weightImg from "../../../assets/weight.png";
@@ -302,6 +304,139 @@ const PlainProducts = () => {
     }
   };
 
+  const handle_Individual_Barcode = async (item) => {
+  
+    console.log("plain item", item);
+
+    if (isGeneratingPdf) return;
+    isGeneratingPdf = true;
+  
+    try {
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: [56, 12],
+        compress: true,
+        dpi: 300,
+      });
+  
+      const scale = 5;
+  
+       const tempDiv = document.createElement("div");
+       tempDiv.style.position = "absolute";
+       tempDiv.style.top = "-9999px";
+       tempDiv.style.left = "-9999px";
+       tempDiv.style.width = "55mm";
+       tempDiv.style.height = "12mm";
+       tempDiv.style.display = "flex";
+       tempDiv.style.flexDirection = "row";
+       tempDiv.style.backgroundColor = "#fff";
+       tempDiv.style.border = "1px solid #ccc";
+       tempDiv.style.boxSizing = "border-box";
+       tempDiv.style.padding = "2mm";
+  
+       const leftSection = document.createElement("div");
+       leftSection.style.display = "flex";
+       leftSection.style.flexDirection = "row";
+       leftSection.style.alignItems = "center";
+       leftSection.style.width = "50%";
+       leftSection.style.marginLeft = "1rem";
+  
+       const qrCodeContainer = document.createElement("div");
+       qrCodeContainer.style.display = "flex";
+      //  qrCodeContainer.style.marginLeft = "1rem";
+       qrCodeContainer.style.fontWeight = "bold";
+       qrCodeContainer.style.fontSize = "9px";
+       qrCodeContainer.style.marginBottom = "2px";
+       qrCodeContainer.style.width = "2px";
+  
+       const barcodeContainer = document.createElement("div");
+       qrCodeContainer.appendChild(barcodeContainer);
+  
+       const barcodeSvg = (
+         <QRCode value={item.product_number} size={30} format="svg" />
+       );
+       const svgContainer = ReactDOMServer.renderToStaticMarkup(barcodeSvg);
+       barcodeContainer.innerHTML = svgContainer;
+       
+       const detailsContainer = document.createElement("div");
+       detailsContainer.style.display = "flex";
+       detailsContainer.style.flexDirection = "column";
+       
+       const barcodeWeightText = document.createElement("span");
+       barcodeWeightText.textContent = ` ${item.netWeight}`;
+       barcodeWeightText.style.fontSize = "9px";
+       barcodeWeightText.style.fontWeight = "bold";
+       barcodeWeightText.style.marginLeft = "7px";
+       detailsContainer.appendChild(barcodeWeightText);
+       
+       const productNumberText = document.createElement("span");
+       productNumberText.textContent =cleanPlainProduct(item.product_number)||"";
+       productNumberText.style.fontSize = "9px";
+       productNumberText.style.marginLeft = "4px";
+       productNumberText.style.fontWeight = "bold";
+       productNumberText.style.color = "black";
+       detailsContainer.appendChild(productNumberText);
+  
+       qrCodeContainer.appendChild(detailsContainer);
+       leftSection.appendChild(qrCodeContainer);
+       tempDiv.appendChild(leftSection);
+       
+       const rightSection = document.createElement("div");
+       rightSection.style.display = "flex";
+       rightSection.style.alignItems = "center";
+       rightSection.style.justifyContent = "center";
+       rightSection.style.width = "50%";
+       rightSection.style.marginLeft = "1rem";
+       
+       const logoImg = document.createElement("img");
+       logoImg.src = manoImage;
+       logoImg.alt = "Logo";
+       logoImg.style.width = "13mm";
+       logoImg.style.height = "13mm";
+       logoImg.style.filter = "contrast(170%) brightness(100%)";
+       logoImg.style.boxShadow = "0px 0px 5px 2px black";
+       logoImg.style.fontWeight = "bold";
+       logoImg.style.marginBottom = "7px";
+       logoImg.style.marginLeft = "4.5mm";
+       logoImg.style.marginBottom = "4px";
+       rightSection.appendChild(logoImg);
+       tempDiv.appendChild(rightSection);
+  
+       document.body.appendChild(tempDiv);
+  
+       const canvas = await html2canvas(tempDiv, {
+         backgroundColor: null,
+         scale: scale,
+       });
+  
+       const rotatedCanvas = document.createElement("canvas");
+       rotatedCanvas.width = canvas.width;
+       rotatedCanvas.height = canvas.height;
+       const ctx = rotatedCanvas.getContext("2d");
+       ctx.translate(canvas.width / 2, canvas.height / 2);
+       ctx.rotate(Math.PI);
+       ctx.drawImage(canvas, -canvas.width / 2, -canvas.height / 2);
+  
+       const imgData = rotatedCanvas.toDataURL("image/png");
+  
+       pdf.addImage(imgData, "PNG", 0, 0, 56, 12);
+  
+       document.body.removeChild(tempDiv);
+  
+      const pdfBlob = pdf.output("blob");
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, "_blank");
+    } catch (error) {
+      console.error("Error exporting barcodes as PDF:", error);
+    } finally {
+      isGeneratingPdf = false;
+    }
+    
+  };
+
+
+
   // keep the big barcode export function (you had it intact earlier), omitted here for brevity. Use your existing one if needed.
   const handleBulkExportPdf = async (items) => {
     if (printing) return;
@@ -335,14 +470,11 @@ const PlainProducts = () => {
         console.log("item for pdf", item);
         const rawId = item.product_number ?? item.product_id ?? item.id ?? "";
 
-        const cleanedId = String(rawId)
-          .trim()
-          .replace(/^PL\d+/, "");
         // make sure qrValue is a string and not "undefined"
         let qrValue =
-          cleanedId === undefined || cleanedId === null
+          rawId=== undefined || rawId === null
             ? ""
-            : String(cleanedId).trim();
+            : String(rawId).trim();
         // if qrValue empty, fallback to productName or an empty string
         if (!qrValue)
           qrValue = item.productName ? String(item.productName) : "";
@@ -417,10 +549,10 @@ const PlainProducts = () => {
         const idText = document.createElement("span");
         // ensure transform_text gets a string
         try {
-          idText.textContent = ` ${transform_text(String(qrValue || ""))}`;
+          idText.textContent = cleanPlainProduct(item.product_number)||""
         } catch (err) {
-          console.warn("transform_text failed, using raw value", qrValue, err);
-          idText.textContent = ` ${qrValue || ""}`;
+          console.warn("transform_text failed, using raw value", cleanPlainProduct(item.product_number), err);
+          idText.textContent = ` ${cleanPlainProduct(item.product_number) || ""}`;
         }
         detailsContainer.appendChild(idText);
 
@@ -675,6 +807,9 @@ const PlainProducts = () => {
     // send file using field name gross_weight_img so server's img mapping is clear
     // ONLY append image if it exists
     if (fileBlobRef.current) {
+      
+      console.log('fileBlobRef',fileBlobRef.current)
+
       fd.append(
         "gross_weight_img",
         fileBlobRef.current,
@@ -696,7 +831,7 @@ const PlainProducts = () => {
       const newP = res.data.newProduct;
       // const newP = res.data?.newProduct || res.data?.createdProduct || res.data;
       // console.log("dar", res.data.productImage);
-      console.log("boo test", res.data);
+   
       if (!newP) {
         toast.error("Create response shape unexpected — check console");
         console.error("Create product response:", res.data);
@@ -833,12 +968,7 @@ const PlainProducts = () => {
                   <tr key={product.id || index}>
                     <td>{index + 1}</td>
                     <td>
-                      {(
-                        product.product_number ||
-                        product.product_id ||
-                        product.id ||
-                        ""
-                      ).replace(/^PL\d+/, "")}
+                      {cleanPlainProduct(product.product_number)}
                     </td>
                     <td>{product.productName || ""}</td>
                     <td>{product.workerName || ""}</td>
@@ -1238,6 +1368,7 @@ const PlainProducts = () => {
                   }
                   readOnly
                 />
+                <button className="plain-individual-barcode" onClick={()=>{handle_Individual_Barcode(editProduct)}}>Print Lable</button>
               </div>
 
               {/* Right Side */}
@@ -1293,7 +1424,7 @@ const PlainProducts = () => {
                 {/* --- CURRENT IMAGE --- */}
                 <label style={{ marginTop: 12 }}>Current Image</label>
                 <img
-                  src={`${REACT_APP_BACKEND_SERVER_URL}/uploads/${editProduct.product_images?.[0]?.gross_weight_img}`}
+                  src={editProduct.product_images?.[0]?.gross_weight_img}
                   alt="Product"
                   style={{
                     width: "100%",

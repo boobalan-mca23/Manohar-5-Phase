@@ -51,6 +51,7 @@ const Products = () => {
   const productWeightRef = useRef(null);
   const [filterOpt, setFilterOpt] = useState("all");
   const navigate = useNavigate();
+  
   const exportPDF = () => {
     const doc = new jsPDF();
     const imgWidth = 30; 
@@ -61,9 +62,30 @@ const Products = () => {
     const x = pageWidth - imgWidth - padding; 
     const y = padding; 
 
- 
+             
+     const lotName = lotNumber;    // from query or state
+     const textStartY = y + imgHeight + 5;
+
+
     doc.addImage(manoImage, "PNG", x, y, imgWidth, imgHeight,);
-     const tableMarginTop = y + imgHeight + 10;
+
+    doc.setFontSize(12);
+doc.setFont("helvetica", "bold");
+doc.text(`Lot : ${lotName}`, pageWidth / 2, textStartY, {
+  align: "center",
+});
+
+doc.setFontSize(11);
+doc.setFont("helvetica", "normal");
+doc.text(
+  "List of Stone and Enamel Items",
+  pageWidth / 2,
+  textStartY + 8,
+  { align: "center" }
+);
+
+const tableMarginTop = textStartY + 18;
+    
     const tableHeaders = [
       "S.No",
       "Product Number",
