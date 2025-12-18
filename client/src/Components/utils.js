@@ -122,7 +122,27 @@ import {REACT_APP_BACKEND_SERVER_URL} from "../config/index"
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
  
- 
+ export const formatWeight = (value) => {
+  if (
+    value === null ||
+    value === undefined ||
+    value === "" ||
+    value === "null"
+  ) {
+    return "0.000";
+  }
+
+  const num = Number(value);
+  return Number.isFinite(num) ? num.toFixed(3) : "0.000";
+};
+
+ // Id Modification like PL1TSWS000122 to TSWS000122 
+ export const cleanPlainProduct=(productNumber)=>{
+  
+   return String(productNumber).trim().replace(/^PL\d+/, "");
+}
+
+
 export const transform_text = (num) => {
   if (num === undefined || num === null  ) return "";
   // Force convert to string always
