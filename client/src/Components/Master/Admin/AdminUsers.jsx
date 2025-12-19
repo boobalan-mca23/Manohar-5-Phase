@@ -547,6 +547,8 @@ async function handleDelete(u) {
                   <label>Username *</label>
                   <input
                     type="text"
+                    name="create-user-username"
+                    autoComplete="off"
                     value={newUser.userName}
                     onChange={(e) =>{
                       const cleaned = e.target.value.replace(/\s/g,'')
@@ -557,9 +559,11 @@ async function handleDelete(u) {
                   />
                 </div>  
                 <div className="form-group">
-                  <label>Phone</label>
+                  <label>Phone *</label>
                   <input
                     type="tel"
+                    name="create-user-phone"
+                    autoComplete="off"
                     value={newUser.phone}
                     onChange={(e) => {
                       const phoneValue = e.target.value.replace(/\D/g, '');
@@ -586,6 +590,8 @@ async function handleDelete(u) {
                   <div className="password-input-wrapper">
                     <input
                       type={showPassword ? "text" : "password"}
+                      name="create-user-password"
+                      autoComplete="new-password"
                       value={newUser.password}
                       onChange={(e) =>{
                         const cleaned = e.target.value.replace(/\s/,"")
