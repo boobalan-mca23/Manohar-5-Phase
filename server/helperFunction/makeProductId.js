@@ -1,16 +1,19 @@
 const {PrismaClient}=require('@prisma/client')
 const prisma=new PrismaClient()
 
-
 exports.makeProductId = async (goldSmithCode, itemCode, product) => {
 
     let gross = product.grossWeight.toString();
-
+    
     // If number contains a decimal, remove trailing zeros and decimal if needed
     if (gross.includes(".")) {
-        gross = gross.replace(/\.?0+$/, ""); // remove decimal trailing zeros
-    }
 
+        gross = gross.replace(/\.?0+$/, ""); // remove decimal trailing zeros
+      
+    }
+    // we need to remove decimal point also
+        gross=gross.replace(".","")
+  
     // Now pad the cleaned weight to length 6
     let paddedWeight = gross.padStart(6, "0");
 
@@ -25,3 +28,5 @@ exports.makeProductId = async (goldSmithCode, itemCode, product) => {
 
     return updateProduct;
 };
+
+

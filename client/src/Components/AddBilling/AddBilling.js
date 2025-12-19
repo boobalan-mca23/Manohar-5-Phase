@@ -241,6 +241,14 @@ const exportPDF = () => {
     return acc + parseFloat(product.final_weight || 0);
   }
   },0).toFixed(3)
+const getVisibleColumnCount = () => {
+  let count = 0;
+
+  if (selectedColumns.serialNo) count++;
+  if (selectedColumns.productNumber) count++;
+
+  return count;
+};
 
 
   return (
@@ -315,8 +323,7 @@ const exportPDF = () => {
             
             <tfoot>
               <tr className="bill-tfoot">
-                <td colSpan={2}><b>Total Weight </b></td>
-                
+                <td colSpan={getVisibleColumnCount()}><b>Total Weight </b></td>
                 {selectedColumns.beforeWeight && <td><b>{totalBeforeWeight}</b></td>}
                 {selectedColumns.afterWeight && <td><b>{totalAfterWeight}</b></td>}
                 {selectedColumns.difference && <td><b>{totalDifference}</b></td>}
