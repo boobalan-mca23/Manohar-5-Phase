@@ -400,7 +400,7 @@ const PlainProducts = () => {
 
       if(item.stoneWeight>0){
        const stoneWeightText = document.createElement("span");
-       stoneWeightText.textContent = ` ${item.stoneWeight}`;
+       stoneWeightText.textContent = ` ${Number(item.stoneWeight).toFixed(3)}`;
        stoneWeightText.style.fontSize = "9px";
        stoneWeightText.style.fontWeight = "bold";
        stoneWeightText.style.marginLeft = "7px";
@@ -527,7 +527,7 @@ const PlainProducts = () => {
         tempDiv.style.backgroundColor = "#fff";
         tempDiv.style.border = "1px solid #ccc";
         tempDiv.style.boxSizing = "border-box";
-        tempDiv.style.padding = "2mm";
+        tempDiv.style.padding = "1mm";
         tempDiv.style.alignItems = "center";
 
         // left (qr + details)
@@ -535,11 +535,11 @@ const PlainProducts = () => {
         leftSection.style.display = "flex";
         leftSection.style.flex = "1";
         leftSection.style.alignItems = "center";
-
+        leftSection.style.marginLeft ="1.3rem"
         const qrWrapper = document.createElement("div");
         qrWrapper.style.display = "flex";
         qrWrapper.style.flexDirection = "row";
-        qrWrapper.style.gap = "6px";
+        // qrWrapper.style.gap = "6px";
         qrWrapper.style.alignItems = "center";
 
         // container where qr svg will go:
@@ -554,8 +554,8 @@ const PlainProducts = () => {
             const qrSvg = (
               <QRCode
                 value={qrValue}
-                size={40}
-                style={{ height: "40px", width: "40px" }}
+                size={30}
+                // style={{ height: "40px", width: "40px" }}
               />
             );
             const qrMarkup = ReactDOMServer.renderToStaticMarkup(qrSvg);
@@ -574,7 +574,16 @@ const PlainProducts = () => {
         detailsContainer.style.display = "flex";
         detailsContainer.style.flexDirection = "column";
         detailsContainer.style.marginLeft = "6px";
-        detailsContainer.style.fontSize = "9px";
+        detailsContainer.style.fontSize = "7px";
+
+        if(item.stoneWeight>0){
+          const stoneWeightText = document.createElement("span");
+          stoneWeightText.textContent = ` ${Number(item.stoneWeight).toFixed(3)}`;
+          stoneWeightText.style.fontSize = "7px";
+          stoneWeightText.style.fontWeight = "bold";
+          // stoneWeightText.style.marginLeft = "7px";
+          detailsContainer.appendChild(stoneWeightText);
+          }
 
         const weightText = document.createElement("span");
         // prefer netWeight, fallback grossWeight, then empty
@@ -585,7 +594,9 @@ const PlainProducts = () => {
         const idText = document.createElement("span");
         // ensure transform_text gets a string
         try {
-          idText.textContent = cleanPlainProduct(item.product_number)||""
+          idText.textContent = cleanPlainProduct(item.product_number)||"";
+          idText.style.fontSize = "7px";
+          idText.style.fontWeight = "700"
         } catch (err) {
           console.warn("transform_text failed, using raw value", cleanPlainProduct(item.product_number), err);
           idText.textContent = ` ${cleanPlainProduct(item.product_number) || ""}`;
@@ -607,8 +618,8 @@ const PlainProducts = () => {
         const logoImg = document.createElement("img");
         logoImg.src = manoImage;
         logoImg.alt = "Logo";
-        logoImg.style.width = "13mm";
-        logoImg.style.height = "13mm";
+        logoImg.style.width = "12mm";
+        logoImg.style.height = "12mm";
         logoImg.style.objectFit = "contain";
         rightSection.appendChild(logoImg);
         tempDiv.appendChild(rightSection);
@@ -842,7 +853,6 @@ const PlainProducts = () => {
       fd.append("gross_weight_img", addFileRef.current, addFileRef.current.name || `gross_${Date.now()}.jpg`);
     }
 
-
     console.log("Submitting new plain product with data:", fd);
     try {
       const res = await axios.post(
@@ -1022,12 +1032,11 @@ const updatePlainProduct = async () => {
                           justifyContent: "center",
                         }}
                       >
-                        <FontAwesomeIcon
+                        {/* <FontAwesomeIcon
                           icon={faEdit}
                           onClick={() => {
                             console.log("View product:", product);
-                            const backendImage =
-                              product.gross_weight_img ||
+                            const backendImage =product.gross_weight_img ||
                               product.product_images?.[0]?.gross_weight_img ||
                               null;
 
@@ -1035,7 +1044,25 @@ const updatePlainProduct = async () => {
                             setPreviewUrl(backendImage);
                           }}
                           style={{ cursor: "pointer" }}
-                        />
+                        /> */}
+
+                        <FontAwesomeIcon
+                             icon={faEdit}
+                             onClick={() => {
+                             console.log("View product:", product);
+
+                             const backendImage = product.gross_weight_img
+                             ? `${REACT_APP_BACKEND_SERVER_URL}/uploads/${product.gross_weight_img}`
+                             : product.product_images?.[0]?.gross_weight_img
+                             ? `${REACT_APP_BACKEND_SERVER_URL}/uploads/${product.product_images[0].gross_weight_img}`
+                             : null;
+
+                                      setEditProduct(product);
+                                      setPreviewUrl(backendImage);
+                                     }}
+                                      style={{ cursor: "pointer" }}
+                              />
+
 
                         <FontAwesomeIcon
                           icon={faTrash}
@@ -1382,7 +1409,7 @@ const updatePlainProduct = async () => {
                 <div className="weightImg">
                   <input
                     style={inputStyle}
-                    value={editProduct.grossWeight}
+                    value={(parseFloat(editProduct.grossWeight)||0).toFixed(3)}
                     onChange={(e) => {
                       const g = parseFloat(e.target.value);
                       const s = parseFloat(editProduct.stoneWeight || 0);
@@ -1407,7 +1434,7 @@ const updatePlainProduct = async () => {
                 <label style={{ marginTop: 8 }}>Stone Weight</label>
                 <input
                   style={inputStyle}
-                  value={editProduct.stoneWeight}
+                  value={(parseFloat(editProduct.stoneWeight)||0).toFixed(3)}
                   onChange={(e) => {
                     const s = parseFloat(e.target.value);
                     const g = parseFloat(editProduct.grossWeight || 0);

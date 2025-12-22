@@ -4,6 +4,142 @@ const prisma = new PrismaClient();
 const { LOT_TYPE } = require("@prisma/client");
 const { makeProductId } = require("../helperFunction/makeProductId");
 
+// const createNewProduct = async (req, res) => { 
+// cloudinary integrated code 
+//   try {
+//     const {
+//       tag_number = "",
+//       before_weight = 0,
+//       after_weight = 0,
+//       product_number,
+//       lot_id = "",
+//       barcode_weight,
+//       difference,
+//       adjustment,
+//       final_weight,
+//       productName,
+//       workerName,
+//       grossWeight,
+//       stoneWeight,
+//       netWeight,
+//       goldSmithCode,
+//       itemCode,
+//       itemType,
+//     } = req.body;
+   
+//     const existLot = await prisma.lot_info.findUnique({
+//       where: {
+//         id: Number(lot_id),
+//       },
+//     });
+
+//     if (!existLot) {
+//       return res.status(400).json({ message: "Invalid Lot Id" });
+//     }
+
+//     const validTypes = Object.values(LOT_TYPE); // ["STONE", "PLAIN"]
+
+//     if (!itemType || !validTypes.includes(itemType.toUpperCase())) {
+//       return res.status(400).json({
+//         message: `Invalid Type. Allowed values: ${validTypes.join(", ")}`,
+//       });
+//     }
+
+//     const type = itemType.toUpperCase();
+//     const isStone = type === "STONE";
+//     const isPlain = type === "PLAIN";
+
+//     // Stone fields
+//     const stoneFields = isStone
+//       ? {
+//           tag_number,
+//           before_weight: Number(before_weight),
+//           after_weight: Number(after_weight),
+//           barcode_weight: barcode_weight ? String(barcode_weight) : null,
+//           difference: Number(difference),
+//           adjustment: Number(adjustment),
+//           final_weight: Number(final_weight),
+//           product_number:
+//             product_number + "__" + Math.floor(Math.random() * 1000),
+//           itemType: itemType.toUpperCase(),
+//         }
+//       : {
+//           tag_number: "",
+//           before_weight: 0,
+//           after_weight: 0,
+//           barcode_weight: "",
+//           difference: 0,
+//           adjustment: 0,
+//           final_weight: 0,
+//           product_number: "",
+//         };
+
+//     // Plain fields
+//     const plainFields = isPlain
+//       ? {
+//           productName,
+//           workerName,
+//           grossWeight,
+//           stoneWeight,
+//           netWeight,
+//           goldSmithCode,
+//           itemCode,
+//           itemType: itemType.toUpperCase(),
+//         }
+//       : {
+//           productName: "",
+//           workerName: "",
+//           grossWeight: "",
+//           stoneWeight: "",
+//           netWeight: "",
+//           goldSmithCode: "",
+//           itemCode: "",
+//         };
+
+//     const productInfo = {
+//       ...stoneFields,
+//       ...plainFields,
+//       updated_at: new Date(),
+//       lot_id: Number(lot_id),
+//     };
+//     console.log('req files',req.files)
+//     // product Images
+//     const img = {
+//       before_weight_img: isStone ? req.files[0]?.path? req.files[0]?.path: null: null,
+//       after_weight_img: null,
+//       final_weight_img: null,
+//       gross_weight_img: isPlain ? req.files[0]?.path ? req.files[0]?.path : null : null,
+//     };
+
+//     let newProduct = await prisma.product_info.create({
+//       data: {
+//         ...productInfo,
+//         product_images: {
+//           create: img,
+//         },
+//       },
+//       include: {
+//         product_images: true,
+//       },
+//     });
+
+//     if (itemType.toUpperCase() === LOT_TYPE.PLAIN) {
+//       // this create product number for plain products
+//       newProduct = await makeProductId(goldSmithCode, itemCode, newProduct);
+//     }
+    
+//     res.status(200).json({
+//       success: true,
+//       message: "Product Successfully Created",
+//       newProduct,
+//       productImage: newProduct.product_images,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(404).json({ error: "Error Creating Product" });
+//   }
+// };
+
 const createNewProduct = async (req, res) => {
   try {
     const {
@@ -25,7 +161,7 @@ const createNewProduct = async (req, res) => {
       itemCode,
       itemType,
     } = req.body;
-   
+    console.log('body',req.body)
     const existLot = await prisma.lot_info.findUnique({
       where: {
         id: Number(lot_id),
@@ -101,13 +237,13 @@ const createNewProduct = async (req, res) => {
       updated_at: new Date(),
       lot_id: Number(lot_id),
     };
-    console.log('req files',req.files)
+    console.log(req.files)
     // product Images
     const img = {
-      before_weight_img: isStone ? req.files[0]?.path? req.files[0]?.path: null: null,
+      before_weight_img: isStone ? req.files[0]?.filename? req.files[0]?.filename: null: null,
       after_weight_img: null,
       final_weight_img: null,
-      gross_weight_img: isPlain ? req.files[0]?.path ? req.files[0]?.path : null : null,
+      gross_weight_img: isPlain ? req.files[0]?.filename ? req.files[0]?.filename : null : null,
     };
 
     let newProduct = await prisma.product_info.create({
@@ -126,7 +262,7 @@ const createNewProduct = async (req, res) => {
       // this create product number for plain products
       newProduct = await makeProductId(goldSmithCode, itemCode, newProduct);
     }
-    
+   
     res.status(200).json({
       success: true,
       message: "Product Successfully Created",
@@ -139,52 +275,6 @@ const createNewProduct = async (req, res) => {
   }
 };
 
-// const createNewProduct = async (req, res) => {
-//   try {
-//     const {
-//       tag_number,
-//       before_weight,
-//       after_weight,
-//       product_number,
-//       lot_id,
-//       barcode_weight,
-//     } = req.body;
-
-//     const weight1 = parseFloat(before_weight);
-//     const weight2 = parseFloat(after_weight);
-
-//     // const weight3 = parseFloat((weight1 - weight2).toFixed(3));
-//     // const weight4 = parseFloat((weight3 - (weight3 * 0.0001)).toFixed(3));
-//     // const weight5 = parseFloat((weight4 - (weight4 * 0.1)).toFixed(3));
-
-//     // const weight5Str = "123"
-
-//     // const finalProductNumber = `${tag_number}00${weight5Str}`;
-//     const finalProductNumber = product_number;
-
-//     const newProduct = await prisma.product_info.create({
-//       data: {
-//         tag_number,
-//         before_weight: weight1,
-//         after_weight: weight2,
-//         // difference: weight3,
-//         // adjustment: weight4,
-//         // final_weight: weight5,
-//         barcode_weight: parseFloat(barcode_weight),
-//         product_number: tag_number + Math.random(4) * 1000,
-//         lot_id: lot_id,
-//       },
-//     });
-
-//     res.status(200).json({
-//       message: "Product Successfully Created",
-//       newProduct,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(404).json({ error: "Error Creating Product" });
-//   }
-// };
 
 const getAllProducts = async (req, res) => {
   try {
@@ -280,70 +370,178 @@ const restoreProductByNumber = async (req, res) => {
   }
 };
 
-// const createNewProduct = async (req, res) => {
-//     try {
-//       const { tag_number, before_weight, after_weight } = req.body;
-//       const {bill_number} = req.params;
-
-//       const weight1 = parseFloat(before_weight);
-//       const weight2 = parseFloat(after_weight);
-
-//       const weight3 = (weight1 - weight2);
-//       const weight4 = weight3 - (weight3 * 0.0001);
-//       const weight5 = weight4 - (weight4 * 0.1);
-//       const weight5Str = Math.abs(weight5).toFixed(3).replace('.', '').slice(0, 3);
-//      const  finalProductNumber = `${tag_number}00${weight5Str}`
-
-//               const newProduct = await prisma.product_info.create({
-//         data: {
-//           tag_number,
-//           before_weight: weight1,
-//           after_weight: weight2,
-//           difference: weight3,
-//           adjustment: weight4,
-//           final_weight: weight5,
-//           product_number: finalProductNumber,
-//           created_at: new Date(),
-//           updated_at: new Date()
-//         }
-//       });
-
-//       res.status(200).json({
-//         message: "Product Successfully Created",
-//         newProduct,
-
-//       });
-//     } catch (error) {
-//       console.log(error);
-//       res.status(404).json({ error: "Error Creating Product" });
-//     }
-//   };
-
+// cloudinary integrated code 
 // const UpdatingProduct = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const { tag_number,before_weight,after_weight,difference,adjustment,final_weight, product_number } = req.body;
+//   try {
+//     const { id } = req.params;
 
-//         const updateProduct = await prisma.product_info.update({
-//             where: { id: parseInt(id) },
-//             data: {
-//                 tag_number,
-//                 before_weight,
-//                 after_weight,
-//                 difference,
-//                 adjustment,
-//                 final_weight,
-//                 product_number,
-//                 updated_at: new Date(),
-//             }
-//         });
+//     // Destructure all the expected fields from the request body
+//     const {
+//       before_weight,
+//       after_weight,
+//       barcode_weight,
+//       difference,
+//       adjustment,
+//       final_weight,
+//       productName,
+//       workerName,
+//       grossWeight,
+//       stoneWeight,
+//       netWeight,
+//       goldSmithCode,
+//       itemCode,
+//       itemType,
+//     } = req.body;
 
-//         res.status(200).json({ message: "Updated Successfully", updateProduct });
-//     } catch (error) {
-//         console.log(error);
-//         res.status(404).json({ error: "Product not Updated" });
+//     const existProduct = await prisma.product_info.findUnique({
+//       where: {
+//         id: Number(id),
+//       },
+//     });
+
+//     if (!existProduct) {
+//       return res.status(400).json({ message: "Invalid Product Id" });
 //     }
-// };
+
+//     const validTypes = Object.values(LOT_TYPE); // ["STONE", "PLAIN"]
+
+//     if (!itemType || !validTypes.includes(itemType.toUpperCase())) {
+//       return res.status(400).json({
+//         message: `Invalid Type. Allowed values: ${validTypes.join(", ")}`,
+//       });
+//     }
+
+//     const type = itemType.toUpperCase();
+//     const isStone = type === "STONE";
+//     const isPlain = type === "PLAIN";
+
+//     // Stone fields
+//     const stoneFields = isStone
+//       ? {
+//           before_weight: Number(before_weight),
+//           after_weight: Number(after_weight),
+//           barcode_weight: barcode_weight ? String(barcode_weight) : null,
+//           difference: Number(difference),
+//           adjustment: Number(adjustment),
+//           final_weight: Number(final_weight),
+//           itemType: itemType.toUpperCase(),
+//         }
+//       : {
+//           before_weight: 0,
+//           after_weight: 0,
+//           barcode_weight: "",
+//           difference: 0,
+//           adjustment: 0,
+//           final_weight: 0,
+//         };
+
+//     // Plain fields
+//     const plainFields = isPlain
+//       ? {
+//           productName,
+//           workerName,
+//           grossWeight,
+//           stoneWeight,
+//           netWeight,
+//           goldSmithCode,
+//           itemCode,
+//           itemType: itemType.toUpperCase(),
+//         }
+//       : {
+//           productName: "",
+//           workerName: "",
+//           grossWeight: "",
+//           stoneWeight: "",
+//           netWeight: "",
+//           goldSmithCode: "",
+//           itemCode: "",
+//         };
+
+//     const productInfo = {
+//       ...stoneFields,
+//       ...plainFields,
+//       updated_at: new Date(),
+//     };
+
+//     // let fileMap = {};
+//     // if (req.files && req.files.length > 0) {
+//     //   req.files.forEach((file) => {
+//     //     fileMap[file.fieldname] = file.filename;
+//     //   });
+//     // }
+
+//     let fileMap = {};
+//     if   (req.files && req.files.length > 0) {
+//            req.files.forEach((file) => {
+//              fileMap[file.fieldname] = file.path; // CLOUDINARY URL
+//        });
+//    }
+
+
+    
+//     console.log('fileMap',fileMap)
+//     console.log('file map',Object.keys(fileMap).length)
+
+//     // Update the product in the database
+
+//     let updateProduct = await prisma.product_info.update({
+//       where: { id: Number(id) },
+//       data: {
+//         ...productInfo,
+//       },
+//       include:{
+//         product_images:true
+//       }
+//     });
+
+//     let productImage = await prisma.product_images.findFirst({
+//       where: { product_id: Number(id) },
+//     });
+
+//     if (productImage) {
+//       // Update existing image
+//       // file map have any new img that time only we need to update the image to that product
+//       if(Object.keys(fileMap).length!==0){
+//         await prisma.product_images.update({
+//         where: { id: productImage.id },
+//         data:{
+//          ...fileMap
+//         },
+//       });
+//       }
+
+      
+//     } else {
+//       // Create new image set
+//       await prisma.product_images.create({
+//         data: {
+//           product_id: Number(id),
+//           ...fileMap,
+//         },
+//       });
+//     }
+
+//     if (itemType.toUpperCase() === LOT_TYPE.PLAIN) {
+//       // this update product number for plain products
+//       updateProduct = await makeProductId(
+//         goldSmithCode,
+//         itemCode,
+//         updateProduct
+//       );
+//     }
+
+//     res.status(200).json({
+//       message: " Product Updated Successfully",
+//       success: true,
+//       updateProduct,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(404).json({ error: "Product not Updated" });
+//   }
+// };  
+// 
+// cloudinary integrated code 
 
 const UpdatingProduct = async (req, res) => {
   try {
@@ -437,20 +635,12 @@ const UpdatingProduct = async (req, res) => {
       updated_at: new Date(),
     };
 
-    // let fileMap = {};
-    // if (req.files && req.files.length > 0) {
-    //   req.files.forEach((file) => {
-    //     fileMap[file.fieldname] = file.filename;
-    //   });
-    // }
-
     let fileMap = {};
-    if   (req.files && req.files.length > 0) {
-           req.files.forEach((file) => {
-             fileMap[file.fieldname] = file.path; // CLOUDINARY URL
-       });
-   }
-
+    if (req.files && req.files.length > 0) {
+      req.files.forEach((file) => {
+        fileMap[file.fieldname] = file.filename;
+      });
+    }
 
     
     console.log('fileMap',fileMap)
@@ -514,6 +704,7 @@ const UpdatingProduct = async (req, res) => {
     res.status(404).json({ error: "Product not Updated" });
   }
 };
+
 
 const deleteProduct = async (req, res) => {
   try {
