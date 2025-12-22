@@ -1,80 +1,124 @@
-/* ================================
-   SAFE SCOPED ADD PRODUCT POPUP
-   ================================ */
-.modal-open { overflow: hidden !important; } 
-
-.addproduct-overlay {
+/* Overlay */
+.add-product-popup-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
-  justify-content: center; z-index: 2147483646;
+  justify-content: center;
+  z-index: 2147483646;
   backdrop-filter: blur(3px);
 }
 
-.addproduct-modal {
+/* Modal Container */
+.add-product-popup {
   width: 520px;
   max-width: 96%;
+  max-height: 90vh;
+  overflow-y: auto;
   background: #fff;
   border-radius: 12px;
   padding: 22px;
-  box-shadow: 0px 12px 35px rgba(0,0,0,0.25);
+  box-shadow: 0px 12px 35px rgba(0, 0, 0, 0.25);
   position: relative;
   transform-origin: center;
-  animation: modalPop .16s ease-out;
+  animation: modalPop 0.16s ease-out;
 }
+
 @keyframes modalPop {
-  from { opacity: 0; transform: scale(.985); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Close Button */
+.add-product-popup .close-btn {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.add-product-popup .close-btn:hover {
+  background: #f0f0f0;
+  color: #000;
 }
 
 /* Title */
-.addproduct-title {
+.add-product-popup h2 {
   font-size: 1.3rem;
   color: #1A2A47;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
-/* Close */
-.addproduct-close { position: absolute; right: 12px; top: 12px; background: transparent; border: none; font-size: 18px; cursor: pointer; }
+/* Form Styles */
+.add-product-popup form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
+/* Input Group */
+.add-product-popup .input-group {
+  display: flex;
+  flex-direction: column;
+}
 
-/* Form grid */
-.addproduct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.add-product-popup .input-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1A2A47;
+  margin-bottom: 6px;
+}
 
-/* Labels + Inputs */
-.addproduct-group label { font-size: .9rem; font-weight: 600; color: #1A2A47; display:block; margin-top:4px; }
-
-
-.addproduct-group input, .addproduct-group select {
+.add-product-popup .input-group input,
+.add-product-popup .input-group select {
   width: 100%;
-  padding: 9px 11px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid #d7dbe6;
   background: #fbfdff;
-  margin-top: 6px;
-  font-size: .95rem;
-}
-.addproduct-group input:focus,
-.addproduct-group select:focus {
-  border-color: #1A2A47;
-  box-shadow: 0px 0px 4px rgba(26,42,71,0.25);
+  font-size: 0.95rem;
+  transition: all 0.2s;
 }
 
-/* Camera section */
-.camera-row {
-  grid-column: span 2;
+.add-product-popup .input-group input:focus,
+.add-product-popup .input-group select:focus {
+  outline: none;
+  border-color: #1A2A47;
+  box-shadow: 0px 0px 4px rgba(26, 42, 71, 0.25);
+}
+
+/* Camera Controls Row */
+.camera-controls-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 4px;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
 }
 
-.camera-btn {
-  padding: 8px 14px;
+.camera-toggle-btn {
+  padding: 10px 16px;
   border-radius: 8px;
   background: #fff;
   border: 1.4px solid #1A2A47;
@@ -83,98 +127,331 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  color: #1A2A47;
 }
 
-.camera-btn:hover {
+.camera-toggle-btn:hover {
   background: #1A2A47;
   color: #fff;
 }
 
-.capture-btn {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  background: #2d4342;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.preview-btn {
-  padding: 8px 14px;
-  border: 1px solid #444;
+.preview-toggle-btn {
+  padding: 10px 16px;
+  border: 1.4px solid #555;
   border-radius: 8px;
   cursor: pointer;
   background: #fff;
   font-weight: 600;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  color: #333;
 }
 
-/* Save/Cancel buttons */
-.addproduct-actions {
-  margin-top: 20px;
+.preview-toggle-btn:hover {
+  background: #f8f9fc;
+  border-color: #333;
+}
+
+.camera-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2147483647;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.camera-popup-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 500px;
+  max-width: 90%;
+  animation: modalPop 0.2s ease-out;
+  box-shadow: 0px 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.camera-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e8ecf3;
+}
+
+.camera-popup-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1A2A47;
+  font-weight: 600;
+}
+
+.camera-popup-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.camera-popup-close:hover {
+  background: #f0f0f0;
+  color: #000;
+}
+
+.camera-popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Webcam Wrapper */
+.webcam-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.webcam-wrapper video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Camera Popup Actions */
+.camera-popup-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.capture-image-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #2d4342;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.capture-image-btn:hover {
+  background: #1f2f2e;
+  transform: translateY(-1px);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-camera-btn {
+  padding: 12px 20px;
+  border: 1.4px solid #dc3545;
+  border-radius: 8px;
+  background: #fff;
+  color: #dc3545;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.cancel-camera-btn:hover {
+  background: #fff5f5;
+  transform: translateY(-1px);
+  box-shadow: 0px 4px 8px rgba(220, 53, 69, 0.15);
+}
+
+.img-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2147483647;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.img-preview-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 450px;
+  max-width: 90%;
+  animation: modalPop 0.2s ease-out;
+  box-shadow: 0px 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.img-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e8ecf3;
+}
+
+.img-preview-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1A2A47;
+  font-weight: 600;
+}
+
+.img-preview-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.img-preview-close:hover {
+  background: #f0f0f0;
+  color: #000;
+}
+
+.img-preview-content {
+  width: 100%;
+}
+
+.img-preview-content img {
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-row {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid #e8ecf3;
+  margin-top: 20px;
 }
 
-.addproduct-save {
-  padding: 10px 20px;
+.save-btn {
+  padding: 10px 24px;
   background: #1A2A47;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
+  transition: all 0.2s;
+  font-size: 0.95rem;
 }
 
-.addproduct-cancel {
-  padding: 10px 20px;
+.save-btn:hover:not(:disabled) {
+  background: #0f1a2e;
+  transform: translateY(-1px);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  padding: 10px 24px;
   background: #eceff4;
   border: 1px solid #cfd5e1;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+  color: #333;
 }
 
-
-/* Small Preview Modal */
-.preview-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999999;
+.cancel-btn:hover {
+  background: #dfe3eb;
+  transform: translateY(-1px);
 }
 
-.preview-box {
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
-  width: 360px;
-  max-width: 90%;
-}
+@media (max-width: 600px) {
+  .add-product-popup {
+    width: 95%;
+    padding: 18px;
+  }
 
-.preview-img {
-  width: 100%;
-  border-radius: 10px;
-  object-fit: cover;
-}
+  .camera-controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-.preview-close {
-  margin-top: 10px;
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background: #1A2A47;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
+  .camera-toggle-btn,
+  .preview-toggle-btn {
+    width: 100%;
+    justify-content: center;
+  }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
+  .camera-popup-box,
+  .img-preview-box {
+    width: 95%;
+    padding: 16px;
+  }
+
+  .camera-popup-actions {
+    flex-direction: column;
+  }
+
+  .capture-image-btn,
+  .cancel-camera-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-row {
+    flex-direction: column-reverse;
+  }
+
+  .save-btn,
+  .cancel-btn {
+    width: 100%;
+  }
 }
