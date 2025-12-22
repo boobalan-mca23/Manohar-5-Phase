@@ -613,7 +613,7 @@ const captureImage = () => {
                   onWheel={(e)=>{e.target.blur()}}
                   className="vw-input"
                   type="number"
-                  value={beforeWeight}
+                  value={(parseFloat(beforeWeight)||0).toFixed(3)}
                   onChange={(e) => setBeforeWeight(e.target.value)}
                   // id="digitalNumber"
                   // value={digitalNumber}
@@ -684,7 +684,7 @@ const captureImage = () => {
                   onWheel={(e)=>{e.target.blur()}}
                   className="vw-input"
                   type="number"
-                  value={afterWeight}
+                  value={(parseFloat(afterWeight)||0).toFixed(3)}
                   onChange={(e) => setAfterWeight(e.target.value)}
                   placeholder="Enter After Weight"
                 />
@@ -751,7 +751,7 @@ const captureImage = () => {
                 onWheel={(e)=>{e.target.blur()}}
                 className="vw-input"
                 type="number"
-                value={difference}
+                value={(parseFloat(difference)||0).toFixed(3)}
                 onChange={(e) => setDifference(e.target.value)}
                 placeholder="Enter Difference Weight"
               />
@@ -762,7 +762,7 @@ const captureImage = () => {
                 onWheel={(e)=>{e.target.blur()}}
                 className="vw-input"
                 type="number"
-                value={adjustment}
+                value={(parseFloat(adjustment)||0).toFixed(3)}
                 onChange={(e) => setAdjustment(e.target.value)}
                 placeholder="Enter Adjustment Weight"
               />
@@ -773,7 +773,7 @@ const captureImage = () => {
                 onWheel={(e)=>{e.target.blur()}}
                 className="vw-input"
                 type="number"
-                value={finalWeight}
+                value={(parseFloat(finalWeight)||0).toFixed(3)}
                 onChange={(e) => setFinalWeight(e.target.value)}
                 placeholder="Enter Enamel Weight"
               />
@@ -786,7 +786,7 @@ const captureImage = () => {
                   onWheel={(e)=>{e.target.blur()}}
                   className="vw-input"
                   type="number"
-                  value={barcodeWeight}
+                  value={(parseFloat(barcodeWeight)||0).toFixed(3)}
                   onChange={(e) =>setBarcodeWeight(e.target.value)}
                   placeholder="Enter Final Weight"
                 />

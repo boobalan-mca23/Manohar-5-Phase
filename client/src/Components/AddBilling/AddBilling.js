@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "../AddBilling/AddBilling.css";
 import Table from "react-bootstrap/esm/Table";
 import jsPDF from "jspdf";
-import Switch from '@mui/material/Switch';
+// import Switch from '@mui/material/Switch';
 import html2canvas from "html2canvas";
 import { useParams, useNavigate } from "react-router-dom";
 import BarcodeReader from "react-barcode-reader";
@@ -269,7 +269,7 @@ const exportPDF = () => {
             ← Back
           </button>
           <h2> Bill Details</h2>
-          <Switch {...label} defaultChecked />
+          {/* <Switch {...label} defaultChecked /> */}
           <BarcodeReader onScan={handleScan} />
           <div className="addbill-table-wrapper">
           <table className="addbill-table" id="billPdf">
