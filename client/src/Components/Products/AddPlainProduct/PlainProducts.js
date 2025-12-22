@@ -1,10 +1,9 @@
 // PlainProducts.jsx
 import React, { useState, useRef, useEffect } from "react";
-// import { subscribeWeight } from "../../../services/webSocket";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faXmark,
+  // faXmark,
   faTrash,
   faEye,
   faCamera,
@@ -24,7 +23,7 @@ import ReactDOMServer from "react-dom/server";
 import manoImage from "../../../Components/Logo/mp.png";
 import { REACT_APP_BACKEND_SERVER_URL } from "../../../config";
 import QRCode from "react-qr-code";
-
+import { faXmark, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   weightVerify,
   weightVerifyBoth,
@@ -49,7 +48,7 @@ const PlainProducts = () => {
   const searchParams = new URLSearchParams(location.search);
   const lotnameQuery = searchParams.get("lotname");
   const [lotNumber, setLotNumber] = useState(lotnameQuery || lot_id || "");
-  const [showPopup, setShowPopup] = useState({ id: null, value: false });
+  // const [showPopup, setShowPopup] = useState({ id: null, value: false });
   const [filterOpt, setFilterOpt] = useState("all");
 
   // add-product popup form states (kept inside same file)
@@ -66,26 +65,48 @@ const PlainProducts = () => {
   // camera / captured file
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const fileBlobRef = useRef(null); // holds File to send to backend
+
+  const addFileRef = useRef(null);
+  const editFileRef = useRef(null);
+  const isCapturingRef = useRef(false);
+
   const [previewUrl, setPreviewUrl] = useState(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showCameraModal, setShowCameraModal] = useState(false);
+  const [cameraMode, setCameraMode] = useState(null);
 
   const [editProduct, setEditProduct] = useState(null);
   const [savingProduct, setSavingProduct] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [printing, setPrinting] = useState(false);
-  // const [weight, setWeight] = useState(0);
 
-  // get weight using call back function
-  // useEffect(() => {
-  //   const unsubscribe = subscribeWeight((w) => setWeight(w));
+    useEffect(() => {
+    if (!showCameraModal) return;
 
-  //   return () => unsubscribe();
-  // }, []);
+    const start = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+        });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch {
+        toast.error("Unable to access camera");
+      }
+    };
 
-  // fetch lot and products (uses your plainLot endpoint)
+    start();
+
+    return () => {
+      if (videoRef.current?.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+      }
+    };
+  }, [showCameraModal]);
+
+
   useEffect(() => {
     const fetchPlainLot = async () => {
       try {
@@ -135,6 +156,17 @@ const PlainProducts = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lot_id]);
 
+  const closeEditModal = () => {
+  // stop camera if open
+  if (videoRef.current?.srcObject) {
+    videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+  }
+  // drop pending captured file for edit
+  editFileRef.current = null;
+  setPreviewUrl(null);
+  setEditProduct(null);
+};
+
   // fetch masters (items + goldsmith)
   const fetchMasters = async () => {
     try {
@@ -160,19 +192,19 @@ const PlainProducts = () => {
 
   // keep barcode scanner hook (from earlier)
   useEffect(() => {
+    let buffer = "";
     const handleBarcodeScan = (e) => {
-      setShowBarcode((prevData) => (prevData || "") + e.key);
       if (e.key === "Enter") {
-        console.log("Scanned Barcode:", showBarcode);
-        setShowBarcode("");
+        console.log("Scanned Barcode:", buffer);
+        buffer = "";
+      } else {
+        buffer += e.key;
       }
     };
     window.addEventListener("keydown", handleBarcodeScan);
-    return () => {
-      window.removeEventListener("keydown", handleBarcodeScan);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showBarcode]);
+    return () => window.removeEventListener("keydown", handleBarcodeScan);
+  }, []);
+
 
   // filters & totals (keep your logic)
   const filterProducts = Array.isArray(products)
@@ -214,14 +246,12 @@ const PlainProducts = () => {
       const pageWidth = doc.internal.pageSize.getWidth();
       const padding = 10;
 
-      /* ---------- HEADER ---------- */
       doc.setFontSize(14);
       doc.text(`Lot : ${lotNumber}`, pageWidth / 2, 15, { align: "center" });
 
       doc.setFontSize(12);
       doc.text("List of Plain Items", pageWidth / 2, 23, { align: "center" });
 
-      /* ---------- TABLE DATA ---------- */
       const tableHeaders = [
         "S.No",
         "Product Number",
@@ -257,7 +287,6 @@ const PlainProducts = () => {
         .reduce((a, p) => a + Number(p.netWeight || 0), 0)
         .toFixed(3);
 
-      /* ---------- TABLE ---------- */
       doc.autoTable({
         startY: 30,
         head: [tableHeaders],
@@ -268,7 +297,6 @@ const PlainProducts = () => {
           halign: "center",
         },
 
-        /* ---------- FOOTER TOTALS ---------- */
         foot: [
           [
             {
@@ -434,8 +462,6 @@ const PlainProducts = () => {
     }
     
   };
-
-
 
   // keep the big barcode export function (you had it intact earlier), omitted here for brevity. Use your existing one if needed.
   const handleBulkExportPdf = async (items) => {
@@ -651,90 +677,88 @@ const PlainProducts = () => {
     }
   };
 
-  // View popup open/close (keeps your old WeightFormPopup usage)
-  const openPopup = (id) => {
-    setShowPopup({ id });
-  };
-  const closePopup = () => {
-    setShowPopup({ id: null });
-  };
-
-  // ---------- ADD PRODUCT POPUP LOGIC (SINGLE-FILE POPUP) ----------
-  const openAddPopup = () => {
-    setSelectedItemId("");
-    setSelectedGoldsmithId("");
-    setProductName("");
-    setWorkerName("");
-    setGrossWeight("");
-    setStoneWeight("");
-    setNetWeight("");
-    fileBlobRef.current = null;
-    setPreviewUrl(null);
-    setShowAddPopup(true);
-  };
-
   const closeAddPopup = () => {
     // stop camera if open
     if (videoRef.current && videoRef.current.srcObject) {
       const tracks = videoRef.current.srcObject.getTracks() || [];
       tracks.forEach((t) => t.stop());
     }
+    addFileRef.current = null;
     setSelectedItemId("");
     setSelectedGoldsmithId("");
     setProductName("");
     setWorkerName("");
     setGrossWeight("");
     setStoneWeight("");
-    setCameraOpen(false);
+    // setCameraOpen(false);
     setShowAddPopup(false);
   };
 
   const startCamera = async () => {
     try {
-      setCameraOpen(true);
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" },
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
-    } catch (err) {
-      console.error("camera error", err);
-      toast.error("Cannot open camera");
+    } catch {
+      toast.error("Camera access denied");
     }
   };
 
+
   const captureFromCamera = () => {
     try {
-      if (!videoRef.current) return;
+      if (isCapturingRef.current) return;
+      isCapturingRef.current = true;
+
+      if (!videoRef.current) {
+        toast.error("Camera not ready");
+        isCapturingRef.current = false;
+        return;
+      }
+
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      const ratio = 1; // square capture
       const w = 800;
       const h = 800;
       canvas.width = w;
       canvas.height = h;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, w, h);
+
       canvas.toBlob(
         (blob) => {
           if (!blob) {
             toast.error("Capture failed");
+            isCapturingRef.current = false;
             return;
           }
+
           const file = new File([blob], `plain_${Date.now()}.jpg`, {
             type: "image/jpeg",
           });
-          fileBlobRef.current = file;
-          // set preview url but we only show when user clicks preview button (we store it)
+
+          // store the file in the correct slot and set preview for user
+          if (cameraMode === "edit") {
+            editFileRef.current = file;
+          } else {
+            addFileRef.current = file;
+          }
+
           const localUrl = URL.createObjectURL(blob);
           setPreviewUrl(localUrl);
 
-          // stop camera after capture
+          // stop camera
           const tracks = video.srcObject ? video.srcObject.getTracks() : [];
           tracks.forEach((t) => t.stop());
-          setCameraOpen(false);
-          toast.success("Captured. Click Preview to view image.");
+
+          // close camera modal but DO NOT apply file to editProduct until save
+          setShowCameraModal(false);
+
+          toast.success("Captured. Click Preview → then Save to persist.");
+          isCapturingRef.current = false;
         },
         "image/jpeg",
         0.9
@@ -742,8 +766,10 @@ const PlainProducts = () => {
     } catch (err) {
       console.error("capture error", err);
       toast.error("Capture error");
+      isCapturingRef.current = false;
     }
   };
+
 
   const onSelectItem = (id) => {
     setSelectedItemId(id);
@@ -761,7 +787,6 @@ const PlainProducts = () => {
     }
   };
 
-  // Save new plain product
   const handleSavePlainProduct = async () => {
     if (savingProduct) return;
     setSavingProduct(true);
@@ -779,7 +804,6 @@ const PlainProducts = () => {
     // if (!fileBlobRef.current) { toast.error("Please capture an image (camera)"); return; }
 
     const fd = new FormData();
-    // make backend robust: include multiple lot keys
     fd.append("lotId", String(lot_id));
     fd.append("lot_id", String(lot_id));
     fd.append("plainLotId", String(lot_id));
@@ -801,21 +825,12 @@ const PlainProducts = () => {
         ?.itemCode || ""
     );
 
-    // IMPORTANT: backend expects itemType (must be uppercase)
     fd.append("itemType", "PLAIN");
 
-    // send file using field name gross_weight_img so server's img mapping is clear
-    // ONLY append image if it exists
-    if (fileBlobRef.current) {
-      
-      console.log('fileBlobRef',fileBlobRef.current)
-
-      fd.append(
-        "gross_weight_img",
-        fileBlobRef.current,
-        fileBlobRef.current.name || `gross_${Date.now()}.jpg`
-      );
+    if (addFileRef.current) {
+      fd.append("gross_weight_img", addFileRef.current, addFileRef.current.name || `gross_${Date.now()}.jpg`);
     }
+
 
     console.log("Submitting new plain product with data:", fd);
     try {
@@ -841,7 +856,8 @@ const PlainProducts = () => {
       console.log("Created new plain product:", newP);
       setProducts((prev) => [...prev, newP]);
       toast.success("Product added");
-      fileBlobRef.current = null;
+      // fileBlobRef.current = null;
+      addFileRef.current = null;
       setPreviewUrl(null);
       setShowAddPopup(false);
       setSelectedItemId("");
@@ -863,56 +879,65 @@ const PlainProducts = () => {
   };
 
   //update plain product
-  const updatePlainProduct = async () => {
-    try {
-      const fd = new FormData();
-      fd.append("productName", editProduct.productName);
-      fd.append("workerName", editProduct.workerName);
-      fd.append("grossWeight", editProduct.grossWeight);
-      fd.append("stoneWeight", editProduct.stoneWeight);
-      fd.append("netWeight", editProduct.netWeight);
-      fd.append("goldSmithCode", editProduct.goldSmithCode || "");
-      fd.append("itemCode", editProduct.itemCode || "");
-      fd.append("itemType", "PLAIN"); // required validation on server
+const updatePlainProduct = async () => {
+  if (savingProduct) return;
+  setSavingProduct(true);
+  try {
+    const fd = new FormData();
+    fd.append("productName", editProduct.productName);
+    fd.append("workerName", editProduct.workerName);
+    fd.append("grossWeight", editProduct.grossWeight);
+    fd.append("stoneWeight", editProduct.stoneWeight);
+    fd.append("netWeight", editProduct.netWeight);
+    fd.append("goldSmithCode", editProduct.goldSmithCode || "");
+    fd.append("itemCode", editProduct.itemCode || "");
+    fd.append("itemType", "PLAIN");
 
-      if (!editProduct.productName || !editProduct.workerName) {
+    if (!editProduct.productName || !editProduct.workerName) {
       toast.error("Please select product and goldsmith");
       setSavingProduct(false);
       return;
     }
-      if (!editProduct.grossWeight) {
-        toast.error("Please enter weights");
-        return;
-      }
-
-      // if you let user change image and have a file blob, append as gross_weight_img
-      if (fileBlobRef.current)
-        fd.append(
-          "gross_weight_img",
-          fileBlobRef.current,
-          fileBlobRef.current.name || `gross_${Date.now()}.jpg`
-        );
-
-      const res = await axios.put(
-        `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/update/${editProduct.id}`,
-        fd,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
-      const updated =
-        res.data?.updateProduct || res.data?.updatedProduct || res.data;
-      setProducts((prev) =>
-        prev.map((p) => (p.id === editProduct.id ? updated : p))
-      );
-      toast.success("Product updated!");
-      setEditProduct(null);
-    } catch (err) {
-      console.error(err);
-      toast.error("Update failed");
+    if (!editProduct.grossWeight) {
+      toast.error("Please enter weights");
+      setSavingProduct(false);
+      return;
     }
-  };
 
-  // show preview modal when user clicks 'Preview'
+    // append edit image if one was captured
+    if (editFileRef.current) {
+      fd.append(
+        "gross_weight_img",
+        editFileRef.current,
+        editFileRef.current.name || `gross_${Date.now()}.jpg`
+      );
+    }
+
+    const res = await axios.put(
+      `${REACT_APP_BACKEND_SERVER_URL}/api/v1/products/update/${editProduct.id}`,
+      fd,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+
+    const updated =
+      res.data?.updateProduct || res.data?.updatedProduct || res.data;
+    setProducts((prev) =>
+      prev.map((p) => (p.id === editProduct.id ? updated : p))
+    );
+    toast.success("Product updated!");
+
+    // cleanup after success
+    editFileRef.current = null;
+    setPreviewUrl(null);
+    setEditProduct(null);
+  } catch (err) {
+    console.error(err);
+    toast.error("Update failed");
+  } finally {
+    setSavingProduct(false);
+  }
+};
+
   const openPreview = () => {
     if (!previewUrl) {
       toast.info("No captured image to preview");
@@ -921,13 +946,12 @@ const PlainProducts = () => {
     setShowPreviewModal(true);
   };
 
-  // ---------- render ----------
   return (
     <>
       <div className="background">
         <Navbarr />
         <div className="plain-add-items">
-          <button onClick={() => navigate("/PlainLot ")}>← Back</button>
+          <button onClick={() => navigate("/PlainLot")}>← Back</button>
           <button onClick={() => setShowAddPopup(true)}>Add Items</button>
           <select
             style={{ marginLeft: "1rem", height: "1.5rem", width: "5rem", }}
@@ -991,7 +1015,13 @@ const PlainProducts = () => {
                           icon={faEdit}
                           onClick={() => {
                             console.log("View product:", product);
+                            const backendImage =
+                              product.gross_weight_img ||
+                              product.product_images?.[0]?.gross_weight_img ||
+                              null;
+
                             setEditProduct(product);
+                            setPreviewUrl(backendImage);
                           }}
                           style={{ cursor: "pointer" }}
                         />
@@ -1064,7 +1094,7 @@ const PlainProducts = () => {
         </div>
       </div>
 
-      {/* ---------- ADD PRODUCT POPUP (B2 New modal layout) ---------- */}
+      {/* ADD PRODUCT POPUP */}
       {showAddPopup && (
         <div className="plain-modal-overlay" style={modalOverlayStyle}>
           <div className="plain-modal-box" style={modalBoxStyle}>
@@ -1139,22 +1169,7 @@ const PlainProducts = () => {
                   placeholder="Goldsmith Code"
                   readOnly
                 />
-
-                {/* <label style={{ marginTop: 12 }}>Product Name</label>
-                <input
-                  value={productName}
-                  onChange={(e) => setProductName(e.target.value)}
-                  style={inputStyle}
-                />
-
-                <label style={{ marginTop: 8 }}>Worker Name</label>
-                <input
-                  value={workerName}
-                  onChange={(e) => setWorkerName(e.target.value)}
-                  style={inputStyle}
-                /> */}
               </div>
-
               <div>
                 <label>Gross Weight</label>
                 <div className="weightImg">
@@ -1194,27 +1209,18 @@ const PlainProducts = () => {
                   }}
                 >
                   <button
-                    onClick={startCamera}
-                    title="Open camera"
+                    onClick={() => {
+                      setCameraMode("add");
+                      // startCamera();
+                      setShowCameraModal(true)
+                    }}
                     style={cameraBtnStyle}
                   >
-                    <FontAwesomeIcon
-                      icon={faCamera}
-                      style={{ color: "black" }}
-                    />{" "}
-                    {cameraOpen ? "Open Camera" : "Open Camera"}
+                    <FontAwesomeIcon icon={faCamera} /> Open Camera
                   </button>
 
                   <button
-                    onClick={captureFromCamera}
-                    title="Capture"
-                    style={captureBtnStyle}
-                  >
-                    Capture
-                  </button>
-                  <button
                     onClick={openPreview}
-                    title="Preview captured image"
                     style={{
                       ...previewBtnStyle,
                       opacity: previewUrl ? 1 : 0.4,
@@ -1224,18 +1230,6 @@ const PlainProducts = () => {
                     Preview
                   </button>
                 </div>
-
-                {/* video element only visible if cameraOpen */}
-                {cameraOpen && (
-                  <div style={{ marginTop: 10 }}>
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      style={{ width: "100%", borderRadius: 6 }}
-                    />
-                    <canvas ref={canvasRef} style={{ display: "none" }} />
-                  </div>
-                )}
               </div>
             </div>
 
@@ -1422,7 +1416,7 @@ const PlainProducts = () => {
                 />
 
                 {/* --- CURRENT IMAGE --- */}
-                <label style={{ marginTop: 12 }}>Current Image</label>
+                {/* <label style={{ marginTop: 12 }}>Current Image</label>
                 <img
                   src={editProduct.product_images?.[0]?.gross_weight_img}
                   alt="Product"
@@ -1432,16 +1426,18 @@ const PlainProducts = () => {
                     height: "16rem",
                     borderRadius: "10px",
                   }}
-                />
+                /> */}
 
                 {/* --- CAMERA CONTROLS --- */}
                 <div style={{ marginTop: 15, display: "flex", gap: 10 }}>
-                  <button onClick={startCamera} style={cameraBtnStyle}>
+                  <button
+                    onClick={() => {
+                      setCameraMode("edit");
+                      setShowCameraModal(true);
+                    }}
+                    style={cameraBtnStyle}
+                  >
                     <FontAwesomeIcon icon={faCamera} /> Camera
-                  </button>
-
-                  <button onClick={captureFromCamera} style={captureBtnStyle}>
-                    Capture
                   </button>
 
                   <button
@@ -1455,23 +1451,6 @@ const PlainProducts = () => {
                     Preview
                   </button>
                 </div>
-
-                {/* --- CAMERA PREVIEW --- */}
-                {cameraOpen && (
-                  <div style={{ marginTop: 10 }}>
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      style={{
-                        width: "100%",
-                        maxWidth: "22rem",
-                        height: "16rem",
-                        borderRadius: 8,
-                      }}
-                    />
-                    <canvas ref={canvasRef} style={{ display: "none" }} />
-                  </div>
-                )}
               </div>
             </div>
 
@@ -1484,12 +1463,21 @@ const PlainProducts = () => {
                 marginTop: 16,
               }}
             >
-              <button style={saveBtnStyle} onClick={updatePlainProduct}>
-                Save
-              </button>
+              <button
+                  style={{
+                    ...saveBtnStyle,
+                    opacity: savingProduct ? 0.6 : 1,
+                    cursor: savingProduct ? "not-allowed" : "pointer",
+                  }}
+                  onClick={updatePlainProduct}
+                  disabled={savingProduct}
+                >
+                  {savingProduct ? "Saving..." : "Save"}
+                </button>
+
               <button
                 style={cancelBtnStyle}
-                onClick={() => setEditProduct(null)}
+                onClick={closeEditModal}
               >
                 Cancel
               </button>
@@ -1497,6 +1485,66 @@ const PlainProducts = () => {
           </div>
         </div>
       )}
+
+      {/* Camera modal */}
+        {showCameraModal && (
+  <div className="plain-modal-overlay">
+    <div className="plain-modal-box" style={{ maxWidth: 500 }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <h3>
+          {cameraMode === "edit" ? "Retake Image" : "Capture Image"}
+        </h3>
+        <button
+          onClick={() => {
+            if (videoRef.current?.srcObject) {
+              videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+            }
+            setShowCameraModal(false);
+          }}
+          style={closeBtnStyle}
+        >
+          <FontAwesomeIcon icon={faXmark} />
+        </button>
+      </div>
+
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        style={{
+          width: "100%",
+          height: "300px",
+          borderRadius: 10,
+          marginTop: 10,
+          objectFit: "cover",
+        }}
+      />
+
+      <canvas ref={canvasRef} style={{ display: "none" }} />
+
+      <div className="camera-popup-actions" style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 12 }}>
+        <button className="capture-image-btn" onClick={captureFromCamera} style={captureBtnStyle}>
+          <FontAwesomeIcon icon={faCheck} />Capture
+        </button>
+        <button
+          className="cancel-camera-btn"
+          onClick={() => {
+            if (videoRef.current?.srcObject) {
+              videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+            }
+            setShowCameraModal(false);
+          }}
+          style={cancelBtnStyle}
+        >
+          <FontAwesomeIcon icon={faTimes} />
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
 
       {/* Preview modal */}
       {showPreviewModal && previewUrl && (
