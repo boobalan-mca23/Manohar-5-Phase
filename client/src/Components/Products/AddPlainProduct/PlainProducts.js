@@ -694,6 +694,7 @@ const PlainProducts = () => {
       tracks.forEach((t) => t.stop());
     }
     addFileRef.current = null;
+    setPreviewUrl(null);
     setSelectedItemId("");
     setSelectedGoldsmithId("");
     setProductName("");
