@@ -2,8 +2,35 @@ const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const {LOT_TYPE}=require("@prisma/client")
+
+// formate weight for make three digit 
+
+const toFixedOrNull = (value, decimals = 3) => {
+  if (value === null || value === undefined || value === "") return null;
+
+  const num = Number(value);
+  return isNaN(num) ? null : num.toFixed(decimals);
+};
+
+const formatWeights = (lotArr) => {
+  return lotArr.map(lot => ({
+    ...lot,
+    products: lot.products?.map(product => ({
+      ...product,
+      before_weight: toFixedOrNull(product.before_weight),
+      after_weight: toFixedOrNull(product.after_weight),
+      difference: toFixedOrNull(product.difference),
+      adjustment: toFixedOrNull(product.adjustment),
+      final_weight: toFixedOrNull(product.final_weight),
+      barcode_weight: toFixedOrNull(product.barcode_weight),
+      grossWeight: toFixedOrNull(product.grossWeight),
+      stoneWeight: toFixedOrNull(product.stoneWeight),
+      netWeight: toFixedOrNull(product.netWeight),
+    })) || []
+  }));
+};
+
 // create new lot
- 
 const postLotInfo = async (req, res, error) => {
  
   try {
@@ -196,7 +223,7 @@ const searchLots = async (req, res, next) => {
 const getLotById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log('id',id)
+    
    
     if(isNaN(id) || !id) return res.status(400).json({message:"Lot Id is Required"})
  
@@ -223,7 +250,9 @@ const getLotById = async (req, res, next) => {
       }
     }
     })
-    console.log('lotValue',lotInfo[0].products)
+    lotInfo=formatWeights(lotInfo)
+    
+    // console.log('lotInfo',lotInfo[0].products)
 
     // Return the fetched lot
     return res.status(200).json({ msg: "Successfully fetched",lotInfo,success:true});

@@ -28,15 +28,16 @@ const WeightFormPopup = ({
   productInfo,
   updateProductList,
 }) => {
-  console.log(product, "1111111111111111");
-  console.log(productInfo, "detailssssssss");
+ 
   const [capturedImages, setCapturedImages] = useState({
     before_weight_img: null,
     after_weight_img: null,
     final_weight_img: null,
 
   });
-  console.log("kkkkkkkkkk",capturedImages)
+
+  console.log("update id",productInfo.id);
+  
   
   
   const [beforeWeight, setBeforeWeight] = useState(productInfo.before_weight);
@@ -430,20 +431,10 @@ const handleSave = async () => {
         }
     );
  
-    console.log("Updated Product Data:", updatedData);
- 
-    
+    toast.success("Product Updated Successfully");
     setSaving(false)
-    toast.success("Product saved successfully!");
-    window.location.reload();
-    
-    // const updatedProduct = {
-    //   ...product,
-    //   ...updatedData,
-    // };
-    // updateProductList(updatedProduct);
- 
- 
+    updateProductList(productInfo.id,updatedData.data.updateProduct);
+  
   } catch (error) {
     setSaving(false)
     console.error("Error updating product:", error);
@@ -490,9 +481,9 @@ const handleSave = async () => {
           response.data || {};
         console.log("API Response:", response.data);
         setCapturedImages({
-          before_weight_img: before_weight_img || null,
-          after_weight_img: after_weight_img || null,
-          final_weight_img: final_weight_img || null,
+          before_weight_img: before_weight_img?`${REACT_APP_BACKEND_SERVER_URL}${before_weight_img}` : null,
+          after_weight_img:  after_weight_img?`${REACT_APP_BACKEND_SERVER_URL}${after_weight_img}` : null,
+          final_weight_img:  final_weight_img?`${REACT_APP_BACKEND_SERVER_URL}${final_weight_img}` : null,
         });
         console.log("beforeeeeeeeeeeee",before_weight_img)
       
@@ -613,7 +604,7 @@ const captureImage = () => {
                   onWheel={(e)=>{e.target.blur()}}
                   className="vw-input"
                   type="number"
-                  value={(parseFloat(beforeWeight)||0).toFixed(3)}
+                  value={beforeWeight}
                   onChange={(e) => setBeforeWeight(e.target.value)}
                   // id="digitalNumber"
                   // value={digitalNumber}
@@ -684,7 +675,7 @@ const captureImage = () => {
                   onWheel={(e)=>{e.target.blur()}}
                   className="vw-input"
                   type="number"
-                  value={(parseFloat(afterWeight)||0).toFixed(3)}
+                  value={afterWeight}
                   onChange={(e) => setAfterWeight(e.target.value)}
                   placeholder="Enter After Weight"
                 />
@@ -751,7 +742,7 @@ const captureImage = () => {
                 onWheel={(e)=>{e.target.blur()}}
                 className="vw-input"
                 type="number"
-                value={(parseFloat(difference)||0).toFixed(3)}
+                value={difference}
                 onChange={(e) => setDifference(e.target.value)}
                 placeholder="Enter Difference Weight"
               />
@@ -762,7 +753,7 @@ const captureImage = () => {
                 onWheel={(e)=>{e.target.blur()}}
                 className="vw-input"
                 type="number"
-                value={(parseFloat(adjustment)||0).toFixed(3)}
+                value={adjustment}
                 onChange={(e) => setAdjustment(e.target.value)}
                 placeholder="Enter Adjustment Weight"
               />
@@ -773,7 +764,7 @@ const captureImage = () => {
                 onWheel={(e)=>{e.target.blur()}}
                 className="vw-input"
                 type="number"
-                value={(parseFloat(finalWeight)||0).toFixed(3)}
+                value={finalWeight}
                 onChange={(e) => setFinalWeight(e.target.value)}
                 placeholder="Enter Enamel Weight"
               />
@@ -786,7 +777,7 @@ const captureImage = () => {
                   onWheel={(e)=>{e.target.blur()}}
                   className="vw-input"
                   type="number"
-                  value={(parseFloat(barcodeWeight)||0).toFixed(3)}
+                  value={barcodeWeight}
                   onChange={(e) =>setBarcodeWeight(e.target.value)}
                   placeholder="Enter Final Weight"
                 />

@@ -140,6 +140,33 @@ const { makeProductId } = require("../helperFunction/makeProductId");
 //   }
 // };
 
+
+// formate weight for make three digit 
+
+const toFixedOrNull = (value, decimals = 3) => {
+  if (value === null || value === undefined || value === "") return null;
+
+  const num = Number(value);
+  return isNaN(num) ? null : num.toFixed(decimals);
+};
+
+const formatWeights = (arr) => {
+  return arr.map(item => ({
+    ...item,
+
+    before_weight: toFixedOrNull(item.before_weight),
+    after_weight: toFixedOrNull(item.after_weight),
+    difference: toFixedOrNull(item.difference),
+    adjustment: toFixedOrNull(item.adjustment),
+    final_weight: toFixedOrNull(item.final_weight),
+    barcode_weight:toFixedOrNull(item.barcode_weight),
+    grossWeight:toFixedOrNull(item.grossWeight),
+    stoneWeight:toFixedOrNull(item.stoneWeight) ,
+    netWeight:toFixedOrNull(item.netWeight) ,
+  }));
+};
+
+
 const createNewProduct = async (req, res) => {
   try {
     const {
@@ -262,18 +289,25 @@ const createNewProduct = async (req, res) => {
       // this create product number for plain products
       newProduct = await makeProductId(goldSmithCode, itemCode, newProduct);
     }
-   
+      const flattenArray=[]
+      flattenArray.push(newProduct)
+      newProduct=formatWeights(flattenArray)
+      
+      console.log('newProduct',newProduct[0])
+    
     res.status(200).json({
       success: true,
       message: "Product Successfully Created",
-      newProduct,
+      newProduct:newProduct[0],
       productImage: newProduct.product_images,
     });
+
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "Error Creating Product" });
   }
 };
+
 
 
 const getAllProducts = async (req, res) => {
@@ -284,7 +318,11 @@ const getAllProducts = async (req, res) => {
         lot_id,
       },
     });
-    res.status(200).json(getProducts);
+   const flattenArray=formatWeights(getProducts)
+   
+   console.log('flattenArray',flattenArray)
+
+    res.status(200).json(flattenArray);
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "No Products found" });
@@ -693,11 +731,17 @@ const UpdatingProduct = async (req, res) => {
         updateProduct
       );
     }
+    
+    const flattenArray=[]
+      flattenArray.push(updateProduct)
+      updateProduct=formatWeights(flattenArray)
+     
+     
 
     res.status(200).json({
       message: " Product Updated Successfully",
       success: true,
-      updateProduct,
+      updateProduct:updateProduct[0],
     });
   } catch (error) {
     console.log(error);

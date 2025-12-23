@@ -14,7 +14,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Barcode from "react-qr-code";
 import html2canvas from "html2canvas";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactDOMServer from "react-dom/server";
 import manoImage from "../../Components/Logo/mp.png";
@@ -715,6 +715,22 @@ const handleBulkWeight=async(fieldName)=>{
          console.error("Error fetching weight:", err);
      }
 }
+    // product Update
+ const updateProductList = (id, updateData) => {
+          const index = products.findIndex(item => item.id === id);
+
+          if (index === -1) {
+            toast.error("Product not found");
+            return;
+          }
+
+          const tempData = [...products];
+          tempData.splice(index, 1, updateData);
+          setProducts(tempData);
+          closePopup()
+
+};
+
 
 const handleVerify=(value)=>{
 
@@ -725,6 +741,12 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
   return (
     <>
       <div className="products-page">
+        <ToastContainer 
+          position="top-right" 
+          autoClose={2000} 
+          // hideProgressBar 
+          // theme="dark"
+        />
         <Navbarr />
         <div className="add-items">
           <button  onClick={() => navigate("/beadsenamellot")}>
@@ -879,7 +901,7 @@ weightVerify("Before",bulkWeightBefore,totalBeforeWeight)
                 productId={showPopup.id}
                 product={products.find(p => p.id === showPopup.id)}
                 productInfo={products.find(p => p.id === showPopup.id)}
-                updateProductList={setProducts}
+                updateProductList={updateProductList}
               />
             )}
             <div className="products-page-diff-wrapper">
