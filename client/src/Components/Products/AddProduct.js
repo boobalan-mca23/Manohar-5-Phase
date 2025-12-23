@@ -106,7 +106,11 @@ const AddProduct = ({
       formData.append("final_weight", finalWeight || null);
       formData.append("product_number", productNumber || null);
       formData.append("lot_id", Number(lot_id));
-      formData.append(imgField.fieldName, imgField.image);
+
+      if(imgField.fieldName && imgField.image){
+        formData.append(imgField.fieldName, imgField.image);
+      }
+      
       formData.append("itemType", "STONE");
       
       if (!beforeWeight) {

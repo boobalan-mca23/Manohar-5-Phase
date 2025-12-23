@@ -190,6 +190,11 @@ const getBillsByBillNumber = async (req, res) => {
         
       };
     });
+    // const activeProduct=billmod.filter((item)=>item.product_type==="active")
+    // const soldProduct=bi
+    // console.log('active product',activeProduct)
+
+
     res.status(200).json({ products: billmod ,billName:billName});
   } catch (error) {
     console.log(error);

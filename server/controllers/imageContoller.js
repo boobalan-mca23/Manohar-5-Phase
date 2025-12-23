@@ -163,7 +163,7 @@ const getImages = async (req, res) => {
         .json({ message: "No images found for this product" });
     }
 
-    const baseUrl = `${process.env.TEMP_URL}/uploads/`;
+    const baseUrl = '/uploads/';
 
     res.status(200).json({
       before_weight_img: productImage.before_weight_img

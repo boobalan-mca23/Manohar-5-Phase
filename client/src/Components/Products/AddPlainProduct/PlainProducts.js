@@ -1409,7 +1409,7 @@ const updatePlainProduct = async () => {
                 <div className="weightImg">
                   <input
                     style={inputStyle}
-                    value={(parseFloat(editProduct.grossWeight)||0).toFixed(3)}
+                    value={editProduct.grossWeight}
                     onChange={(e) => {
                       const g = parseFloat(e.target.value);
                       const s = parseFloat(editProduct.stoneWeight || 0);
@@ -1434,7 +1434,7 @@ const updatePlainProduct = async () => {
                 <label style={{ marginTop: 8 }}>Stone Weight</label>
                 <input
                   style={inputStyle}
-                  value={(parseFloat(editProduct.stoneWeight)||0).toFixed(3)}
+                  value={editProduct.stoneWeight}
                   onChange={(e) => {
                     const s = parseFloat(e.target.value);
                     const g = parseFloat(editProduct.grossWeight || 0);
@@ -1452,7 +1452,7 @@ const updatePlainProduct = async () => {
                   value={editProduct.netWeight}
                   readOnly
                 />
-
+   
                 {/* --- CURRENT IMAGE --- */}
                 {/* <label style={{ marginTop: 12 }}>Current Image</label>
                 <img
