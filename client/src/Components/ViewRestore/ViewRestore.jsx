@@ -3,7 +3,7 @@ import { useState,useEffect } from "react"
 import axios from "axios";
 import Navbarr from "../Navbarr/Navbarr";
 import { REACT_APP_BACKEND_SERVER_URL } from "../../config";
-import { transform_text } from "../utils"; 
+import { transform_text,cleanPlainProduct } from "../utils"; 
 import Table from "react-bootstrap/esm/Table";
 import jsPDF from "jspdf";
 import { useNavigate } from "react-router-dom";
@@ -84,12 +84,24 @@ const ViewRestore=()=>{
   const totalAdjustment = restoreItem
     .reduce((acc, product) => acc + parseFloat(product.adjustment || 0), 0)
     .toFixed(3);
-  const totalBarcodeWeight = restoreItem
-    .reduce((acc, product) => acc + parseFloat(product.barcode_weight || 0), 0)
-    .toFixed(3);
-  const totalFinalWeight = restoreItem
-    .reduce((acc, product) => acc + parseFloat(product.final_weight || 0), 0)
-    .toFixed(3);
+  const totalBarcodeWeight = scannedProducts.reduce((acc, product) => {
+
+  if (product.itemType === "PLAIN") {
+    return acc + parseFloat(product.netWeight || 0);
+  } else {
+    // STONE
+    return acc + parseFloat(product.barcode_weight || 0);
+  }
+}, 0).toFixed(3);
+
+  const totalFinalWeight=scannedProducts.reduce((acc,product)=>{
+    if (product.itemType === "PLAIN") {
+    return acc + parseFloat(product.stoneWeight || 0);
+  } else {
+    // STONE
+    return acc + parseFloat(product.final_weight || 0);
+  }
+  },0).toFixed(3)
 
     return(
     <>
@@ -118,13 +130,32 @@ const ViewRestore=()=>{
                 restoreItem.map((product, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{transform_text(product.product_number)}</td>
-                    <td>{product.before_weight}</td>
-                    <td>{product.after_weight}</td>
-                    <td>{product.difference}</td>
-                    <td>{product.adjustment}</td>
-                    <td>{product.barcode_weight}</td>
-                    <td>{product.final_weight}</td>
+                   <td>{product.itemType==="STONE"? transform_text(product.product_number):cleanPlainProduct(product.product_number)}</td>
+                    {
+                      product.itemType==="STONE" ? (
+                      <>
+                          <td>{product.before_weight}</td>
+                          <td>{product.after_weight}</td>
+                          <td>{product.difference}</td>
+                          <td>{product.adjustment}</td>
+                          <td>{product.barcode_weight}</td>
+                          <td>{product.final_weight}</td>
+                      </>
+                      ):(
+                      <>
+                          <td className="blank">-</td>
+                          <td className="blank">-</td>
+                          <td className="blank">-</td>
+                          <td className="blank">-</td>
+                          <td >{product.netWeight}</td>
+                          <td>{product.stoneWeight}</td>
+                      </>)
+                    }
+                    
+                    <td
+                      style={{ color: product.itemType === "STONE" ? "green" : "blue" }}
+                    ><b>{product.itemType ==="STONE"?"ENAMEL":product.itemType}</b>
+                    </td>
                   </tr>
                 ))
               ) : (

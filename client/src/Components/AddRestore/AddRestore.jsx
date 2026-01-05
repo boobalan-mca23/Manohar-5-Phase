@@ -201,9 +201,11 @@ const AddNewRestore = () => {
                          <td>{product.stoneWeight}</td>
                       </>)
                     }
+                   
                    <td
                      style={{ color: product.itemType === "STONE" ? "green" : "blue" }}
-                    ><b>{product.itemType ==="STONE"?"ENAMEL":product.itemType}</b></td>
+                    ><b>{product.itemType ==="STONE"?"ENAMEL":product.itemType}</b>
+                    </td>
                   </tr>
                 ))
               ) : (
