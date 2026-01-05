@@ -180,7 +180,7 @@ const exportPrint= () => {
     } catch (error) {
       console.error("Error sending Sell data:", error);
       alert("Error saving bill.");
-    }
+    } 
   };
 
   const handleCheckboxChange = (productId, id) => {
