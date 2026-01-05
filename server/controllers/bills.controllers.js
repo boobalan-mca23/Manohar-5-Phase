@@ -190,12 +190,13 @@ const getBillsByBillNumber = async (req, res) => {
         
       };
     });
-    // const activeProduct=billmod.filter((item)=>item.product_type==="active")
-    // const soldProduct=bi
-    // console.log('active product',activeProduct)
+    const activeProducts=billmod.filter((item)=>item.product_type==="active")
+    const soldProducts=billmod.filter((item)=>item.product_type==="sold")
+    
 
-
-    res.status(200).json({ products: billmod ,billName:billName});
+    res.status(200).json({ products: billmod ,billName:billName,
+      activeProducts:activeProducts,
+      soldProducts:soldProducts});
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "No bills" });
@@ -265,6 +266,153 @@ const postBillDetails = async (req, res) => {
   }
 };
 
+// update Bill with Products
+const updateBill = async (req, res) => {
+  const { bill_number } = req.params;
+  const {billName,selected_products } = req.body;
+
+   try {
+      
+      if (!bill_number || isNaN(bill_number)) {
+       return res.status(400).json({ message: "Invalid Formate BillNumber" });
+     }
+   
+     const existBill = await prisma.bills.findUnique({ where: { bill_number:bill_number } });
+    
+      if (!existBill) {
+       return res.status(404).json({ message: "Bill not found" });
+     }
+
+     const productIds = selected_products.map(p => p.id);
+
+    //  Already existing bill items
+    const existingBillItems = await prisma.bill_items.findMany({
+      where: {
+        bill_number:bill_number,
+        product_id: { in: productIds },
+      },
+    });
+    console.log('existingBillItems', existingBillItems)
+  
+    const existingProductIds = existingBillItems.map(i => i.product_id);
+
+    //  New products (not yet in bill_items)
+    const newProductIds = productIds.filter(
+      id => !existingProductIds.includes(id)
+    );
+   
+   console.log('newProductIds',newProductIds)
+
+    await prisma.$transaction([
+      //  Insert new bill items
+      prisma.bill_items.createMany({
+        data: newProductIds.map(id => ({
+          bill_number: bill_number,
+          product_id: id,
+        })),
+        skipDuplicates: true,
+      }),
+
+      //  Update product type to sold (ONLY active ones)
+      prisma.product_info.updateMany({
+        where: {
+          id: { in: productIds },
+          product_type: "active",
+        },
+        data: {
+          product_type: "sold",
+        },
+      }),
+      // Update bill Name 
+
+      prisma.bills.update({
+         where:{
+           id:existBill.id
+         },
+         data:{
+          bill_name:billName
+         }
+      })
+    ]);
+    console.log('bill id',existBill.id)
+
+    return res.status(200).json({
+      message: "Bill updated successfully",
+      status:"ok"
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 
-module.exports = { getAllBills, createBills, deleteBills, modifyBillHold,getBillsByBillNumber,postBillDetails };
+// updateProduct and RemoveFrom Bill
+const updateProductAndRemoveFromBill = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const id = Number(productId);
+
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ message: "Invalid Product ID" });
+    }
+
+    const product = await prisma.product_info.findUnique({ where: { id } });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const billItem = await prisma.bill_items.findFirst({
+      where: { product_id: id },
+    });
+
+    if (!billItem) {
+      return res.status(400).json({ message: "Product not in bill" });
+    }
+    // we need to remove the produdt to that bill and update the productType as active
+   
+    await prisma.bill_items.delete({
+       where:{
+        id:billItem.id
+       }
+    })
+
+    await prisma.product_info.update({
+      where: { id },
+      data: { product_type: "active" },
+    });
+
+  const allBills = await prisma.bill_items.findMany({
+      where: {
+        bill_number: billItem.bill_number,
+      },
+      select: {
+        productInfo: true,
+      },
+    });
+    const billmod = allBills.map((elem) => {
+      return {
+        ...elem.productInfo,
+        
+      };
+    });
+    const activeProducts=billmod.filter((item)=>item.product_type==="active")
+    const soldProducts=billmod.filter((item)=>item.product_type==="sold")
+    
+    return res.status(200).json({
+      status:"ok",
+      message: "Product SucessFully Removed from Bill and Update Status",
+      allProducts:billmod,
+      activeProducts:activeProducts,
+      soldProducts:soldProducts
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message:err.message });
+  }
+};
+
+
+module.exports = { getAllBills, createBills, updateBill,deleteBills, modifyBillHold,getBillsByBillNumber,postBillDetails,updateProductAndRemoveFromBill };

@@ -313,7 +313,7 @@ const handleExportdetailsPdf = async () => {
 
     /* ---------------- BASE64 CONVERTER ---------------- */
     const convertToBase64 = async (path) => {
-      const response = await fetch(`${REACT_APP_BACKEND_SERVER_URL}${path}`);
+      const response = await fetch(`${path}`);
       const blob = await response.blob();
 
       return new Promise((resolve) => {
