@@ -123,6 +123,7 @@ const ViewRestore=()=>{
                 <th>Adjustment</th>
                 <th>Final Weight</th>
                 <th>Enamel Weight</th>
+                <th>Product Type</th>
               </tr>
             </thead>
             <tbody className="viewrestore-tbody">
@@ -158,6 +159,7 @@ const ViewRestore=()=>{
                     </td>
                   </tr>
                 ))
+                
               ) : (
                 <tr>
                   <td colSpan="8">No products found.</td>

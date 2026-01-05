@@ -40,7 +40,7 @@ const AddNewRestore = () => {
         );
       }
     } catch (error) {
-      alert(error.response.data.message);
+      alert(error.response.data.msg);
       console.error("Error fetching product:", error.response.data.message);
     }
   };

@@ -123,7 +123,7 @@ exports.getProductByNumber = async (req, res) => {
       },
     });
     if (product.length === 0) {
-      return res.status(500).json({ msg: "Product not found" });
+      return res.status(500).json({ msg: "This is Active Product" });
     }
     
     console.log('product',product)
