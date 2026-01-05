@@ -84,12 +84,24 @@ const ViewRestore=()=>{
   const totalAdjustment = restoreItem
     .reduce((acc, product) => acc + parseFloat(product.adjustment || 0), 0)
     .toFixed(3);
-  const totalBarcodeWeight = restoreItem
-    .reduce((acc, product) => acc + parseFloat(product.barcode_weight || 0), 0)
-    .toFixed(3);
-  const totalFinalWeight = restoreItem
-    .reduce((acc, product) => acc + parseFloat(product.final_weight || 0), 0)
-    .toFixed(3);
+  const totalBarcodeWeight = scannedProducts.reduce((acc, product) => {
+
+  if (product.itemType === "PLAIN") {
+    return acc + parseFloat(product.netWeight || 0);
+  } else {
+    // STONE
+    return acc + parseFloat(product.barcode_weight || 0);
+  }
+}, 0).toFixed(3);
+
+  const totalFinalWeight=scannedProducts.reduce((acc,product)=>{
+    if (product.itemType === "PLAIN") {
+    return acc + parseFloat(product.stoneWeight || 0);
+  } else {
+    // STONE
+    return acc + parseFloat(product.final_weight || 0);
+  }
+  },0).toFixed(3)
 
     return(
     <>
