@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "../AddBilling/AddBilling.css";
 import Table from "react-bootstrap/esm/Table";
 import jsPDF from "jspdf";
-// import Switch from '@mui/material/Switch';
+import Switch from '@mui/material/Switch';
 import html2canvas from "html2canvas";
 import { useParams, useNavigate } from "react-router-dom";
 import BarcodeReader from "react-barcode-reader";
@@ -13,95 +13,83 @@ import { cleanPlainProduct, transform_text } from "../utils";
 import Navbarr from "../Navbarr/Navbarr";
 import "jspdf-autotable";
 import { REACT_APP_BACKEND_SERVER_URL } from "../../config";
- 
+import { toast,ToastContainer} from "react-toastify";
+import { tabClasses ,IconButton} from "@mui/material";
+import {RiDeleteBin6Line} from "react-icons/ri";
+import BillRestoreProducts from "./BillRestoreProducts/BillRestoreProducts";
+import BillSoldProducts from "./BillSoldProducts/BillSoldProducts";
+import ReactDOMServer from "react-dom/server";
+import BillPrintLayout from "../PrintLayouts/Bill/BillPrintLayout"
+
 const AddBilling = () => {
   const navigate = useNavigate();
   const [scannedProducts, setScannedProducts] = useState([]);
   const [billName, setBillName] = useState("");
   const [checkedProducts, setCheckedProducts] = useState([]);
   const [selectedColumns, setSelectedColumns] = useState({
-    serialNo: true,
-    productNumber: true,
+    selectAll:false,
     beforeWeight: false,
     afterWeight: false,
     difference: false,
     adjustment: false,
     finalWeight: true,
     barcodeWeight: true,
-    complete: true, 
+    // complete: true, 
   });
   const { bill_number, bill_type } = useParams();
   const [soldProducts, setSoldProducts] = useState(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState(false); 
+  const [products,setProducts]=useState({
+      restore:[],
+      sold:[]
+  })
+  const [editMode,setEditMode]=useState(false)
+
   const label = { inputProps: { 'aria-label': 'Color switch demo' } };
 
 
-const exportPDF = () => {
-  const input = document.getElementById("billPdf");
+const exportPrint= () => {
+   
+    // if we need to save bill that time this function make call or update function call
 
-  html2canvas(input, { scale: 2 }).then((canvas) => {
-    const pdf = new jsPDF("p", "mm", "a4");
+    bill_number==="bill"? handleSellApprove("Sell"):handleUpdateBill()
+   
+     const printContent = (
+      <BillPrintLayout
+        billName={billName}
+        selectedColumns={selectedColumns}
+        scannedProducts={scannedProducts}
+        restore={products.restore}
+        sold={products.sold}
 
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-
-    const margin = 5;
-
-    /* ---------------- HEADER ---------------- */
-
-    // TITLE
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(18);
-    pdf.text("Bill Details", pageWidth / 2, 15, { align: "center" });
-
-    // BILL NAME (LEFT)
-    pdf.setFontSize(13);
-    pdf.setFont("helvetica", "normal");
-    pdf.text(`Bill Name : ${billName}`, margin, 25);
-
-    // DATE (RIGHT)
-    pdf.text(
-      `Date : ${new Date().toLocaleDateString("en-GB")}`,
-      pageWidth - margin,
-      25,
-      { align: "right" }
+      />
     );
 
-    /* ---------------- IMAGE CONTENT ---------------- */
+    const printHtml = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Bill Print</title>
+       
+      <body>
+        ${ReactDOMServer.renderToString(printContent)}
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+              window.close();
+            }, 200);
+          };
+        </script>
+      </body>
+    </html>
+  `;
+    const printWindow = window.open("", "_blank", "width=1000,height=800");
+    printWindow.document.write(printHtml);
+    printWindow.document.close();
 
-    const imgData = canvas.toDataURL("image/png");
-
-    const imgWidth = pageWidth - margin * 2;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let yPosition = 35; // start AFTER header
-
-    pdf.addImage(imgData, "PNG", margin, yPosition, imgWidth, imgHeight);
-
-    let heightLeft = imgHeight - (pageHeight - yPosition);
-
-    /* ---------------- MULTI PAGE ---------------- */
-
-    while (heightLeft > 0) {
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
-      heightLeft -= pageHeight - margin;
-    }
-
-    /* ---------------- SAVE ---------------- */
-
-    const pdfName = billName?.trim()
-      ? `${billName}.pdf`
-      : "billing_details.pdf";
-
-    pdf.save(pdfName);
-  });
 };
 
-
-
-  
-  
 
   const fetchBillNo = async () => {
     try {
@@ -110,6 +98,11 @@ const exportPDF = () => {
       );
       setBillName(response.data.billName.bill_name)
       setScannedProducts(response.data.products);
+      
+      setProducts(()=>(
+        {restore:response.data.activeProducts,
+        sold:response.data.soldProducts}))
+
     } catch (error) {
       console.log("Error fetching bill data:", error);
     }
@@ -119,6 +112,16 @@ const exportPDF = () => {
     fetchBillNo();
   }, []);
 
+  useEffect(() => {
+  const soldChecked = scannedProducts
+    .filter(p => p.product_type === "sold")
+    .map(p => ({
+      productId: p.product_number,
+      id: p.id
+    }));
+
+  setCheckedProducts(soldChecked);
+}, [scannedProducts]);
 
   const handleScan = async (product_number) => {
     
@@ -158,6 +161,7 @@ const exportPDF = () => {
       console.log(value, "llllllllllllllllllllll");
       console.log("Selected products:", checkedProducts);
 
+     
       const response = await axios.post(
         `${REACT_APP_BACKEND_SERVER_URL}/bills/bill-details`,
         {
@@ -170,7 +174,8 @@ const exportPDF = () => {
  
       if (response.status === 200) {
         alert(`Bill ${value === "Sell" ? "SOLD" : "APPROVED"} successfully!`);
-        navigate(`/billing/${response.data.bill.bill_number}`);
+        navigate(`/billing`);
+       
       }
     } catch (error) {
       console.error("Error sending Sell data:", error);
@@ -203,19 +208,54 @@ const exportPDF = () => {
   };
 
 
-  const handleSelectAllChange = () => {
-    setSelectAllChecked((prev) => !prev);
-    if (!selectAllChecked) {
-      setCheckedProducts(
-        scannedProducts.map((product) => ({
-          productId: product.product_number,
-          id: product.id,
-        }))
-      );
-    } else {
-      setCheckedProducts([]);
-    }
-  };
+
+const handleSelectAllChange = () => {
+  const newValue = !selectAllChecked;
+  setSelectAllChecked(newValue);
+
+  if (newValue) {
+    const newProducts = scannedProducts
+      .filter(p => p.product_type !== "sold")
+      .map(p => ({
+        productId: p.product_number,
+        id: p.id,
+      }));
+
+    setCheckedProducts(prev => [
+      ...prev.filter(p =>
+        scannedProducts.find(sp =>
+          sp.product_number === p.productId &&
+          sp.product_type === "sold"
+        )
+      ),
+      ...newProducts,
+    ]);
+  } else {
+    // remove ONLY new products
+    setCheckedProducts(prev =>
+      prev.filter(p =>
+        scannedProducts.find(sp =>
+          sp.product_number === p.productId &&
+          sp.product_type === "sold"
+        )
+      )
+    );
+  }
+};
+
+  // const handleSelectAllChange = () => {
+  //   setSelectAllChecked((prev) => !prev);
+  //   if (!selectAllChecked) {
+  //     setCheckedProducts(
+  //       scannedProducts.map((product) => ({
+  //         productId: product.product_number,
+  //         id: product.id,
+  //       }))
+  //     );
+  //   } else {
+  //     setCheckedProducts([]);
+  //   }
+  // };
 
   const totalBeforeWeight = scannedProducts
     .reduce((acc, product) => acc + parseFloat(product.before_weight || 0), 0)
@@ -248,35 +288,127 @@ const exportPDF = () => {
   }
   },0).toFixed(3)
   
-// const getVisibleColumnCount = () => {
-//   let colSpan = 2;
-//   if(!selectedColumns.serialNo||!selectedColumns.productNumber){
-//       return colSpan=1
-//   }
+
+const handleSelectAllColumn = () => {
+  const newValue = !selectedColumns.selectAll;
+
+  setSelectedColumns({
+    selectAll: newValue,
+    beforeWeight: newValue,
+    afterWeight: newValue,
+    difference: newValue,
+    adjustment: newValue,
+    finalWeight: newValue,
+    barcodeWeight: newValue,
+    
+  });
  
+}
+const handleRemoveproductToBill=async(productId)=>{
+      const isTrue=window.confirm('Are you sure you want to remove this product from this bill? After removal, the product will be removed from the bill and its status will be set to Active')
 
-//   return colSpan;
-// };
+      if(isTrue){
+            try{
+                const response= await axios.put(`${REACT_APP_BACKEND_SERVER_URL}/bills/updateandRemove/${productId}`)
+                if(response.data.status==="ok"){
+                  setScannedProducts(response.data.allProducts)
+                  setProducts(()=>(
+             {
+              restore:response.data.activeProducts,
+              sold:response.data.soldProducts
+            }))
+                  toast.success('Product Removed From Bill')
+             }
 
+            }catch(err){
+              console.log(err.message)
+              toast.error(err.message)
+            }
+      }
+      
+}
+const handleUpdateBill=async()=>{
+        try{
+         const payLoad={
+           billName:billName,
+           selected_products:checkedProducts
+         }
+        
+
+         const response=await axios.put(
+          `${REACT_APP_BACKEND_SERVER_URL}/bills/updateBill/${bill_number}`,
+           payLoad
+        )
+
+         if(response.data.status==="ok"){
+            toast.success(response.data.message)
+            
+            setTimeout(() => {
+            navigate("/billing");
+         }, 1500); // 1.5 seconds is perfect
+
+           
+         }
+      }catch(err){
+              console.log(err.message)
+              toast.error(err.message)
+      }
+     
+}
+  // const handleEditMode=(value)=>{
+  //   if(value){
+  //     setEditMode(value)
+  //     toast.success('Bill Edit Mode Activated')
+  //   }
+  //    else{
+  //     setEditMode(value)
+  //     toast.error('Bill Edit Mode Diactivated')
+  //   }
+
+  // }
 
   return (
     <>
       <Navbarr />
       <div className="addbill-page">
+       
+       <ToastContainer 
+          position="top-right" 
+          autoClose={2000} 
+          />
+
       <div className="addbill-card">
+        
         <div id="page-to-pdf">
-          <button className="addbill-back-btn" onClick={() => navigate("/billing")}>
-            ← Back
-          </button>
-          <h2> Bill Details</h2>
-          {/* <Switch {...label} defaultChecked /> */}
+         <div className="bill-header-flex">
+            <div>
+                <button className="addbill-back-btn" onClick={() => navigate("/billing")}>
+               ← Back
+             </button>
+            </div>
+          <div>
+             <h2> Bill Details</h2>
+          </div>
+          <div>
+          {/* {bill_number!=="bill" && ( 
+            
+             <Switch {...label} 
+              value={editMode}
+              onChange={(e)=>{handleEditMode(e.target.checked)
+              }}
+             />  
+          )} */}
+          </div>
+             
+         </div>
           <BarcodeReader onScan={handleScan} />
           <div className="addbill-table-wrapper">
+              
           <table className="addbill-table" id="billPdf">
             <thead>
               <tr>
-                {selectedColumns.serialNo && <th>  S.No </th>}
-                {selectedColumns.productNumber && <th> Product.No </th>}
+                <th>  S.No </th>
+                <th> Product.No </th>
                 {selectedColumns.beforeWeight && <th> Before Weight </th>}
                 {selectedColumns.afterWeight && <th> After Weight </th>}
                 {selectedColumns.difference && <th> Difference </th>}
@@ -284,7 +416,7 @@ const exportPDF = () => {
                 {selectedColumns.barcodeWeight&& <th> Final Weight</th>}
                 {selectedColumns.finalWeight && <th> Enamel Weight </th>}
                 
-                {selectedColumns.complete && bill_number === "bill" && (
+                {/* {selectedColumns.complete && ( */}
                   <th>
                     <Checkbox
                       checked={selectAllChecked}
@@ -293,24 +425,28 @@ const exportPDF = () => {
                     />
                     Select All
                   </th>
-                )}
+                  
+                {/* )} */}
+                <th>Action</th>
               </tr>
             </thead>
            <tbody>
               {scannedProducts.length > 0 ? (
                 scannedProducts.map((product, index) => (
                   <tr key={index}>
-                    {selectedColumns.serialNo && <td>{index + 1}</td>}
-                    {selectedColumns.productNumber && <td> { product.itemType==="STONE"? transform_text(product.product_number):cleanPlainProduct(product.product_number)}</td>}
+                   <td>{index + 1}</td>
+                   <td> { product.itemType==="STONE"? transform_text(product.product_number):cleanPlainProduct(product.product_number)}</td>
                     {selectedColumns.beforeWeight && <td>{product.itemType==="STONE"? product.before_weight:"-"}</td>}
                     {selectedColumns.afterWeight && <td>{product.itemType==="STONE"? product.after_weight:"-"}</td>}
                     {selectedColumns.difference && <td>{product.itemType==="STONE"?product.difference:"-"}</td>}
                     {selectedColumns.adjustment && <td>{product.itemType==="STONE"?product.adjustment:"-"}</td>}
                     {selectedColumns.barcodeWeight&& <td>{product.itemType==="PLAIN"?product.netWeight:product.barcode_weight}</td>}
                     {selectedColumns.finalWeight && <td>{product.itemType==="PLAIN"?product.stoneWeight:product.final_weight}</td>}
-                    {selectedColumns.complete && bill_number === "bill" && (
+                    {/* {selectedColumns.complete && ( */}
                       <td>
                         <input
+                         style={{cursor:"pointer"}}
+                          disabled={product.product_type==="sold"?true:false}
                           type="checkbox"
                           checked={checkedProducts.some(
                             (item) => item.productId === product.product_number
@@ -320,33 +456,64 @@ const exportPDF = () => {
                           }
                         />
                       </td>
-                    )}
+                    {/* )} */}
+                    <td>{product.product_type==="sold"? 
+
+                      <IconButton onClick={()=>{handleRemoveproductToBill(product.id)}}>
+                        <RiDeleteBin6Line size={20} color="#242442"  />
+                      </IconButton>:
+
+                      <span style={{fontSize:"20px",fontWeight:"bold"}}>-</span>}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="8">No products found.</td>
+                  <td colSpan="9">No products found.</td>
                 </tr>
               )}
             </tbody>
             
             <tfoot>
               <tr className="bill-tfoot">
-                {selectedColumns.serialNo && <td ><b>Total Weight </b></td>}
-                {selectedColumns.productNumber &&  <td><b>-</b></td>}
+                 <td ><b>Total Weight </b></td>
+                 <td><b>-</b></td>
                 {selectedColumns.beforeWeight && <td><b>{totalBeforeWeight}</b></td>}
                 {selectedColumns.afterWeight && <td><b>{totalAfterWeight}</b></td>}
                 {selectedColumns.difference && <td><b>{totalDifference}</b></td>}
                 {selectedColumns.adjustment && <td><b>{totalAdjustment}</b></td>}
                 {selectedColumns.barcodeWeight && <td> <b>{totalBarcodeWeight}</b></td>}
                 {selectedColumns.finalWeight && <td><b>{totalFinalWeight}</b></td>}
+                {selectedColumns.complete && <td><b>-</b></td>}
+                <td ></td>
               </tr>
             </tfoot>
           </table>
+       
+           {/*Restore Products*/}
+           {bill_number!=="bill" && (
+             <>
+             <h2>Restore Products</h2>
+             <BillRestoreProducts
+               restoreProducts={products.restore}
+               selectedColumns={selectedColumns}
+             />
+             </>
+          )}
+
+        {/*Sold Products*/}
+          {bill_number!=="bill" && (
+            <>
+              <h2>Sold Products</h2>
+              <BillSoldProducts
+               soldProducts={products.sold}
+               selectedColumns={selectedColumns}
+              />
+          
+           </>)}
+          
           </div>
           </div>
 
-          {bill_number === "bill" ? (
             <div className="addbill-name-wrapper">
               <input
                 type="text"
@@ -356,25 +523,28 @@ const exportPDF = () => {
                 onChange={(e) => setBillName(e.target.value)}
               />
             </div>
-          ):<div className="addbill-name-wrapper" >
-               <input
-                type="text"
-                readOnly
-                className="addbill-name-input"
-                value={billName}
-             
-              />
-            </div>}
+          
           <div className="addbill-action-row">
             {bill_number==="bill" &&  <button className="addbill-btn" onClick={() => handleSellApprove("Sell")}> Save </button>}
-            <button className="addbill-btn" onClick={exportPDF}>
-              Export as PDF
+            <button className="addbill-btn" onClick={exportPrint}>
+              Print Bill
             </button>
+            {bill_number!=="bill" && <button className="updatebill-btn" onClick={()=>{handleUpdateBill()}}>Update Bill</button>}
           </div>
           <br/>
 
           <div className="addbill-column-checklist">
-            <label  >
+             <label  >
+              <Checkbox
+                type="checkbox"
+                checked={selectedColumns.selectAll}
+                onChange={handleSelectAllColumn}
+                style={{ color: "rgb(36, 36, 66)" }}
+                
+              />
+              Select All
+            </label>
+            {/* <label  >
               <Checkbox
                 type="checkbox"
                 checked={selectedColumns.serialNo}
@@ -392,7 +562,7 @@ const exportPDF = () => {
                 style={{ color: "rgb(36, 36, 66)" }}
               />
               Product.No
-            </label>
+            </label> */}
             <label>
               <Checkbox
                 type="checkbox"

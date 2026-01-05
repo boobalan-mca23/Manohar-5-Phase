@@ -12,12 +12,14 @@
 
 
 const express = require('express');
-const { getAllBills, createBills, deleteBills, modifyBillHold, getBillsByBillNumber, postBillDetails } = require('../controllers/bills.controllers');
+const { getAllBills, createBills, deleteBills,updateBill, modifyBillHold, getBillsByBillNumber, postBillDetails,updateProductAndRemoveFromBill } = require('../controllers/bills.controllers');
 const router = express.Router();
 
 router.get('/getAll',getAllBills);
 router.get("/bills/:bill_number",getBillsByBillNumber)
 router.post('/create',createBills);
+router.put('/updateBill/:bill_number',updateBill)
+router.put('/updateandRemove/:productId',updateProductAndRemoveFromBill)
 router.delete('/delete/:id',deleteBills); 
 
 // modify the bill items form hold to sold

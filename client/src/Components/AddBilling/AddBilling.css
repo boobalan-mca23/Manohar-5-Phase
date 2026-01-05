@@ -117,7 +117,7 @@
   margin-top: 2rem;
 }
 
-.addbill-btn {
+.addbill-btn,.updatebill-btn {
   background: #242442;
   border: none;
   padding: 0.8rem 1.5rem;
@@ -132,7 +132,9 @@
 .addbill-btn:hover {
   opacity: 0.85;
 }
-
+.updatebill-btn:hover{
+  opacity: 0.85;
+}
 .addbill-column-checklist {
   margin-top: 2.4rem;
   display: flex;
@@ -174,4 +176,9 @@
 }
 .bill-tfoot td{
   text-align: center;
+}
+.bill-header-flex{
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
 }

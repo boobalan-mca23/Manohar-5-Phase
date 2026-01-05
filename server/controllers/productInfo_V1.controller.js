@@ -2,7 +2,8 @@ const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const { LOT_TYPE } = require("@prisma/client");
-const { makeProductId } = require("../helperFunction/makeProductId");
+const {makeProductId} = require("../helperFunction/makeProductId");
+const {compressImage}=require('../helperFunction/compressImgFileSize')
 
 // const createNewProduct = async (req, res) => { 
 // cloudinary integrated code 
@@ -266,13 +267,24 @@ const createNewProduct = async (req, res) => {
     };
     console.log(req.files)
     // product Images
+
+    // compress img as KB level 
+    if (req.files && req.files.length > 0) {
+       for (const file of req.files) {
+        console.log('filepathhh',file.path)
+        await compressImage(file.path); // FULL PATH
+  }
+}
+
+
+
     const img = {
       before_weight_img: isStone ? req.files[0]?.filename? req.files[0]?.filename: null: null,
       after_weight_img: null,
       final_weight_img: null,
       gross_weight_img: isPlain ? req.files[0]?.filename ? req.files[0]?.filename : null : null,
     };
-
+    
     let newProduct = await prisma.product_info.create({
       data: {
         ...productInfo,
@@ -673,6 +685,13 @@ const UpdatingProduct = async (req, res) => {
       updated_at: new Date(),
     };
 
+       // compress img as KB level 
+    if (req.files && req.files.length > 0) {
+       for (const file of req.files) {
+        console.log('filepathhh',file.path)
+        await compressImage(file.path); // FULL PATH
+  }
+}
     let fileMap = {};
     if (req.files && req.files.length > 0) {
       req.files.forEach((file) => {
