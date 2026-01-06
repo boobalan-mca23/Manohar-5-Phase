@@ -1,5 +1,5 @@
 import React from "react";
-import {cleanPlainProduct,transform_text } from "../../utils";
+import {cleanPlainProduct,transform_text,formatWeight } from "../../utils";
 import BillRestore from "./BillRestore";
 import BillSold from "./BillSold";
 
@@ -45,13 +45,13 @@ const BillPrintLayout=React.forwardRef((props, ref) => {
       <>
           <div>
              <div style={styles.header}>
-                 <h4>Bill Name:{billName}</h4>
+                 <h2>Bill Name:{billName}</h2>
                  <h2>Manohar Jewellery</h2>
-                 <h4>Date:{new Date().toLocaleDateString("en-IN")}</h4>
+                 <h2>Date:{new Date().toLocaleDateString("en-IN")}</h2>
              </div>
           
              <div>
-                <p style={{ textAlign: "center",margin: "8px 0",fontWeight: "bold"}}>Bill Products</p>
+                <p style={styles.title}>Bill Products</p>
             <table style={styles.table}>
                     <thead>
                         <tr>
@@ -79,41 +79,41 @@ const BillPrintLayout=React.forwardRef((props, ref) => {
 
                         {selectedColumns.beforeWeight && (
                         <td style={styles.td}>
-                            {product.itemType === "STONE" ? product.before_weight : "-"}
+                            {product.itemType === "STONE" ? formatWeight(product.before_weight) : "-"}
                         </td>
                         )}
 
                         {selectedColumns.afterWeight && (
                         <td style={styles.td}>
-                            {product.itemType === "STONE" ? product.after_weight : "-"}
+                            {product.itemType === "STONE" ? formatWeight(product.after_weight): "-"}
                         </td>
                         )}
 
                         {selectedColumns.difference && (
                         <td style={styles.td}>
-                            {product.itemType === "STONE" ? product.difference : "-"}
+                            {product.itemType === "STONE" ? formatWeight(product.difference) : "-"}
                         </td>
                         )}
 
                         {selectedColumns.adjustment && (
                         <td style={styles.td}>
-                            {product.itemType === "STONE" ? product.adjustment : "-"}
+                            {product.itemType === "STONE" ? formatWeight(product.adjustment) : "-"}
                         </td>
                         )}
 
                         {selectedColumns.barcodeWeight && (
                         <td style={styles.td}>
                             {product.itemType === "PLAIN"
-                            ? product.netWeight
-                            : product.barcode_weight}
+                            ? formatWeight(product.netWeight)
+                            : formatWeight(product.barcode_weight)}
                         </td>
                         )}
 
                         {selectedColumns.finalWeight && (
                         <td style={styles.td}>
                             {product.itemType === "PLAIN"
-                            ? product.stoneWeight
-                            : product.final_weight}
+                            ? formatWeight(product.stoneWeight)
+                            : formatWeight(product.final_weight)}
                         </td>
                         )}
                     </tr>
@@ -177,16 +177,15 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    // marginBottom: "20px",
     borderBottom: "2px solid #000",
-    // paddingBottom: "10px"
+  
   },
 
   table: {
     marginTop:"2px",
     width: "100%",
     borderCollapse: "collapse",
-    fontSize: "15px",
+    fontSize: "1.2rem",
   },
 
   th: {
@@ -207,6 +206,12 @@ const styles = {
     fontWeight: "bold",
     backgroundColor: "#eaeaea"
   },
+  title:{
+    textAlign: "center",
+    margin: "8px 0",
+    fontWeight: "bold",
+    fontSize: "1.2rem",
+  }
 
 };
 

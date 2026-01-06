@@ -1,4 +1,4 @@
-import {cleanPlainProduct,transform_text } from "../../utils";
+import {cleanPlainProduct,transform_text,formatWeight} from "../../utils";
 
 const BillRestore=(props)=>{
     const {restoreProducts=[],selectedColumns={}}=props
@@ -64,41 +64,41 @@ const BillRestore=(props)=>{
             
                                     {selectedColumns.beforeWeight && (
                                     <td style={styles.td}>
-                                        {product.itemType === "STONE" ? product.before_weight : "-"}
+                                        {product.itemType === "STONE" ? formatWeight(product.before_weight) : "-"}
                                     </td>
                                     )}
             
                                     {selectedColumns.afterWeight && (
                                     <td style={styles.td}>
-                                        {product.itemType === "STONE" ? product.after_weight : "-"}
+                                        {product.itemType === "STONE" ? formatWeight(product.after_weight) : "-"}
                                     </td>
                                     )}
             
                                     {selectedColumns.difference && (
                                     <td style={styles.td}>
-                                        {product.itemType === "STONE" ? product.difference : "-"}
+                                        {product.itemType === "STONE" ? formatWeight(product.difference) : "-"}
                                     </td>
                                     )}
             
                                     {selectedColumns.adjustment && (
                                     <td style={styles.td}>
-                                        {product.itemType === "STONE" ? product.adjustment : "-"}
+                                        {product.itemType === "STONE" ? formatWeight(product.adjustment) : "-"}
                                     </td>
                                     )}
             
                                     {selectedColumns.barcodeWeight && (
                                     <td style={styles.td}>
                                         {product.itemType === "PLAIN"
-                                        ? product.netWeight
-                                        : product.barcode_weight}
+                                        ? formatWeight(product.netWeight)
+                                        : formatWeight(product.barcode_weight)}
                                     </td>
                                     )}
             
                                     {selectedColumns.finalWeight && (
                                     <td style={styles.td}>
                                         {product.itemType === "PLAIN"
-                                        ? product.stoneWeight
-                                        : product.final_weight}
+                                        ? formatWeight(product.stoneWeight)
+                                        : formatWeight(product.final_weight)}
                                     </td>
                                     )}
                                 </tr>
@@ -146,7 +146,7 @@ const styles = {
     marginTop:"2px",
     width: "100%",
     borderCollapse: "collapse",
-    fontSize: "15px",
+    fontSize: "1.2rem",
   },
 
   th: {
@@ -170,7 +170,8 @@ const styles = {
   title:{
    textAlign:"center",
    marginTop:"2px",
-   fontWeight:"bold"
+   fontWeight:"bold",
+   fontSize: "1.2rem",
  }
 };
 export default BillRestore

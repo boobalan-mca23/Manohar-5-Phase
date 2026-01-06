@@ -1,4 +1,4 @@
-import { cleanPlainProduct, transform_text } from "../../utils"; 
+import { cleanPlainProduct, transform_text,formatWeight } from "../../utils"; 
 const BillSoldProducts=(props)=>{
     const {soldProducts,selectedColumns}=props
 
@@ -60,12 +60,12 @@ const BillSoldProducts=(props)=>{
                              <tr key={index}>
                             <td>{index + 1}</td>
                               <td> { product.itemType==="STONE"? transform_text(product.product_number):cleanPlainProduct(product.product_number)}</td>
-                             {selectedColumns.beforeWeight && <td>{product.itemType==="STONE"? product.before_weight:"-"}</td>}
-                             {selectedColumns.afterWeight && <td>{product.itemType==="STONE"? product.after_weight:"-"}</td>}
-                             {selectedColumns.difference && <td>{product.itemType==="STONE"?product.difference:"-"}</td>}
-                             {selectedColumns.adjustment && <td>{product.itemType==="STONE"?product.adjustment:"-"}</td>}
-                             {selectedColumns.barcodeWeight&& <td>{product.itemType==="PLAIN"?product.netWeight:product.barcode_weight}</td>}
-                             {selectedColumns.finalWeight && <td>{product.itemType==="PLAIN"?product.stoneWeight:product.final_weight}</td>} 
+                             {selectedColumns.beforeWeight && <td>{product.itemType==="STONE"? formatWeight(product.before_weight):"-"}</td>}
+                             {selectedColumns.afterWeight && <td>{product.itemType==="STONE"? formatWeight(product.after_weight):"-"}</td>}
+                             {selectedColumns.difference && <td>{product.itemType==="STONE"?formatWeight(product.difference):"-"}</td>}
+                             {selectedColumns.adjustment && <td>{product.itemType==="STONE"?formatWeight(product.adjustment):"-"}</td>}
+                             {selectedColumns.barcodeWeight&& <td>{product.itemType==="PLAIN"?formatWeight(product.netWeight):formatWeight(product.barcode_weight)}</td>}
+                             {selectedColumns.finalWeight && <td>{product.itemType==="PLAIN"?formatWeight(product.stoneWeight):formatWeight(product.final_weight)}</td>} 
                               
                              </tr>
                            ))
