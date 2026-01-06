@@ -19,7 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ReactDOMServer from "react-dom/server";
 import manoImage from "../../Components/Logo/mp.png";
 import { REACT_APP_BACKEND_SERVER_URL } from "../../config";
-import { weightVerify,weightVerifyBoth,handleWeight,transform_text } from "../utils";
+import { weightVerify,weightVerifyBoth,handleWeight,transform_text, formatWeight } from "../utils";
 let isGeneratingPdf = false;
 
 const Products = () => {
@@ -101,12 +101,12 @@ const tableMarginTop = textStartY + 18;
     const tableData = products.map((product, index) => [
       index + 1,
       transform_text(product.product_number),
-      product.before_weight,
-      product.after_weight,
-      product.difference,
-      product.adjustment,
-      product.final_weight,
-      product.barcode_weight,
+      formatWeight(product.before_weight),
+      formatWeight(product.after_weight),
+      formatWeight(product.difference),
+      formatWeight(product.adjustment),
+      formatWeight(product.final_weight),
+      formatWeight(product.barcode_weight),
     ]);
 
  
