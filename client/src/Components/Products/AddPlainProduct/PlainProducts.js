@@ -1527,19 +1527,31 @@ const updatePlainProduct = async () => {
       {/* Camera modal */}
         {showCameraModal && (
   <div className="plain-modal-overlay">
-    <div className="plain-modal-box" style={{ maxWidth: 500 }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+    <div className="plain-modal-box" style={{ maxWidth: 380,height:"45rem",alignContent:"center"}}>
+      <div  style={{display: "flex",justifyContent:"space-between",alignItems: "center"}}>
         <h3>
           {cameraMode === "edit" ? "Retake Image" : "Capture Image"}
         </h3>
         <button
+          style={{
+                backgroundColor: "red",
+                color: "black",
+                border: "none",
+                borderRadius: "50%",
+                width: 40,
+                height: 40,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
           onClick={() => {
             if (videoRef.current?.srcObject) {
               videoRef.current.srcObject.getTracks().forEach(t => t.stop());
             }
             setShowCameraModal(false);
           }}
-          style={closeBtnStyle}
+         
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>
@@ -1551,7 +1563,7 @@ const updatePlainProduct = async () => {
         playsInline
         style={{
           width: "100%",
-          height: "300px",
+          height: "556px",
           borderRadius: 10,
           marginTop: 10,
           objectFit: "cover",
@@ -1564,7 +1576,7 @@ const updatePlainProduct = async () => {
         <button className="capture-image-btn" onClick={captureFromCamera} style={captureBtnStyle}>
           <FontAwesomeIcon icon={faCheck} />Capture
         </button>
-        <button
+        {/* <button
           className="cancel-camera-btn"
           onClick={() => {
             if (videoRef.current?.srcObject) {
@@ -1576,7 +1588,7 @@ const updatePlainProduct = async () => {
         >
           <FontAwesomeIcon icon={faTimes} />
           Cancel
-        </button>
+        </button> */}
       </div>
     </div>
   </div>
@@ -1594,6 +1606,7 @@ const updatePlainProduct = async () => {
               width: "min(25rem, 720px)",
               padding: "16px",
               borderRadius: "12px",
+
             }}
           >
             <div
@@ -1606,7 +1619,15 @@ const updatePlainProduct = async () => {
               <h3 style={{ margin: 0 }}>Captured Image</h3>
               <button
                 onClick={() => setShowPreviewModal(false)}
-                style={closeBtnStyle}
+                style={{
+                backgroundColor: "red",
+                color: "black",
+                border: "none",
+                borderRadius: "50%",
+                width: 40,
+                height: 40,
+                cursor: "pointer",
+              }}
               >
                 <FontAwesomeIcon icon={faXmark} />
               </button>
@@ -1616,9 +1637,8 @@ const updatePlainProduct = async () => {
                 src={previewUrl}
                 alt="preview"
                 style={{
-                  width: "100%",
-                  maxWidth: "20rem",
-                  height: "15rem",
+                  width: "85%",
+                  height: "600px",
                   borderRadius: "10px",
                   display: "block",
                   margin: "0 auto",
@@ -1634,12 +1654,12 @@ const updatePlainProduct = async () => {
               }}
             >
               {/* <button onClick={() => { navigator.clipboard?.writeText(previewUrl); toast.success("Image URL copied"); }} style={saveBtnStyle}>Copy URL</button> */}
-              <button
+              {/* <button
                 onClick={() => setShowPreviewModal(false)}
                 style={cancelBtnStyle}
               >
                 Close
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -1672,7 +1692,7 @@ const modalBoxStyle = {
   padding: 20,
   borderRadius: 8,
   width: "min(900px, 95vw)",
-  maxHeight: "90vh",
+  maxHeight: "100vh",
   overflowY: "auto",
   boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
 };

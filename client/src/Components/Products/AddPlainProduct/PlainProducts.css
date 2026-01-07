@@ -167,7 +167,7 @@ tfoot tr td {
 .plain-modal-box {
   background: #ffffff;
   width: min(900px, 95vw);
-  max-height: 90vh;
+  max-height: 100vh;
   overflow-y: auto;
   padding: 25px;
   border-radius: 16px;
