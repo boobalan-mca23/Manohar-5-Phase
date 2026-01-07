@@ -374,7 +374,7 @@ const PlainProducts = () => {
        qrCodeContainer.style.display = "flex";
       //  qrCodeContainer.style.marginLeft = "1rem";
        qrCodeContainer.style.fontWeight = "bold";
-       qrCodeContainer.style.fontSize = "9px";
+       qrCodeContainer.style.fontSize = "7px";
        qrCodeContainer.style.marginBottom = "2px";
        qrCodeContainer.style.width = "2px";
   
@@ -393,7 +393,7 @@ const PlainProducts = () => {
        
        const barcodeWeightText = document.createElement("span");
        barcodeWeightText.textContent = ` ${item.netWeight}`;
-       barcodeWeightText.style.fontSize = "9px";
+       barcodeWeightText.style.fontSize = "7px";
        barcodeWeightText.style.fontWeight = "bold";
        barcodeWeightText.style.marginLeft = "7px";
        detailsContainer.appendChild(barcodeWeightText);
@@ -401,7 +401,7 @@ const PlainProducts = () => {
       if(item.stoneWeight>0){
        const stoneWeightText = document.createElement("span");
        stoneWeightText.textContent = ` ${Number(item.stoneWeight).toFixed(3)}`;
-       stoneWeightText.style.fontSize = "9px";
+       stoneWeightText.style.fontSize = "7px";
        stoneWeightText.style.fontWeight = "bold";
        stoneWeightText.style.marginLeft = "7px";
        detailsContainer.appendChild(stoneWeightText);
@@ -410,7 +410,7 @@ const PlainProducts = () => {
        
        const productNumberText = document.createElement("span");
        productNumberText.textContent =cleanPlainProduct(item.product_number)||"";
-       productNumberText.style.fontSize = "9px";
+       productNumberText.style.fontSize = "7px";
        productNumberText.style.marginLeft = "7px";
        productNumberText.style.fontWeight = "bold";
        productNumberText.style.color = "black";

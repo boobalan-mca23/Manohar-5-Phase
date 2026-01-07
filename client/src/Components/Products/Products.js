@@ -95,7 +95,7 @@ const tableMarginTop = textStartY + 18;
       "Adjustment",
       "Enamel Weight",
       "Final Weight",
-      "Barcode Weight",
+      "Product Status",
     ];
 
     const tableData = products.map((product, index) => [
@@ -107,6 +107,7 @@ const tableMarginTop = textStartY + 18;
       formatWeight(product.adjustment),
       formatWeight(product.final_weight),
       formatWeight(product.barcode_weight),
+      product.product_type
     ]);
 
  
@@ -149,7 +150,7 @@ const tableMarginTop = textStartY + 18;
         totalFinalWeight,
         totalBarcodeWeight,
       ],
-      ["", "Bulk Weight Difference:", "", "", bulkWeightDifference, "", "", ""],
+      
     ];
 
    
@@ -174,6 +175,17 @@ const tableMarginTop = textStartY + 18;
         7: { halign: "center" },
       },
     });
+    // bulk weight diffrence
+        const finalY = doc.lastAutoTable.finalY || tableMarginTop;
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+
+    doc.text(
+      `Bulk Difference Weight : ${bulkWeightDifference}`,
+      14,
+      finalY + 10
+    );
 
 
     doc.save("product_details.pdf");

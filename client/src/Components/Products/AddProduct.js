@@ -113,8 +113,8 @@ const AddProduct = ({
       
       formData.append("itemType", "STONE");
       
-      if (!beforeWeight) {
-        toast.warn('Please Add Before Weight', { autoClose: 1000 });
+      if (!beforeWeight||beforeWeight<=0) {
+        toast.warn('Please Add Correct Before Weight', { autoClose: 1000 });
         setSaving(false);
         return;
       }
