@@ -302,8 +302,7 @@ export default function AddGoldsmith() {
                 type="text"
                 value={goldsmithName}
                 onChange={(e) =>{
-                  const cleaned = e.target.value.replace(/\s/g,'')
-                  setGoldsmithName(cleaned)
+                   setGoldsmithName(e.target.value)
                   }}
                 placeholder="Enter goldsmith name"
               />

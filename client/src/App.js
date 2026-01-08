@@ -54,10 +54,12 @@ function App() {
           <Route
             path="/plainlot/:lot_id"
             element={
-              <PlainProducts
-                setSelectedProduct={setSelectedProduct}
-                setLotNumber={setLotNumber}
+              <ProtectedRoute>
+                   <PlainProducts
+                  setSelectedProduct={setSelectedProduct}
+                  setLotNumber={setLotNumber}
               />
+              </ProtectedRoute>
             }
           />
           <Route
@@ -79,7 +81,10 @@ function App() {
           }
         /> */}
 
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute> } />
           <Route
             path="/additem"
             element={
@@ -98,15 +103,36 @@ function App() {
             }
           />
 
-          <Route path="/beadsenamellot" element={<Beadsenamel />} />
-          <Route path="/plainlot" element={<PlainLot />} />
+          <Route path="/beadsenamellot" element={
+             <ProtectedRoute>
+                  <Beadsenamel />
+             </ProtectedRoute>
+          } />
+
+          <Route path="/plainlot" element={
+          <ProtectedRoute>
+              <PlainLot />
+          </ProtectedRoute>} />
+
           <Route path="/" element={<Login />} />
 
-          <Route path="/products/:id" element={<Products />} />
-          <Route path="/barcode/:sNo" element={<BarcodePage />} />
+          <Route path="/products/:id" element={
+             <ProtectedRoute>
+               <Products/>
+              </ProtectedRoute>} 
+            />
+          <Route path="/barcode/:sNo" element={
+              <ProtectedRoute>
+                <BarcodePage />
+              </ProtectedRoute>
+          } />
           <Route
             path="/billing/:bill_number/add/:bill_type"
-            element={<AddBilling />}
+            element={
+               <ProtectedRoute>
+                <AddBilling />
+                </ProtectedRoute>
+            }
           />
           <Route
             path="/restore"
@@ -117,16 +143,25 @@ function App() {
             }
           />
 
-          <Route path="/restore/newRestore" element={<AddNewRestore />} />
-          <Route path="/restore/ViewRestore/:id" element={<ViewRestore />} />
+          <Route path="/restore/newRestore" element={
+            <ProtectedRoute>
+               <AddNewRestore />
+            </ProtectedRoute>}
+             />
+          <Route path="/restore/ViewRestore/:id" element={
+            <ProtectedRoute>
+              <ViewRestore/>
+            </ProtectedRoute>} />
 
           <Route
             path="/billing/:bill_number"
             element={
-              <AddBilling
+              <ProtectedRoute>
+                <AddBilling
                 selectedProduct={selectedProduct}
                 lotNumber={lotNumber}
               />
+              </ProtectedRoute>
             }
           />
           <Route
