@@ -18,12 +18,13 @@ import AddItem from "./Components/Master/AddItem/AddItem";
 import Home from "./Components/Home/Home";
 import RemoveLot from "./Components/RemovedLots/RemovedLots";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
-
+import { Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [lotNumber, setLotNumber] = useState("");
+  const token = localStorage.getItem("token");
 
   return (
     <>
@@ -114,7 +115,7 @@ function App() {
               <PlainLot />
           </ProtectedRoute>} />
 
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={token ? <Navigate to="/home" replace /> : <Login />} />
 
           <Route path="/products/:id" element={
              <ProtectedRoute>
