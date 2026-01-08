@@ -13,8 +13,9 @@ export default function ProtectedRoute({ children, requiredAccess }) {
 
   // If route requires a permission and the user doesn't have it → block
   if (requiredAccess && !access[requiredAccess]) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/" replace />;
   }
+  
 
   return children;
 }

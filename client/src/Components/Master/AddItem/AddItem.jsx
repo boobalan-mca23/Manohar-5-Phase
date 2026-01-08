@@ -203,8 +203,7 @@ export default function AddItem() {
                 type="text"
                 value={itemName}
                 onChange={(e) => {
-                  const cleaned = e.target.value.replace(/\s/g,'')
-                  setItemName(cleaned)
+                   setItemName(e.target.value)
                 }}
                 placeholder="Enter item name"
               />
