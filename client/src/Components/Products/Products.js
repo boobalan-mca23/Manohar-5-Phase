@@ -142,7 +142,7 @@ const tableMarginTop = textStartY + 18;
     const footerData = [
       [
         "",
-        "Total Weight =",
+        "Total Weight = ",
         totalBeforeWeight,
         totalAfterWeight,
         totalDifference,
@@ -166,7 +166,7 @@ const tableMarginTop = textStartY + 18;
       bodyStyles: { fillColor: [255, 255, 255], halign: "center" },
       columnStyles: {
         0: { halign: "center" },
-        1: { halign: "center" },
+        1: { halign: "center" , cellWidth: 30 },
         2: { halign: "center" },
         3: { halign: "center" },
         4: { halign: "center" },
