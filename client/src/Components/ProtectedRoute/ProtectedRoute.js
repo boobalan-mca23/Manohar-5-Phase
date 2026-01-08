@@ -8,12 +8,12 @@ export default function ProtectedRoute({ children, requiredAccess }) {
   if (!token || !user) {
     return <Navigate to="/" replace />;
   }
-
+  
   const access = user.access || user.access?.[0] || {};
 
   // If route requires a permission and the user doesn't have it → block
   if (requiredAccess && !access[requiredAccess]) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/home" replace />;
   }
   
 
