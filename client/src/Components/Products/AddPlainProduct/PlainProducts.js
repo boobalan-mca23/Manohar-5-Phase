@@ -256,7 +256,7 @@ const PlainProducts = () => {
         "S.No",
         "Product Number",
         "Product Name",
-        "Worker",
+        "GoldSmith Name",
         "Gross",
         "Stone",
         "Net",
